@@ -1,0 +1,362 @@
+[
+  {
+    "template": "verify_code",
+    "locale": "ar",
+    "subject": "رمز التحقق الخاص بك في FPT: 482913",
+    "file": "mail/verify_code-ar.png",
+    "phone": "mail/verify_code-ar-390.png",
+    "textLength": 592,
+    "hasUrlText": false
+  },
+  {
+    "template": "verify_code",
+    "locale": "en",
+    "subject": "Your FPT verification code: 482913",
+    "file": "mail/verify_code-en.png",
+    "phone": "mail/verify_code-en-390.png",
+    "textLength": 670,
+    "hasUrlText": false
+  },
+  {
+    "template": "welcome",
+    "locale": "ar",
+    "subject": "مرحباً بك في FPT، خالد",
+    "file": "mail/welcome-ar.png",
+    "phone": "mail/welcome-ar-390.png",
+    "textLength": 587,
+    "hasUrlText": true
+  },
+  {
+    "template": "welcome",
+    "locale": "en",
+    "subject": "Welcome to FPT, خالد",
+    "file": "mail/welcome-en.png",
+    "phone": "mail/welcome-en-390.png",
+    "textLength": 671,
+    "hasUrlText": true
+  },
+  {
+    "template": "account_ready",
+    "locale": "ar",
+    "subject": "حساب التقييم FPT-50K-7F3K2 جاهز على cTrader",
+    "file": "mail/account_ready-ar.png",
+    "phone": "mail/account_ready-ar-390.png",
+    "textLength": 951,
+    "hasUrlText": true
+  },
+  {
+    "template": "account_ready",
+    "locale": "en",
+    "subject": "Your evaluation account FPT-50K-7F3K2 is ready on cTrader",
+    "file": "mail/account_ready-en.png",
+    "phone": "mail/account_ready-en-390.png",
+    "textLength": 1106,
+    "hasUrlText": true
+  },
+  {
+    "template": "breach",
+    "locale": "ar",
+    "subject": "الحساب FPT-50K-7F3K2: تجاوز الحد — أُوقف التداول",
+    "file": "mail/breach-ar.png",
+    "phone": "mail/breach-ar-390.png",
+    "textLength": 806,
+    "hasUrlText": true
+  },
+  {
+    "template": "breach",
+    "locale": "en",
+    "subject": "Account FPT-50K-7F3K2: limit breached — trading stopped",
+    "file": "mail/breach-en.png",
+    "phone": "mail/breach-en-390.png",
+    "textLength": 930,
+    "hasUrlText": true
+  },
+  {
+    "template": "passed",
+    "locale": "ar",
+    "subject": "تهانينا: اجتاز الحساب FPT-50K-7F3K2 التقييم",
+    "file": "mail/passed-ar.png",
+    "phone": "mail/passed-ar-390.png",
+    "textLength": 753,
+    "hasUrlText": true
+  },
+  {
+    "template": "passed",
+    "locale": "en",
+    "subject": "Congratulations: account FPT-50K-7F3K2 passed the evaluation",
+    "file": "mail/passed-en.png",
+    "phone": "mail/passed-en-390.png",
+    "textLength": 892,
+    "hasUrlText": true
+  },
+  {
+    "template": "payout_requested",
+    "locale": "ar",
+    "subject": "تم استلام طلب السحب: 1,250.00 USD",
+    "file": "mail/payout_requested-ar.png",
+    "phone": "mail/payout_requested-ar-390.png",
+    "textLength": 712,
+    "hasUrlText": false
+  },
+  {
+    "template": "payout_requested",
+    "locale": "en",
+    "subject": "Payout request received: 1,250.00 USD",
+    "file": "mail/payout_requested-en.png",
+    "phone": "mail/payout_requested-en-390.png",
+    "textLength": 743,
+    "hasUrlText": false
+  },
+  {
+    "template": "payout_approved",
+    "locale": "ar",
+    "subject": "تمت الموافقة على السحب: 1,250.00 USD",
+    "file": "mail/payout_approved-ar.png",
+    "phone": "mail/payout_approved-ar-390.png",
+    "textLength": 611,
+    "hasUrlText": false
+  },
+  {
+    "template": "payout_approved",
+    "locale": "en",
+    "subject": "Payout approved: 1,250.00 USD",
+    "file": "mail/payout_approved-en.png",
+    "phone": "mail/payout_approved-en-390.png",
+    "textLength": 700,
+    "hasUrlText": false
+  },
+  {
+    "template": "payout_paid",
+    "locale": "ar",
+    "subject": "تمت معالجة دفعتك: 1,250.00 USD",
+    "file": "mail/payout_paid-ar.png",
+    "phone": "mail/payout_paid-ar-390.png",
+    "textLength": 673,
+    "hasUrlText": true
+  },
+  {
+    "template": "payout_paid",
+    "locale": "en",
+    "subject": "Payout processed: 1,250.00 USD",
+    "file": "mail/payout_paid-en.png",
+    "phone": "mail/payout_paid-en-390.png",
+    "textLength": 769,
+    "hasUrlText": true
+  },
+  {
+    "template": "inactivity_warning",
+    "locale": "ar",
+    "subject": "الحساب FPT-50K-7F3K2: 5 أيام قبل الإغلاق لعدم النشاط",
+    "file": "mail/inactivity_warning-ar.png",
+    "phone": "mail/inactivity_warning-ar-390.png",
+    "textLength": 672,
+    "hasUrlText": true
+  },
+  {
+    "template": "inactivity_warning",
+    "locale": "en",
+    "subject": "Account FPT-50K-7F3K2: 5 days before closure for inactivity",
+    "file": "mail/inactivity_warning-en.png",
+    "phone": "mail/inactivity_warning-en-390.png",
+    "textLength": 766,
+    "hasUrlText": true
+  },
+  {
+    "template": "expiry_warning",
+    "locale": "ar",
+    "subject": "الحساب FPT-50K-7F3K2: 3 أيام متبقية في التقييم",
+    "file": "mail/expiry_warning-ar.png",
+    "phone": "mail/expiry_warning-ar-390.png",
+    "textLength": 579,
+    "hasUrlText": false
+  },
+  {
+    "template": "expiry_warning",
+    "locale": "en",
+    "subject": "Account FPT-50K-7F3K2: 3 days left in the evaluation",
+    "file": "mail/expiry_warning-en.png",
+    "phone": "mail/expiry_warning-en-390.png",
+    "textLength": 641,
+    "hasUrlText": false
+  },
+  {
+    "template": "kyc_result",
+    "locale": "ar",
+    "subject": "لم تتم الموافقة على التحقق من الهوية",
+    "file": "mail/kyc_result-ar.png",
+    "phone": "mail/kyc_result-ar-390.png",
+    "textLength": 609,
+    "hasUrlText": true
+  },
+  {
+    "template": "kyc_result",
+    "locale": "en",
+    "subject": "Identity verification not approved",
+    "file": "mail/kyc_result-en.png",
+    "phone": "mail/kyc_result-en-390.png",
+    "textLength": 677,
+    "hasUrlText": true
+  },
+  {
+    "template": "affiliate_commission",
+    "locale": "ar",
+    "subject": "عمولة شراكة جديدة: 48.00 USD",
+    "file": "mail/affiliate_commission-ar.png",
+    "phone": "mail/affiliate_commission-ar-390.png",
+    "textLength": 654,
+    "hasUrlText": true
+  },
+  {
+    "template": "affiliate_commission",
+    "locale": "en",
+    "subject": "New affiliate commission: 48.00 USD",
+    "file": "mail/affiliate_commission-en.png",
+    "phone": "mail/affiliate_commission-en-390.png",
+    "textLength": 753,
+    "hasUrlText": true
+  },
+  {
+    "template": "staff_invite",
+    "locale": "ar",
+    "subject": "أنت مدعو إلى لوحة موظفي FPT",
+    "file": "mail/staff_invite-ar.png",
+    "phone": "mail/staff_invite-ar-390.png",
+    "textLength": 646,
+    "hasUrlText": true
+  },
+  {
+    "template": "staff_invite",
+    "locale": "en",
+    "subject": "You are invited to the FPT staff console",
+    "file": "mail/staff_invite-en.png",
+    "phone": "mail/staff_invite-en-390.png",
+    "textLength": 747,
+    "hasUrlText": true
+  },
+  {
+    "template": "ops_alert",
+    "locale": "ar",
+    "subject": "تشغيل FPT · حرج: Engine behind",
+    "file": "mail/ops_alert-ar.png",
+    "phone": "mail/ops_alert-ar-390.png",
+    "textLength": 718,
+    "hasUrlText": true
+  },
+  {
+    "template": "ops_alert",
+    "locale": "en",
+    "subject": "FPT operations · Critical: Engine behind",
+    "file": "mail/ops_alert-en.png",
+    "phone": "mail/ops_alert-en-390.png",
+    "textLength": 789,
+    "hasUrlText": true
+  },
+  {
+    "template": "manual_proof_received",
+    "locale": "ar",
+    "subject": "استلمنا إثبات تحويلك: FPT-CC7B3D73",
+    "file": "mail/manual_proof_received-ar.png",
+    "phone": "mail/manual_proof_received-ar-390.png",
+    "textLength": 685,
+    "hasUrlText": true
+  },
+  {
+    "template": "manual_proof_received",
+    "locale": "en",
+    "subject": "We received your transfer proof: FPT-CC7B3D73",
+    "file": "mail/manual_proof_received-en.png",
+    "phone": "mail/manual_proof_received-en-390.png",
+    "textLength": 799,
+    "hasUrlText": true
+  },
+  {
+    "template": "manual_payment_confirmed",
+    "locale": "ar",
+    "subject": "اعتُمد تحويلك: FPT-CC7B3D73",
+    "file": "mail/manual_payment_confirmed-ar.png",
+    "phone": "mail/manual_payment_confirmed-ar-390.png",
+    "textLength": 676,
+    "hasUrlText": true
+  },
+  {
+    "template": "manual_payment_confirmed",
+    "locale": "en",
+    "subject": "Your transfer is approved: FPT-CC7B3D73",
+    "file": "mail/manual_payment_confirmed-en.png",
+    "phone": "mail/manual_payment_confirmed-en-390.png",
+    "textLength": 783,
+    "hasUrlText": true
+  },
+  {
+    "template": "manual_proof_rejected",
+    "locale": "ar",
+    "subject": "لم يُقبل إثبات تحويلك: FPT-CC7B3D73",
+    "file": "mail/manual_proof_rejected-ar.png",
+    "phone": "mail/manual_proof_rejected-ar-390.png",
+    "textLength": 740,
+    "hasUrlText": true
+  },
+  {
+    "template": "manual_proof_rejected",
+    "locale": "en",
+    "subject": "Your transfer proof was not accepted: FPT-CC7B3D73",
+    "file": "mail/manual_proof_rejected-en.png",
+    "phone": "mail/manual_proof_rejected-en-390.png",
+    "textLength": 873,
+    "hasUrlText": true
+  },
+  {
+    "template": "manual_payment_reminder",
+    "locale": "ar",
+    "subject": "تذكير: طلبك FPT-CC7B3D73 بانتظار إثبات التحويل",
+    "file": "mail/manual_payment_reminder-ar.png",
+    "phone": "mail/manual_payment_reminder-ar-390.png",
+    "textLength": 690,
+    "hasUrlText": true
+  },
+  {
+    "template": "manual_payment_reminder",
+    "locale": "en",
+    "subject": "Reminder: order FPT-CC7B3D73 is waiting for your transfer proof",
+    "file": "mail/manual_payment_reminder-en.png",
+    "phone": "mail/manual_payment_reminder-en-390.png",
+    "textLength": 799,
+    "hasUrlText": true
+  },
+  {
+    "template": "email_change_notice",
+    "locale": "ar",
+    "subject": "طُلب تغيير بريدك في FPT",
+    "file": "mail/email_change_notice-ar.png",
+    "phone": "mail/email_change_notice-ar-390.png",
+    "textLength": 746,
+    "hasUrlText": true
+  },
+  {
+    "template": "email_change_notice",
+    "locale": "en",
+    "subject": "A change of your FPT e-mail was requested",
+    "file": "mail/email_change_notice-en.png",
+    "phone": "mail/email_change_notice-en-390.png",
+    "textLength": 832,
+    "hasUrlText": true
+  },
+  {
+    "template": "account_closed",
+    "locale": "ar",
+    "subject": "أُغلق حسابك في FPT",
+    "file": "mail/account_closed-ar.png",
+    "phone": "mail/account_closed-ar-390.png",
+    "textLength": 667,
+    "hasUrlText": false
+  },
+  {
+    "template": "account_closed",
+    "locale": "en",
+    "subject": "Your FPT account has been closed",
+    "file": "mail/account_closed-en.png",
+    "phone": "mail/account_closed-en-390.png",
+    "textLength": 750,
+    "hasUrlText": false
+  }
+]

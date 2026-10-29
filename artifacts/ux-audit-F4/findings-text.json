@@ -1,0 +1,2212 @@
+[
+  {
+    "id": "TXT-001",
+    "severity": "P0",
+    "category": "هوية",
+    "app": "client",
+    "screen": "legal / checkout",
+    "element": "packages/db/scripts/seed-data/legal.ts (LEGAL_DRAFTS terms/privacy/risk/refund) · shop.checkout.terms · legal.draft",
+    "title": "نصوص قانونية مؤلَّفة داخلياً تُعرض للعميل ويُلزَم بقبولها عند الدفع",
+    "detail": "ملف البذر يولّد أربع وثائق كاملة (شروط الخدمة، سياسة الخصوصية، الإفصاح عن المخاطر، سياسة عدم الاسترداد) بعنوان «مسودة» ثم يعرضها تطبيق العميل ويطلب منه قبولها في سطر الدفع «أقبل {terms} و{risk} و{refund} ({version}، سارية من {date})». مصفوفة النصوص التنظيمية تنصّ على أن النص القانوني «يُستخدم حرفياً من مصدر معتمد أو لا يُستخدم»، وأن نص اتفاقية المتداول «غير موجود في أي مدخل» (القرار المطلوب 7). كما يرى العميل لافتة «مسودة — بانتظار اعتماد المؤسس؛ ليست نصاً قانونياً نهائياً.» فوق وثيقة يُطلب منه قبولها كعقد.",
+    "evidence": "packages/db/scripts/seed-data/legal.ts:1-5 («Dated DRAFT legal texts … Awaiting the founder's and counsel's sign-off»); ar.json:L673 / en.json:L673; ar.json:L1296 / en.json:L1296; brand/regulatory-matrix.md § 3 (7) و§ 4",
+    "recommendation": "لا يُنشر أي نص قانوني قبل وروده حرفياً من الإدارة/الشؤون القانونية. إلى حينه: إمّا تعطيل بوابة القبول (لا شراء بلا وثائق معتمدة) أو عرض الوثائق المعتمدة من الشركة الأم بإقرار صريح بأنها تحكم FPT. تُزال لافتة «مسودة» من واجهة العميل فور الاعتماد.",
+    "effort": "L",
+    "skill": "brand regulatory-matrix § 4 / glossary § 7 (PLACEHOLDER NEVER SHIP)",
+    "files": [
+      "packages/db/scripts/seed-data/legal.ts",
+      "config/legal.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-002",
+    "severity": "P0",
+    "category": "هوية",
+    "app": "both",
+    "screen": "footer / certificate / statement / receipt / legal pages / verify",
+    "element": "config/legal.ts entity.legalName «Fiper Global UAE», entity.parent «Fiper Global MAU» · common.entity · certificates.verifiedBy · legal.entity",
+    "title": "اسم كيان قانوني غير مقرَّر يُطبع في تذييل التطبيق والشهادات والكشوف والإيصالات",
+    "detail": "config/legal.ts يحدد legalName = «Fiper Global UAE» وparent = «Fiper Global MAU» بلا وسم DRAFT، ويُعرض في footer.tsx (السطر 30)، certificate-card.tsx (الجهة المُصدِرة)، صفحة التحقق من الشهادة («صادرة عن {entity}»)، كشف الدفعة، الإيصال وصفحات الوثائق. مصفوفة النصوص التنظيمية: «كيان التسجيل لـ FPT: قرار مطلوب 1»، وكيانات الشركة الأم (Fiper Global LLC UAE FZ، Fiper Global MAU LTD) «لا تُورَّث ولا تُلصق على أسطح FPT بالقياس». الاسمان المستخدمان ليسا حتى الاسمين القانونيين الكاملين للأم. كما يكرّر مفتاح i18n «common.entity» الاسم خلافاً للقرار الحاكم 6 («لا مكان آخر في الكود يكتب اسم الكيان»)، وهو مفتاح غير مستخدم.",
+    "evidence": "config/legal.ts:8-9; apps/client/src/components/footer.tsx:30; apps/client/src/components/certificate-card.tsx:30,81; apps/client/src/app/[locale]/(public)/verify/[code]/page.tsx:45; ar.json:L5 / en.json:L5; brand/regulatory-matrix.md § 1 (Parent blocks R1–R11 … not inherited)",
+    "recommendation": "وسم legalName/parent بـ DRAFT صراحة أو تفريغهما حتى يصدر القرار 1، وإخفاء سطر الجهة المُصدِرة/الكيان من الأسطح العامة (الشهادة، كشف الدفعة، الإيصال، التذييل) إلى حينه. حذف common.entity من القاموس.",
+    "effort": "M",
+    "skill": "brand regulatory-matrix § 3 (1) / governing decision 6",
+    "files": [
+      "config/legal.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json",
+      "apps/client/src/components/footer.tsx",
+      "apps/client/src/components/certificate-card.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-003",
+    "severity": "P1",
+    "category": "هوية",
+    "app": "mail",
+    "screen": "كل رسائل البريد (HTML + النسخة النصية)",
+    "element": "mail.common.regulatoryPending · layout.ts foot() · textVersion()",
+    "title": "عبارة داخلية «النص التنظيمي: بانتظار قرار» ظاهرة للعميل في تذييل كل رسالة بريد",
+    "detail": "يطبع layout.ts السطرين «النص التنظيمي: بانتظار قرار · Regulatory text: pending decision» داخل صندوق متقطع في كل رسالة، وتكرّرهما النسخة النصية. مصفوفة النصوص التنظيمية § 4: «لا شيء مرئي يحلّ محل النص المفقود». هذه العبارة تكشف للعميل حالة قرار داخلي وتوحي بأن الشركة بلا نص تنظيمي.",
+    "evidence": "packages/adapters/src/mail/templates/layout.ts:191-193 (<p class=\"mut reg\"…>{regulatoryPending}); packages/adapters/src/mail/templates/layout.ts:291 (textVersion); ar.json:L58 / en.json:L58",
+    "recommendation": "إبقاء التعليق HTML فقط وحذف الفقرة المرئية والسطر النصي؛ حذف المفتاح mail.common.regulatoryPending (ومفتاحي client.certificate.regulatory وclient.statement.regulatory غير المستخدمين).",
+    "effort": "S",
+    "skill": "brand regulatory-matrix § 4",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-004",
+    "severity": "P1",
+    "category": "هوية",
+    "app": "client",
+    "screen": "الصفحة العامة (landing) + التذييل",
+    "element": "client.landing.honesty · client.landing.simulated · config/legal.ts entity.programDescriptor",
+    "title": "عبارات مخاطر ووصف برنامج مؤلَّفة داخلياً على الصفحة العامة دون اعتماد",
+    "detail": "«التداول ينطوي على مخاطر. لا يضمن FPT أرباحاً ولا يقدّم نصائح استثمارية وليس وسيطاً. الرسوم غير قابلة للاسترداد.» تُعرض في page.tsx:87، و«FPT هو برنامج تقييم التداول الاحترافي التابع لـ Fiper Global. ليس وسيطاً ولا يقدّم نصائح استثمارية.» في التذييل. المعجم § 7 يصنّف «التداول ينطوي على مخاطر» كـ PROPOSED PLACEHOLDER — NOT LEGAL TEXT (REQUIRED DECISION)، والقرار 2 يشترط اعتماد صياغة بيان المخاطر، والقرار 10 يمنع أي ادعاء تنظيمي/وصفي غير مقرَّر. نص الموقع الملاحَظ F2 نفسه «غير مُعاد إنتاجه على أسطح جديدة حتى اعتماده».",
+    "evidence": "ar.json:L400 / en.json:L400; apps/client/src/app/[locale]/(public)/page.tsx:87; config/legal.ts:14-16; apps/client/src/components/footer.tsx:21; brand/glossary.md § 7 (video/end-card meta line)",
+    "recommendation": "إزالة السطرين حتى ورود نص معتمد، أو حصرهما في وقائع المنتج المعتمدة فقط («الرسوم غير قابلة للاسترداد» — pricing.badges). لا تُترجم F2 ولا تُعاد صياغتها.",
+    "effort": "S",
+    "skill": "brand regulatory-matrix § 3 (2, 10)",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json",
+      "config/legal.ts",
+      "apps/client/src/app/[locale]/(public)/page.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-005",
+    "severity": "P1",
+    "category": "هوية",
+    "app": "client",
+    "screen": "سياسة الخصوصية (مسودة) ↔ بريد بيانات الدخول",
+    "element": "seed-data/legal.ts privacy §6 · mail.account_ready.body · dashboard.credentials.intro · credentials-panel.tsx",
+    "title": "تناقض في واقعة منتج: الخصوصية تقول إن كلمة مرور المنصة تُعرض مرة في بريد التسليم، والبريد يقول «لا كلمة مرور عبر البريد أبداً»",
+    "detail": "نص الخصوصية: «وتُشفَّر كلمات مرور المنصة أثناء التخزين وتُعرض لك مرة واحدة في بريد التسليم.» / “Platform passwords are encrypted at rest and shown to you once in the delivery e-mail.” بينما قالب account_ready موثَّق بـ «no password, ever» ويقول للعميل «سجّل الدخول إلى cTrader بحساب cTrader ID المرتبط ببريدك… لن يطلب منك فريق FPT كلمة المرور أبداً»، ولوحة البيانات لا تعرض صف كلمة مرور. العميل يقرأ وثيقة تناقض ما يراه.",
+    "evidence": "packages/db/scripts/seed-data/legal.ts (privacy bodyAr §6 / bodyEn §6); packages/adapters/src/mail/templates/index.ts:6 («no password, ever»); ar.json:L107 / en.json:L107; apps/client/src/components/credentials-panel.tsx:9-10",
+    "recommendation": "تصحيح بند الخصوصية ليطابق نموذج cTrader ID (البريد هو المعرّف، لا تُرسل كلمة مرور بالبريد) أو حذف الجملة؛ وحذف مفاتيح كلمة المرور الميتة (TXT-059) حتى لا يعود النموذج القديم.",
+    "effort": "S",
+    "skill": "brand glossary § 4 «بيانات الدخول إلى cTrader» / fpt-prop-platform F3 § 5",
+    "files": [
+      "packages/db/scripts/seed-data/legal.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-006",
+    "severity": "P1",
+    "category": "هوية",
+    "app": "both",
+    "screen": "الشروط + كتاب القواعد ↔ معجم العلامة",
+    "element": "seed-data/legal.ts terms §4 · packages/rulebook/src/rules.ts payoutMaxPerTransactionCents · brand/glossary.md § 3 «الحد الأدنى / الأقصى للصرف»",
+    "title": "الحد الأقصى للدفعة: 10,000 USD في الشروط وكتاب القواعد مقابل $5,000 في معجم العلامة",
+    "detail": "الشروط (مسودة): «بما بين 100 و10,000 دولار لكل عملية» / “between 100 USD and 10 000 USD per transaction”، وكتاب القواعد: payoutMaxPerTransactionCents = 10_000_00. المعجم § 3 يسجّل «الحد الأدنى / الأقصى للصرف: $100 / $5,000 (OBSERVED — site data)». تعارض في واقعة منتج يجب أن تكون «حرفية». كما تكتب النسخة الإنجليزية «10 000» بفاصل مسافة خلافاً لتنسيق العلامة «10,000 USD».",
+    "evidence": "packages/db/scripts/seed-data/legal.ts terms bodyEn §4 / bodyAr §4; packages/rulebook/src/rules.ts:19; brand/glossary.md § 3 (row «الحد الأدنى / الأقصى للصرف»)",
+    "recommendation": "قرار واحد (الموقع أم المنصة) ثم مواءمة المعجم وكتاب القواعد والشروط. كتابة المبلغ «10,000 USD» في اللغتين.",
+    "effort": "S",
+    "skill": "brand glossary § 3 / fpt-prop-platform rulebook (Payout)",
+    "files": [
+      "packages/db/scripts/seed-data/legal.ts",
+      "packages/rulebook/src/rules.ts",
+      "brand/glossary.md"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "TXT-007",
+    "severity": "P1",
+    "category": "نص",
+    "app": "mail",
+    "screen": "بريد اجتياز التقييم",
+    "element": "mail.passed.body",
+    "title": "البريد يعد بخطوة «اتفاقية الحساب الممول» غير موجودة في المنتج",
+    "detail": "«الخطوة التالية هي التحقق من الهوية واتفاقية الحساب الممول؛ شهادتك متاحة للتنزيل من لوحة التحكم.» / “The next step is identity verification and the funded-account agreement…”. لا توجد أي اتفاقية في تطبيق العميل (لا نتيجة لـ agreement في apps/client/src سوى تعليق)، وزر البريد nextStepsUrl يفتح لوحة الحساب الممول مباشرة (risk.ts:291). مصفوفة النصوص التنظيمية: نص اتفاقية المتداول غير موجود (القرار 7).",
+    "evidence": "ar.json:L128 / en.json:L128; services/engine/src/risk.ts:291; brand/regulatory-matrix.md § 3 (7)",
+    "recommendation": "«الخطوة التالية هي التحقق من الهوية؛ يُفعَّل حسابك المموَّل خلال ≈ 72 ساعة وتصلك بيانات cTrader في رسالة منفصلة. شهادتك متاحة للتنزيل من لوحة التحكم.» (صياغة المعجم § 7 mockup 06).",
+    "effort": "S",
+    "skill": "brand glossary § 7 (evaluation-pass body) / ui-ux-pro-max §8 error-clarity",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-008",
+    "severity": "P1",
+    "category": "نص",
+    "app": "mail",
+    "screen": "بريد تنفيذ الدفعة",
+    "element": "mail.payout_paid.body {channel} · services/engine/src/payouts.ts:347",
+    "title": "متغيّر القناة في بريد «تمت معالجة دفعتك» يستقبل رمز قاعدة البيانات الخام (fiper_card / crypto / wire / fiper_p2p)",
+    "detail": "القالب: «أُرسل إليك مبلغ {amount} عبر {channel}.» والمحرّك يمرّر channel: p.channel (العمود text «crypto | wire | fiper_card | fiper_p2p»). النتيجة للعميل: «أُرسل إليك مبلغ 1,250.00 USD عبر fiper_card.» — تسريب تقني في رسالة أساسية. ملف العيّنات فقط يمرّر «Fiper Card» منسّقاً.",
+    "evidence": "ar.json:L145 / en.json:L145; services/engine/src/payouts.ts:340-349 (channel: p.channel); packages/db/src/schema.ts:594; packages/adapters/scripts/render-samples.ts:45",
+    "recommendation": "إضافة mail.common.channels.{crypto,wire,fiper_card,fiper_p2p} بالصيغتين وترجمة القناة في spec('payout_paid') قبل الإدراج (كما تُترجم kind في breach).",
+    "effort": "S",
+    "skill": "ui-ux-pro-max §8 / CLAUDE.md «no technical leaks on the client»",
+    "files": [
+      "packages/adapters/src/mail/templates/index.ts",
+      "services/engine/src/payouts.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-009",
+    "severity": "P1",
+    "category": "نص",
+    "app": "both",
+    "screen": "الدفعات (تنقّل + صفحة + نموذج + بريد + شهادة)",
+    "element": "client.nav.payouts «الدفعات» · payouts.title «السحوبات» · payouts.new «طلب سحب» · dashboard.primary.requestPayout «اطلب دفعة» · client.states.processed «تم الصرف» · client.certificate.amount «الدفعة المصروفة» · mail.payout_requested.title «طلب السحب» · mail.payout_paid.title «تمت معالجة دفعتك» · admin.nav.payouts «السحوبات» · settings.payoutChannels.title «قنوات الصرف» · mailPreview.templates.payout_paid «صرف السحب»",
+    "title": "أربعة مصطلحات لمفهوم واحد (payout): الدفعة/الدفعات، السحب/السحوبات، الصرف، سحب الأرباح — على شاشات متجاورة",
+    "detail": "تبويب التنقّل يقول «الدفعات»، وعنوان الصفحة التي يفتحها «السحوبات»، وزرها «طلب سحب»، وزر لوحة الحساب «اطلب دفعة»، والحالة النهائية «تم الصرف»، والشهادة «الدفعة المصروفة» و«شهادة سحب الأرباح»، والبريد «طلب السحب» ثم «تمت معالجة دفعتك». المعجم (PROPOSED) يوحّد على «الصرف» للفعل («طلب الصرف»، «تم الصرف»، «دورة الصرف») و«الدفعة/الدفعات» للاسم («كشف الدفعة»، «الدفعات» في شريط التبويب). «السحب» غير وارد في المعجم لهذا المعنى ويتعارض مع «السحب» = drawdown (TXT-010). علامة التبويب في الإدارة «صرف السحب» تجمع المصطلحين في عبارة واحدة.",
+    "evidence": "ar.json:L322 / en.json:L322; ar.json:L954 / en.json:L954; ar.json:L957 / en.json:L957; ar.json:L736 / en.json:L736; ar.json:L346 / en.json:L346; ar.json:L134 / en.json:L134; ar.json:L144 / en.json:L144; ar.json:L3386 / en.json:L3386; brand/glossary.md § 2 «طلب الصرف», § 4 «تم الصرف», «دورة الصرف», § 7 «الدفعات»",
+    "recommendation": "اعتماد زوج واحد: الاسم «الدفعة/الدفعات» (payout) والفعل «صرف/طلب الصرف/تم الصرف»؛ استبدال كل «سحب/سحوبات/سحب الأرباح» بهذا المعنى (76 مفتاحاً تقريباً، القائمة في TXT-SUMMARY) في العميل والإدارة والبريد والشروط.",
+    "effort": "M",
+    "skill": "brand glossary § 2 & § 4 / web-interface-guidelines Content & Copy (one term per concept)",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json",
+      "packages/db/scripts/seed-data/legal.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-010",
+    "severity": "P1",
+    "category": "نص",
+    "app": "both",
+    "screen": "لوحة الحساب / بريد الاجتياز / منحنى الرصيد",
+    "element": "mail.passed.body «حدود السحب» · client.states.drawdownWarning «تحذير السحب» · client.finance.legendBand «نطاق السحب» ↔ payouts.new «طلب سحب»",
+    "title": "«السحب» يعني drawdown في مكان وwithdrawal في مكان آخر على الشاشة نفسها",
+    "detail": "بريد الاجتياز: «حقّق الحساب هدف الربح مع الالتزام بحدود السحب» (المقصود حدود الخسارة)، وشارة «تحذير السحب» ومفتاح الرسم «نطاق السحب» (drawdown) تظهر في لوحة حساب ممول زرُّه «طلب سحب» (payout). المعجم § 4 يقترح «تحذير السحب» لكنه يقترح أيضاً «الصرف» للدفعات؛ لأن التطبيق اختار «السحب» للدفعات صار المصطلح ملتبساً. التطبيق نفسه يستخدم «حدود الخسارة» في dashboard.status.evaluation.body.",
+    "evidence": "ar.json:L128 / en.json:L128; ar.json:L350 / en.json:L350; ar.json:L372 / en.json:L372; ar.json:L957 / en.json:L957; brand/glossary.md § 4 «تحذير السحب»",
+    "recommendation": "توحيد drawdown على «الخسارة/حدّ الخسارة»: «مع الالتزام بحدود الخسارة»، «تحذير الاقتراب من حدّ الخسارة»، «نطاق الخسارة»؛ وتسجيل التعديل في المعجم كقرار. (يسقط الالتباس أيضاً بتطبيق TXT-009.)",
+    "effort": "S",
+    "skill": "brand glossary § 4 / ui-ux-pro-max terminology",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json",
+      "brand/glossary.md"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-011",
+    "severity": "P1",
+    "category": "نص",
+    "app": "both",
+    "screen": "حالة الحساب + تقرير المخالفة",
+    "element": "status.breached «مخروق» · dashboard.status.breached.title «مخالفة» · admin.events.accountStatus.breached «مخالِف» · client.states.breached «تجاوز الحد» · dashboard.primary.viewBreach «تقرير الإيقاف» · breach.eyebrow «تقرير المخالفة» · mail.breach.button «تقرير التجاوز»",
+    "title": "حالة التجاوز بأربع كلمات (مخروق/مخالفة/مخالِف/تجاوز الحد) والتقرير بثلاثة أسماء",
+    "detail": "«مخروق» (status.breached) كلمة غير مستعملة لحساب؛ «مخالِف» تصف العميل لا الحساب؛ «مخالفة» اسم فعل بينما بقية الحالات صفات؛ المعجم § 4 يعتمد «تجاوز الحد». تقرير واحد يُسمّى «تقرير الإيقاف» على زر اللوحة، و«تقرير المخالفة» في الصفحة، و«تقرير التجاوز» في البريد.",
+    "evidence": "ar.json:L36 / en.json:L36; ar.json:L856 / en.json:L856; ar.json:L1657 / en.json:L1657; dashboard.primary.viewBreach; ar.json:L914 / en.json:L914; ar.json:L115 / en.json:L115; brand/glossary.md § 4 «تجاوز الحد»",
+    "recommendation": "الحالة: «تجاوز الحد» في كل مكان (status/ dashboard/ admin events). التقرير: «تقرير التجاوز» موحّداً (زر اللوحة، عنوان الصفحة، البريد، engine.report.title). «مخالفة» تُحفظ لمعناها القانوني فقط (الاستراتيجيات المحظورة).",
+    "effort": "S",
+    "skill": "brand glossary § 4",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-012",
+    "severity": "P1",
+    "category": "نص",
+    "app": "both",
+    "screen": "قاعدة الخسارة اليومية (لوحة الحساب، القواعد، البريد، الإدارة)",
+    "element": "mail.breach.kinds.daily_loss · client.finance.dailyBase · client.rules.dailyValue · accounts.gauge.dailyBase · accounts.figures.dayStart ↔ breach.kinds.daily_loss · accounts.state.dayStart",
+    "title": "أساس الخسارة اليومية يُذكر «رصيد بداية اليوم» في مكان و«حقوق الحساب عند 00:00» في مكان آخر — والثاني هو الصحيح",
+    "detail": "كتاب القواعد: E0 := E عند 00:00 دبي «يشمل الربح/الخسارة العائمة» (المثال: عائم −1,200 عند منتصف الليل → E0 = 98,800). النصوص «5 % من رصيد بداية اليوم» / “of the day's starting balance” (البريد، لوحة الحساب، صفحة القواعد، مقاييس الإدارة، accounts.figures.dayStart «رصيد بداية اليوم») تخالف ذلك، بينما breach.kinds.daily_loss «5 % من حقوق الحساب عند 00:00 بتوقيت دبي» وaccounts.state.dayStart «حقوق بداية اليوم» صحيحان. عميل لديه صفقات مفتوحة عند منتصف الليل سيحسب حدّه خطأً.",
+    "evidence": "ar.json:L117 / en.json:L117; ar.json:L358 / en.json:L358; ar.json:L409 / en.json:L409; ar.json:L2051 / en.json:L2051; accounts.figures.dayStart; .claude/skills/fpt-prop-platform/references/rulebook.md (Daily reset)",
+    "recommendation": "توحيد الأساس: «5 % من حقوق الحساب عند 00:00 بتوقيت دبي (شاملة الربح/الخسارة العائمة)» / “5 % of the equity at 00:00 Dubai (floating P&L included)” في كل المواضع.",
+    "effort": "S",
+    "skill": "fpt-prop-platform rulebook (Daily loss / Daily reset)",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-013",
+    "severity": "P1",
+    "category": "نص",
+    "app": "both",
+    "screen": "كل المواضع التي تُدرج عدداً قبل اسم معدود",
+    "element": "client.finance.days «{n} يوماً» · client.finance.daysOf «{count} من {required} يوماً» · dashboard.ofRequired «{count} من {required} أيام» · payouts.flow.cycleOk «{days} من {required} يوم تداول» · admin.events.passed «بعد {days} يوم تداول» · trades.count «{count} صفقة» · dashboard.positionsCount «{n} صفقات مفتوحة» · coupons.description «{n} كوبونات» · faq.results «{count} مقالات» · deletionsAdmin.description «{n} طلبات» · client.home.otherCount «{n} حسابات» · orders.description «{n} طلباً» · accounts.description «{n} حساباً» · risk.live «{n} حساباً حياً» · breaches.description «{n} مخالفة» · fraud.description «{n} إشارة» · audit.description «{n} سجلاً» · mailPreview.description «{n} رسالة» · affiliatesAdmin.description «{n} شريكاً» · kycAdmin.description «{n} حالة» · finance.passRateHint · finance.paidThisMonthNote «{n} سحباً» · products.usedBy «{n} صفوف» · products.olderVersions · products.sim.summary · breaches.curveCaption «{n} نقطة» · health.alerts.queue_backlog.body · health.alerts.payments_review_backlog.body · paymentsAdmin.overdue · mail.manual_payment_reminder.body «{hours} ساعة» · health.alerts.engine_down.body «{age} ثانية» · fraud.devicesBody · fraud.paymentsBody · mail.verify_code.body / auth.verify.lead «{minutes} دقائق» · partners.tierProgress «{n} مبيعات» · legalDelete.retention / deletionsAdmin.retentionDays «{days} يوماً» · EN: products.olderVersions «version(s)», fraud.devicesBody «device(s)», finance.paidThisMonthNote «payout(s)», health.alerts.command_failed.body «attempt(s)», accounts.description «{n} accounts»",
+    "title": "لا قواعد جمع في القاموس: التمييز العددي العربي خاطئ لمعظم القيم (1، 2، 3–10، 11+) والإنجليزية تلجأ إلى «(s)»",
+    "detail": "دالة t() في packages/i18n/src/index.ts تستبدل {var} فقط بلا Intl.PluralRules. مثال: «{count} من {required} يوماً» مع required = 5 أو 10 → «5 من 10 يوماً» (الصواب «أيام»)؛ وفي الوقت نفسه dashboard.ofRequired يكتب «{count} من {required} أيام» للقيمة نفسها — فتظهر صيغتان مختلفتان للعدّاد ذاته على اللوحة. «{n} صفقات مفتوحة» مع n = 1 أو 11؛ «{n} كوبونات» مع n = 1؛ «{days} يوم تداول» مع 10 → «10 يوم تداول». دالة days() في format.ts تعالج الحالات للبريد لكنها لا تُستخدم في التطبيقين.",
+    "evidence": "packages/i18n/src/index.ts:27-37 (t); ar.json:L376 / en.json:L376; ar.json:L755 / en.json:L755; ar.json:L950 / en.json:L950; ar.json:L738 / en.json:L738; ar.json:L1941 / en.json:L1941; packages/adapters/src/mail/templates/format.ts:66-73 (days)",
+    "recommendation": "إدخال صيغ الجمع (ICU plural عبر next-intl: =1 / =2 / few / many / other) للمفاتيح المعدودة، أو تمرير الاسم المعدود جاهزاً من دالة واحدة (مثل days()) من @fpt/ui. أولاً: توحيد daysOf/ofRequired فوراً على «{count} من {required} أيام».",
+    "effort": "M",
+    "skill": "web-interface-guidelines Content & Copy (plurals) / i18n ICU",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json",
+      "packages/i18n/src/index.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-014",
+    "severity": "P1",
+    "category": "نص",
+    "app": "both",
+    "screen": "تقرير المخالفة / أنواع القواعد",
+    "element": "engine.kind.max_loss «الخسارة الأقصى» · breach.human.daily_loss «حدّ الخسارة اليومي» · breach.human.max_loss «حدّ الخسارة الإجمالي» ↔ breach.kinds.daily_loss «حدّ الخسارة اليومية» · admin.events.breach_max_loss «حدّ الخسارة الإجمالية»",
+    "title": "خطأ مطابقة: «الخسارة الأقصى» (المؤنث يأخذ «القصوى»)، وتذبذب التذكير/التأنيث في «حدّ الخسارة اليومي/اليومية»",
+    "detail": "engine.kind.max_loss = «الخسارة الأقصى» — «الخسارة» مؤنثة فصفتها «القصوى». في breach.human.daily_loss «حدّ الخسارة اليومي» (الصفة للحدّ) بينما بقية المفاتيح تكتب «حدّ الخسارة اليومية/الإجمالية» (الصفة للخسارة)؛ الصياغتان صحيحتان نحوياً لكن اختلافهما في التقرير نفسه يبدو خطأً.",
+    "evidence": "ar.json:L1467 / en.json:L1467; ar.json:L913 / en.json:L913; ar.json:L913 / en.json:L913; ar.json:L932 / en.json:L932",
+    "recommendation": "«الخسارة القصوى»؛ وتوحيد الصياغة على «حدّ الخسارة اليومية» و«حدّ الخسارة الإجمالية» (الصفة للخسارة) في كل المفاتيح.",
+    "effort": "S",
+    "skill": "Arabic grammar (agreement)",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-015",
+    "severity": "P2",
+    "category": "نص",
+    "app": "client",
+    "screen": "المتجر / اللوحة / المشتريات",
+    "element": "client.nav.challenge «التحدي» · client.header.buy «شراء حساب تقييم» · shop.title «اختر تحديك» · shop.productTitle «تقييم {size}» · purchases.product «التحدي» · dashboard.primary.newChallenge «ابدأ تحدياً جديداً» · breach.newChallenge «بدء تقييم جديد» · dashboard.status.breached.next «بدء تقييم جديد» · mail.account_ready.subject «حساب التقييم» ↔ .title «حساب تحديك»",
+    "title": "«التحدي» و«التقييم» يتبادلان المواقع للشيء الواحد داخل المسار نفسه",
+    "detail": "المعجم: «تحدي FPT» اسم المنتج التسويقي و«التقييم» اسم المرحلة. التطبيق يسمّي المنتج في المتجر «تحدي» وفي رأس الصفحة «حساب تقييم»، وزر البدء بعد المخالفة «بدء تقييم جديد» بينما زر اللوحة «ابدأ تحدياً جديداً»، وبريد واحد يحمل «حساب التقييم» في الموضوع و«حساب تحديك» في العنوان.",
+    "evidence": "ar.json:L264 / en.json:L264; ar.json:L588 / en.json:L588; ar.json:L925 / en.json:L925; ar.json:L736 / en.json:L736; ar.json:L105 / en.json:L105; ar.json:L106 / en.json:L106; brand/glossary.md § 1 «تحدي FPT», § 3 «التقييم (مرحلة واحدة فقط)»",
+    "recommendation": "قاعدة: المنتج/الشراء = «تحدي» (ابدأ تحدياً جديداً، شراء تحدٍّ، اختر تحديك)؛ المرحلة/الحالة/القواعد = «التقييم» (قيد التقييم، اجتاز التقييم، مدة التقييم). تصحيح المفاتيح المخالفة وفق هذه القاعدة.",
+    "effort": "S",
+    "skill": "brand glossary § 1 & § 3",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-016",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "لوحة الحساب / الرسم / الإدارة",
+    "element": "dashboard.equity «حقوق الحساب» · client.finance.equityCurve «منحنى الرصيد» · dashboard.chart «منحنى الرصيد» · engine.report.curve «منحنى حقوق الحساب» · dashboard.balance «الرصيد» · accounts.state.dayStart «حقوق بداية اليوم»",
+    "title": "مصطلح equity: «حقوق الحساب» للرقم و«منحنى الرصيد» للرسم نفسه، والمعجم يقترح «الرصيد الحالي / رصيد الحساب»",
+    "detail": "على اللوحة الواحدة: رقم كبير بعنوان «حقوق الحساب» ورسم بعنوان «منحنى الرصيد» بينما «الرصيد» (balance) رقم مستقل تحته — العميل لا يعرف أي الاثنين يرسم المنحنى. المعجم § 4 و§ 7 يقترحان «الرصيد الحالي»/«رصيد الحساب» لـ equity و«منحنى الرصيد» للمنحنى؛ «حقوق الحساب» كلمة مصطنعة (المعتاد «حقوق الملكية»).",
+    "evidence": "ar.json:L757 / en.json:L757; ar.json:L367 / en.json:L367; ar.json:L1459 / en.json:L1459; ar.json:L758 / en.json:L758; brand/glossary.md § 4 «الرصيد الحالي», § 7 «رصيد الحساب»/«منحنى الرصيد»",
+    "recommendation": "قرار واحد يُسجَّل في المعجم: إمّا «رصيد الحساب» (equity) + «الرصيد المُقفل» (balance) + «منحنى رصيد الحساب»، أو «حقوق الحساب» + «منحنى حقوق الحساب» في كل مكان بما فيه الرسم.",
+    "effort": "S",
+    "skill": "brand glossary § 4",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json",
+      "brand/glossary.md"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-017",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "إعادة الضبط اليومية",
+    "element": "client.rule.nextReset «التصفير القادم» · mail.account_ready.note «وقت التصفير اليومي» · health.reset.title «التصفير اليومي» · dashboard.reset «إعادة الضبط التالية» · client.rule.resetAt «يُعاد الضبط» · settings.reset.title «إعادة التعيين اليومية» · accounts.state.nextReset «إعادة التعيين القادمة» · accounts.actions.recompute «إعادة حساب التعيين» · admin.events.reset_daily «أُعيد ضبط حدود اليوم»",
+    "title": "الـ reset اليومي بثلاث تسميات: التصفير / إعادة الضبط / إعادة التعيين — و«التصفير» مضلِّل",
+    "detail": "لا شيء يُصفَّر عند منتصف الليل (E0 := E)؛ «التصفير» يوحي بإعادة الرصيد إلى الصفر. على شاشة الحساب يظهر «التصفير القادم» و«إعادة الضبط التالية» معاً لنفس الموعد.",
+    "evidence": "ar.json:L254 / en.json:L254; ar.json:L760 / en.json:L760; ar.json:L2890 / en.json:L2890; ar.json:L108 / en.json:L108",
+    "recommendation": "«إعادة الضبط اليومية» / «موعد إعادة الضبط» في كل المفاتيح؛ إلغاء «التصفير» و«إعادة التعيين» لهذا المعنى.",
+    "effort": "S",
+    "skill": "terminology consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-018",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "إقفال الحساب / الصفقات",
+    "element": "notifications.ending_inactive.body «أُقفل» · admin.events.breach_inactive «أُغلق» · mail.inactivity_warning.title «سيُغلق حسابك» · dashboard.status.inactive.body «أُقفل الحساب» · status.closed «مغلق» · dashboard.status.closed.title «مُقفل» · accounts.actions.close «إقفال الحساب» · deletionsAdmin.approveTitle «إغلاق الحساب» · breach.events.closes «إقفال الصفقات» · mail.breach.body «أُغلقت الصفقات»",
+    "title": "إغلاق/إقفال يتبادلان للحدث نفسه (إقفال الحساب، إقفال الصفقات)",
+    "detail": "الحدث الواحد (إنهاء حساب لعدم النشاط) يُقال فيه «أُقفل» في الإشعار و«أُغلق» في سجل الإدارة و«سيُغلق» في البريد؛ والحالة «مغلق» في status.closed و«مُقفل» في dashboard.status.closed.title.",
+    "evidence": "ar.json:L1377 / en.json:L1377; ar.json:L1667 / en.json:L1667; ar.json:L39 / en.json:L39; ar.json:L871 / en.json:L871",
+    "recommendation": "«إقفال» للصفقات (مصطلح التداول) و«إغلاق» للحساب والطلب والجلسة؛ تطبيق القاعدة على كل المفاتيح.",
+    "effort": "S",
+    "skill": "terminology consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-019",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "حالة الطلب / التزويد",
+    "element": "status.provisioning «قيد التزويد» · dashboard.status.provisioning.title «قيد التجهيز» · admin.events.accountStatus.provisioning «قيد التجهيز» · shop.steps.provision «التزويد» · shop.orderStatus.provisioned «مُزوَّد» · orders.orderStatus.provisioned «مجهَّز» · purchases.status.provisioned «سُلّم الحساب» · admin.result.granted «التزويد في الطابور» · health.components.provisioner «التزويد»",
+    "title": "provisioning بثلاث ترجمات: التزويد / التجهيز / التسليم",
+    "detail": "الطلب نفسه يُقال عنه «مُزوَّد» في المتجر، «مجهَّز» في الإدارة، «سُلّم الحساب» في المشتريات. «مُزوَّد» و«التزويد» غير مفهومين للعميل.",
+    "evidence": "ar.json:L32 / en.json:L32; ar.json:L836 / en.json:L836; ar.json:L578 / en.json:L578; ar.json:L1985 / en.json:L1985; ar.json:L3268 / en.json:L3268",
+    "recommendation": "للعميل: «قيد التجهيز» / «تم التسليم» (تسليم الحساب)؛ للإدارة يجوز «التجهيز» كاسم للعملية. إلغاء «التزويد/مُزوَّد».",
+    "effort": "S",
+    "skill": "terminology consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-020",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "شارات حالة الحساب",
+    "element": "status.passed «اجتياز» · client.states.passed «اجتاز التقييم» · dashboard.status.passed.title «تم الاجتياز» · admin.events.accountStatus.passed «اجتاز» · status.funded «ممول» · dashboard.status.funded.title «مموَّل» · status.inactive «خامل» · dashboard.status.inactive.title «غير نشط» · status.expired/dashboard.status.expired.title «منتهٍ» · status.purchased «تم الشراء» · admin.events.accountStatus.purchased «مشترى»",
+    "title": "كلمة الحالة الواحدة تختلف بين status.* وdashboard.status.*.title وadmin.events.accountStatus.*",
+    "detail": "status.* تُستخدم للشارات العامة وdashboard.status.* للبطاقة؛ النتيجة «اجتياز» في شارة و«تم الاجتياز» في بطاقة الحالة نفسها. «خامل» (status.inactive) وصف غريب لحساب أُغلق لعدم النشاط، و«مشترى» صيغة ثقيلة.",
+    "evidence": "ar.json:L34 / en.json:L34; ar.json:L846 / en.json:L846; ar.json:L38 / en.json:L38; ar.json:L866 / en.json:L866; ar.json:L1657 / en.json:L1657; apps/client/src/components/status.tsx:9-16",
+    "recommendation": "جدول واحد لكلمات الحالة (المعجم § 4): تم الشراء · قيد التجهيز · قيد التقييم · اجتاز التقييم · حساب ممول · تجاوز الحد · انتهت المدة · غير نشط · مغلق — ويُشتق منه status.* وdashboard.status.*.title وadmin.events.accountStatus.* معاً.",
+    "effort": "S",
+    "skill": "brand glossary § 4",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-021",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "مسار الدفعة / التحويل اليدوي",
+    "element": "shop.orderStatus.awaiting_review «بانتظار الاعتماد» · shop.ret.awaitingReview «بانتظار الاعتماد» · payouts.timeline.approvals «الموافقات» · payouts.flow.approval1 «موافقة 1» · payouts.status.approved «موافَق عليه» · admin.payoutStatus.approved «معتمد» · mail.payout_approved.title «تمت الموافقة» · paymentsAdmin.approve «اعتماد» · payoutsAdmin.step.first «موافقة أولى» ↔ payoutsAdmin.approveSecond «الاعتماد الثاني»",
+    "title": "approve = «اعتماد» في الإدارة و«موافقة» في العميل — ويختلطان في الشاشة الواحدة",
+    "detail": "في الإدارة نفسها: «موافقة أولى» ثم «الاعتماد الثاني» (payoutsAdmin.step.first vs approveSecond). وفي العميل «بانتظار الاعتماد» لطلب الشراء و«الموافقات» لطلب الدفعة.",
+    "evidence": "ar.json:L2340 / en.json:L2340; ar.json:L2376 / en.json:L2376; ar.json:L578 / en.json:L578; ar.json:L1035 / en.json:L1035; ar.json:L1026 / en.json:L1026; ar.json:L1745 / en.json:L1745",
+    "recommendation": "مصطلح واحد: «الاعتماد» للفعل الإداري (اعتماد أول/ثانٍ، معتمد، بانتظار الاعتماد) في اللغتين، و«تمت الموافقة» يُستبدل بـ «اعتُمد» في البريد والحالات.",
+    "effort": "S",
+    "skill": "terminology consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-022",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "حالات طلب الدفعة",
+    "element": "payouts.status.requested «مطلوب» · admin.payoutStatus.requested «مطلوب» ↔ shop.transfer.required «مطلوب» · adminAuth.required «مطلوب» · accounts.po.requested «المطلوب» (= المبلغ)",
+    "title": "«مطلوب» تعني «required» في الحقول و«requested» في حالة الدفعة",
+    "detail": "شارة الحالة «مطلوب» بجوار حقول عليها علامة «مطلوب» (إلزامي) — المعنى الملتبس يظهر في صفحة الدفعات والإدارة معاً.",
+    "evidence": "ar.json:L1022 / en.json:L1022; ar.json:L614 / en.json:L614; ar.json:L2114 / en.json:L2114",
+    "recommendation": "حالة الطلب: «تم الطلب» أو «مُقدَّم»؛ الحقول الإلزامية: «إلزامي».",
+    "effort": "S",
+    "skill": "web-interface-guidelines Content & Copy",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-023",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "بيانات الدخول إلى cTrader",
+    "element": "mail.common.labels.accountNumber «رقم الحساب» · shop.ret.accountNumber «رقم الحساب» · dashboard.credentials.accountNumber «رقم الحساب» ↔ accounts.prov.login «رقم الدخول» · (ميّتة) dashboard.credentials.login «اسم الدخول» · shop.ret.login «اسم الدخول» · mail.common.labels.login «رقم الحساب» / EN «Login» vs «Account number»",
+    "title": "رقم دخول cTrader بثلاث تسميات (رقم الحساب / اسم الدخول / رقم الدخول) والإنجليزية بين Login وAccount number",
+    "detail": "المعجم § 7: «رقم الحساب / Account number». الإدارة تقول «رقم الدخول» والمفاتيح الميتة تقول «اسم الدخول» (وهو رقم لا اسم).",
+    "evidence": "ar.json:L813 / en.json:L813; ar.json:L2074 / en.json:L2074; ar.json:L800 / en.json:L800; ar.json:L62 / en.json:L62; brand/glossary.md § 7 «رقم الحساب · الخادم · المنصة»",
+    "recommendation": "«رقم الحساب» / “Account number” في كل مكان؛ حذف المفاتيح الميتة (TXT-059).",
+    "effort": "S",
+    "skill": "brand glossary § 7",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-024",
+    "severity": "P2",
+    "category": "نص",
+    "app": "client",
+    "screen": "تبويب البيانات / بريد التسليم / الإشعارات",
+    "element": "client.tabs.credentials «البيانات» · shop.ret.credentials «بيانات تداولك» · dashboard.credentials.title «بيانات التداول» · notifications.account_ready.body «بيانات الدخول إلى المنصة» · dashboard.status.purchased.next «تصل البيانات»",
+    "title": "credentials: «البيانات» وحدها لا تدل على شيء، والبدائل أربعة",
+    "detail": "تبويب باسم «البيانات» على لوحة الحساب (بجوار «نظرة» و«الصفقات» و«القواعد») لا يخبر العميل أنه يحوي بيانات الدخول. المعجم § 4 يقترح «بيانات الدخول إلى cTrader».",
+    "evidence": "ar.json:L256 / en.json:L256; ar.json:L706 / en.json:L706; ar.json:L799 / en.json:L799; brand/glossary.md § 4 «بيانات الدخول إلى cTrader»",
+    "recommendation": "«بيانات الدخول» للتبويب و«بيانات الدخول إلى cTrader» للعناوين والإشعارات، في كل المفاتيح.",
+    "effort": "S",
+    "skill": "brand glossary § 4",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-025",
+    "severity": "P2",
+    "category": "هوية",
+    "app": "client",
+    "screen": "المبالغ في النصوص العربية",
+    "element": "payouts.reasons.below_minimum «100 دولار» · payouts.form.amount «(دولار)» · payouts.form.errors.amount «{max} دولار» · notifications.payout_review_due.body «{amount} دولار» · notifications.payout_paid.body · notifications.affiliate_commission.body · notifications.manual_correction.body · partners.becomeBody «50 دولاراً» · partners.rules.weekly «50 دولاراً» · coupons.newBody «بالدولار» · client.units.usd «دولار» ↔ partners.nextBatchBelowMin «50 USD» · affiliatesAdmin.description «50 USD» · mail (format.ts) «1,250.00 USD» · seed terms «100 و10,000 دولار» · risk «5 دولارات»",
+    "title": "العملة تُكتب «دولار/دولاراً» في نصوص وبرمز USD في نصوص أخرى — والعلامة تشترط رمز العملة",
+    "detail": "README/الهوية: «المبالغ تحمل رمز عملتها (USD) ووحدة غير قابلة للكسر»؛ formatMoney وبريد النظام يطبعان «1,250.00 USD» بالعربية. النصوص الثابتة تخالف ذلك («100 دولار»، «50 دولاراً») فيظهر الشكلان على الصفحة نفسها (partners.rules.weekly «50 دولاراً» وpartners.nextBatchBelowMin «50 USD»).",
+    "evidence": "ar.json:L969 / en.json:L969; ar.json:L1151 / en.json:L1151; ar.json:L1111 / en.json:L1111; ar.json:L1437 / en.json:L1437; ar.json:L302 / en.json:L302; packages/ui/src/lib/format.ts:69-85",
+    "recommendation": "«100 USD»، «50 USD»، «{amount} USD» داخل وحدة معزولة (⁦…⁩ أو <bdi>) في كل النصوص العربية؛ حذف client.units.usd.",
+    "effort": "S",
+    "skill": "fpt-brand finance-semantics (currency code) / CLAUDE.md",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/db/scripts/seed-data/legal.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-026",
+    "severity": "P2",
+    "category": "هوية",
+    "app": "both",
+    "screen": "قنوات الدفع (Fiper)",
+    "element": "admin.events.channels.fiper_p2p «فايبر P2P» · payouts.form.fiperP2p «تحويل Fiper P2P» · settings.payoutChannels.fiper_p2p / payoutsAdmin.channel.fiper_p2p «Fiper P2P» · payouts.form.fiperCard «بطاقة Fiper» · admin.events.channels.fiper_card «بطاقة Fiper» · payoutsAdmin.channel.fiper_card / settings.payoutChannels.fiper_card «Fiper Card» · shop.checkout.manual «الدفع عبر فايبر / تحويل محلي» · shop.checkout.cardHint «فيزا / ماستركارد»",
+    "title": "اسم Fiper مرة بالحروف اللاتينية ومرة «فايبر»، و«بطاقة Fiper» مقابل «Fiper Card» غير المترجمة",
+    "detail": "المعجم § 1: الموقع يكتب «Fiper Global» باللاتينية داخل العربية، والمعتمد «بطاقة Fiper / Fiper Card». الإدارة تعرض «Fiper Card» و«Fiper P2P» بلا ترجمة بينما العميل يرى «بطاقة Fiper» و«تحويل Fiper P2P» وسجل الأحداث «فايبر P2P». أسماء Visa/Mastercard معرَّبة («فيزا / ماستركارد») بينما تُترك MyFatoorah وCoinsbuy لاتينية.",
+    "evidence": "admin.events.channels.fiper_p2p; ar.json:L985 / en.json:L985; ar.json:L2331 / en.json:L2331; ar.json:L984 / en.json:L984; ar.json:L688 / en.json:L688; ar.json:L677 / en.json:L677; brand/glossary.md § 1",
+    "recommendation": "«بطاقة Fiper» و«تحويل Fiper P2P» و«الدفع عبر Fiper» في كل المفاتيح العربية (العميل والإدارة والإعدادات)؛ «Visa / Mastercard» باللاتينية.",
+    "effort": "S",
+    "skill": "brand glossary § 1",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-027",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "النبرة: ضمير المتكلم الجمعي مقابل البناء للمجهول",
+    "element": "auth.signup.lead «سنرسل» · auth.verify.lead «أرسلنا» · shop.transfer.referenceHint «حتى نطابق» · shop.transfer.waitingBody «نراجع إثباتك» · shop.ret.browserReturn «استلمنا عودتك… ننتظر» · shop.ret.stillWaiting «ما زلنا ننتظر» · payouts.kyc.pending «نحدّث هذه الصفحة» · profile.delete.requested «سنخبرك» · legalDelete.deleted.d1 «تحقّقنا منه» · mail.payout_requested.title «استلمنا» · mail.manual_proof_received.body «وصلنا… نراجعه» ↔ mail.payout_requested.subject «تم استلام» · profile.emailChange.body «يُرسل رمز تحقق» · mail.payout_paid.body «أُرسل إليك» · mail.payout_requested.body «تُنجَز المراجعة»",
+    "title": "سجلّان متناوبان: «نحن» الودّي والمبني للمجهول الرسمي — أحياناً في الرسالة الواحدة",
+    "detail": "بريد طلب الدفعة: الموضوع «تم استلام طلب السحب» والعنوان «استلمنا طلب السحب الخاص بك» والجسم «تُنجَز المراجعة». المعجم يطلب «سجلاً خليجياً رسمياً واحداً». الإنجليزية تحمل الاختلاف نفسه (“We received…” / “The review is completed by…”).",
+    "evidence": "ar.json:L133 / en.json:L133; ar.json:L134 / en.json:L134; ar.json:L135 / en.json:L135; ar.json:L717 / en.json:L717; ar.json:L1014 / en.json:L1014",
+    "recommendation": "قاعدة نبرة واحدة تُسجَّل في المعجم: مخاطبة العميل بصيغة الأمر/الغائب المؤسسي والمبني للمجهول («تُراجَع»، «يصلك»، «أُرسل»)، و«نحن» فقط في جمل الالتزام (مثل «لا نطلب كلمات المرور»). مراجعة المفاتيح المذكورة وفقها.",
+    "effort": "M",
+    "skill": "brand glossary (Gulf-standard formal register) / design:ux-copy",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-028",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "صيغة أزرار الإجراء (أمر مقابل مصدر)",
+    "element": "client.home.open «فتح الحساب» ↔ purchases.openAccount «افتح الحساب» · common.retry «أعد المحاولة» ↔ client.actions.retry / client.error.retry «إعادة المحاولة» ↔ common.error «حاول مرة أخرى» ↔ shop.checkout.paymentFailed «المحاولة مجدداً» · client.tz.use «استخدم {zone}» ↔ client.timezone.use «استخدام {zone}» · profile.open «فتح» ↔ purchases.openReceipt «افتح الإيصال» · auth.signin.submit «تسجيل الدخول» ↔ shop.signInToBuy «سجّل الدخول للشراء»",
+    "title": "الإجراء الواحد مرة بصيغة الأمر ومرة بالمصدر",
+    "detail": "«فتح الحساب» (اللوحة) و«افتح الحساب» (المشتريات) لنفس الرابط؛ «أعد المحاولة» و«إعادة المحاولة» و«حاول مرة أخرى» لنفس الزر في ثلاث شاشات. المعجم INHERITED: «إعادة المحاولة» = Retry؛ وأزرار الموقع الملاحَظة بصيغة الأمر (ابدأ، احصل، قارن).",
+    "evidence": "ar.json:L253 / en.json:L253; ar.json:L3282 / en.json:L3282; ar.json:L8 / en.json:L8; ar.json:L314 / en.json:L314; ar.json:L17 / en.json:L17; client.tz.use; ar.json:L275 / en.json:L275",
+    "recommendation": "قاعدة: الأزرار الأساسية وأزرار الحوار بصيغة الأمر (افتح، أعد المحاولة، استخدم، سجّل الدخول)، وعناصر التنقّل/العناوين بالمصدر (تسجيل الدخول كعنوان صفحة). توحيد الأزواج المذكورة فوراً.",
+    "effort": "S",
+    "skill": "brand glossary § 2 / ui-ux-pro-max buttons",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-029",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "أزرار مبهمة",
+    "element": "adminAuth.signin.submit «متابعة» · admin.reauth.continue «متابعة» · mail.kyc_result.accepted.button «متابعة» · payouts.flow.next «متابعة» · auth.verify.submit «تأكيد» · common.confirm / client.actions.confirm / admin.actions.confirm «تأكيد»",
+    "title": "«متابعة» و«تأكيد» حيث يلزم فعل محدَّد — خاصة زر دخول الموظفين وأزرار الحوارات الخطرة",
+    "detail": "زر نموذج دخول الموظفين نصّه «متابعة» بدل «تسجيل الدخول»؛ زر إعادة التحقق في منطقة الإجراءات الخطرة «متابعة»؛ بريد قبول الهوية ينتهي بزر «متابعة» بينما المعجم يقترح «افتح حسابك الممول»؛ «تأكيد» العام يُستخدم في حوارات الحذف/الإقفال التي يجب أن تسمّي الفعل.",
+    "evidence": "ar.json:L1762 / en.json:L1762; ar.json:L1616 / en.json:L1616; ar.json:L164 / en.json:L164; ar.json:L518 / en.json:L518; ar.json:L11 / en.json:L11; brand/glossary.md § 7 «افتح حسابك الممول»",
+    "recommendation": "adminAuth.signin.submit → «تسجيل الدخول»؛ admin.reauth.continue → «تأكيد الإجراء» أو تمرير اسم الفعل؛ kyc button → «افتح حسابك المموَّل»؛ auth.verify.submit → «تأكيد الرمز»؛ حوارات الخطر تمرّر اسم الفعل إلى الزر (مثل «إقفال الحساب»).",
+    "effort": "S",
+    "skill": "ui-ux-pro-max §8 (specific verbs) / design:ux-copy CTA",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-030",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "رسائل الخطأ بلا سبب أو خطوة تالية",
+    "element": "errors.invalid_coupon «هذا الكوبون غير صالح» · errors.not_found «غير موجود» · common.error «حدث خطأ. حاول مرة أخرى.» · client.error.title «حدث خطأ ما» · errors.invalid_code «الرمز غير صحيح أو انتهت صلاحيته» · payouts.form.errors.iban «رقم IBAN غير صالح.» · admin.error.body «لم يمكن تحميل الصفحة»",
+    "title": "أخطاء تقول «غير صالح/حدث خطأ» دون سبب أو ما يفعله المستخدم",
+    "detail": "الكوبون قد يكون منتهياً أو معطّلاً أو مقصوراً على منتج آخر أو مستنفد الاستخدام — الإدارة تملك هذه الأسباب لكن العميل يقرأ «غير صالح». رمز التحقق «غير صحيح أو انتهت صلاحيته» بلا «اطلب رمزاً جديداً». «غير موجود» بلا عودة.",
+    "evidence": "ar.json:L48 / en.json:L48; ar.json:L42 / en.json:L42; ar.json:L45 / en.json:L45; ar.json:L1000 / en.json:L1000; ar.json:L17 / en.json:L17",
+    "recommendation": "صياغة سبب + خطوة: «انتهت صلاحية هذا الكوبون / لا ينطبق على هذا المنتج / استُنفد استخدامه — تحقق من الرمز أو تابع بلا خصم»؛ «الرمز غير صحيح أو انتهت صلاحيته. اطلب رمزاً جديداً.»؛ «رقم IBAN غير صالح — تحقق من طوله وبلده (مثل AE07 0331 …)».",
+    "effort": "M",
+    "skill": "ui-ux-pro-max §8 error-clarity",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-031",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "اللوحة / لوحة المخاطر / صحة النظام",
+    "element": "client.home.liveUpdates «يتحدّث كل ثانية» · dashboard.status.evaluation.next «تتحدّث المقاييس كل ثانية» · risk.autoRefresh «تتحدث كل 5 ثوانٍ» · health.description «تتحدّث كل 10 ثوانٍ»",
+    "title": "«يتحدّث/تتحدّث» تُقرأ «يتكلّم/تتكلّم»",
+    "detail": "الفعل المقصود «تُحدَّث» (مبني للمجهول من حدَّث)؛ «يتحدّث» بالشكل المكتوب يعني «يتكلّم». في risk.autoRefresh بلا شدّة أصلاً.",
+    "evidence": "ar.json:L253 / en.json:L253; ar.json:L843 / en.json:L843; ar.json:L2164 / en.json:L2164; ar.json:L3003 / en.json:L3003",
+    "recommendation": "«يُحدَّث كل ثانية» / «تُحدَّث المقاييس كل ثانية» / «تُحدَّث كل 5 ثوانٍ».",
+    "effort": "S",
+    "skill": "Arabic grammar",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-032",
+    "severity": "P2",
+    "category": "نص",
+    "app": "client",
+    "screen": "صفحة الشركاء",
+    "element": "partners.overrideRow EN «Your sub-partners' sales» / AR «إحالات شركائك» · partners.stats.nextPayout = partners.stats.nextBatch «الدفعة الأسبوعية التالية»",
+    "title": "اختلاف معنى بين اللغتين (مبيعات ↔ إحالات) ومفتاحان متطابقان",
+    "detail": "الصف يعرض مبيعات الشركاء الفرعيين (أساس عمولة الـ 2 %) لا إحالاتهم. ومفتاحا nextPayout وnextBatch يحملان النص نفسه في اللغتين.",
+    "evidence": "ar.json:L1097 / en.json:L1097; ar.json:L1136 / en.json:L1136; ar.json:L1138 / en.json:L1138",
+    "recommendation": "«مبيعات شركائك الفرعيين»؛ وحذف أحد المفتاحين المكرّرين.",
+    "effort": "S",
+    "skill": "i18n parity (meaning)",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-033",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "فئات العمولة",
+    "element": "partners.tiers.t2 «من 10 إلى 29 مبيعاً» · partners.tiers.t3 «30 مبيعاً أو أكثر» · partners.tierProgress «{n} مبيعات» · partners.tierProgressTop · partners.tierProgressCustom · affiliatesAdmin.model.tiers «1–9 مبيعات» · affiliatesAdmin.rollingShort «{n} مبيعات» · affiliatesAdmin.model.salesRange · partners.tierSales «المبيعات في آخر 30 يوماً»",
+    "title": "«مبيعاً/مبيعات» كاسم معدود للـ sale — «مبيع» اسم مفعول (الشيء المباع) لا «عملية بيع»",
+    "detail": "«29 مبيعاً» و«1 مبيعات» و«{n} مبيعات» غير سليمة؛ «المبيعات» كاسم جمع للإيراد مقبولة لكن لا تُعدّ.",
+    "evidence": "ar.json:L1142 / en.json:L1142; ar.json:L1108 / en.json:L1108; ar.json:L2563 / en.json:L2563",
+    "recommendation": "«من 10 إلى 29 عملية بيع»، «30 عملية بيع أو أكثر»، «{n} عمليات بيع» (مع قواعد الجمع من TXT-013)؛ «المبيعات» تبقى للمجموع.",
+    "effort": "S",
+    "skill": "Arabic grammar",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-034",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "بريد بيانات الدخول (account_ready)",
+    "element": "mail.account_ready.subject · mail.account_ready.title · mail.account_ready.body (آخر جملة) · mail.common.why",
+    "title": "الموضوع «حساب التقييم» والعنوان «حساب تحديك»، وتكرار جملة «لا نطلب كلمة المرور» مرتين في الرسالة",
+    "detail": "الموضوع: «حساب التقييم {reference} جاهز على cTrader» / العنوان: «حساب تحديك جاهز على cTrader». الجسم ينتهي بـ «لن يطلب منك فريق FPT كلمة المرور أبداً.» ثم سطر «لماذا وصلتك» يكرّر «لا نطلب كلمات المرور عبر البريد أو الهاتف أبداً.» في كل رسالة.",
+    "evidence": "ar.json:L105 / en.json:L105; ar.json:L106 / en.json:L106; ar.json:L107 / en.json:L107; ar.json:L55 / en.json:L55",
+    "recommendation": "توحيد الموضوع والعنوان («حساب تقييمك {reference} جاهز على cTrader»)؛ حذف الجملة من الجسم والاكتفاء بسطر «لماذا وصلتك» (أو العكس).",
+    "effort": "S",
+    "skill": "design:ux-copy / mail clarity",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-035",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "بيانات الدخول — أزرار فتح cTrader",
+    "element": "dashboard.credentials.open.desktop AR = «Desktop (Windows)» · mail.account_ready.note «(Web وDesktop وMac وiOS وAndroid)»",
+    "title": "تسمية «Desktop (Windows)» غير مترجمة في العربية",
+    "detail": "اسم الزر العربي مطابق للإنجليزي حرفياً، والبريد يسرد «Web وDesktop وMac…» بواو عطف ملتصقة بكلمات لاتينية.",
+    "evidence": "ar.json:L818 / en.json:L818; ar.json:L108 / en.json:L108",
+    "recommendation": "«سطح المكتب (Windows)»؛ وفي البريد: «أزرار فتح cTrader (الويب، سطح المكتب، Mac، iOS، Android)».",
+    "effort": "S",
+    "skill": "i18n completeness",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-036",
+    "severity": "P2",
+    "category": "نص",
+    "app": "admin",
+    "screen": "صندوق البريد",
+    "element": "mailPreview.templates.* (ينقصها ops_alert, manual_proof_received, manual_payment_confirmed, manual_proof_rejected, manual_payment_reminder, email_change_notice, account_closed) · apps/admin/src/app/[locale]/(app)/mail/page.tsx:35",
+    "title": "سبعة قوالب بريد بلا تسمية مترجمة → تظهر معرّفاتها الإنجليزية الخام في الواجهة العربية",
+    "detail": "الصفحة تستخدم t.has(`templates.${m}`) وإلا m.replaceAll('_',' ') فيظهر «ops alert» و«manual proof received» و«account closed» بين التسميات العربية.",
+    "evidence": "apps/admin/src/app/[locale]/(app)/mail/page.tsx:35; mailPreview.templates.staff_invite (آخر مفتاح)",
+    "recommendation": "إضافة mailPreview.templates.{ops_alert,manual_proof_received,manual_payment_confirmed,manual_proof_rejected,manual_payment_reminder,email_change_notice,account_closed} بالصيغتين.",
+    "effort": "S",
+    "skill": "i18n completeness",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-037",
+    "severity": "P2",
+    "category": "نص",
+    "app": "admin",
+    "screen": "صفحة المخالفة",
+    "element": "breaches.headline «أُوقف الحساب لتجاوز حدّ {kind} — {at}» + admin.breachKind.{expired,inactive,manual}",
+    "title": "العنوان يولّد «لتجاوز حدّ يدوي» و«حدّ انتهاء المدة» و«حدّ عدم النشاط»",
+    "detail": "الصفحة تدرج admin.breachKind.* في القالب لكل الأنواع (page.tsx:88)، والقالب يفترض حدّ خسارة. الإنجليزية كذلك: “Account stopped after the Manual limit”.",
+    "evidence": "ar.json:L2239 / en.json:L2239; apps/admin/src/app/[locale]/(app)/breaches/[id]/page.tsx:88",
+    "recommendation": "قالب لكل نوع (مثل breach.human.* في العميل): «أُوقف الحساب لتجاوز حدّ الخسارة اليومية — {at}» / «انتهت مدة الحساب — {at}» / «أُغلق الحساب لعدم النشاط — {at}» / «أُوقف الحساب بقرار يدوي — {at}».",
+    "effort": "S",
+    "skill": "copy correctness",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-038",
+    "severity": "P2",
+    "category": "نص",
+    "app": "admin",
+    "screen": "إعدادات / الشركاء / الدفعات",
+    "element": "payoutsAdmin.rejectBody «(لا يوجد قالب بريد للرفض في هذه الجولة)» · affiliatesAdmin.model.body «كما هو مضبوط لهذه الجولة (affiliates.md)» · settings.news.rule «التغذية اليدوية لهذه الجولة» · settings.affiliates.uplineOverrideHint «توصية أمير، 30 مايو 2026» · settings.reset.body «القرار الحاكم 3» · settings.affiliates.uplineOverride «(A6: …)»",
+    "title": "لغة إدارة المشروع («هذه الجولة»، أسماء أشخاص وتواريخ قرارات، أرقام قرارات وملفات) داخل واجهة الإنتاج",
+    "detail": "نصوص موجَّهة لفريق التطوير لا لموظف العمليات؛ تتقادم فور الجولة التالية وتكشف أسماء ومراجع داخلية.",
+    "evidence": "ar.json:L2384 / en.json:L2384; ar.json:L2562 / en.json:L2562; ar.json:L2884 / en.json:L2884; ar.json:L2891 / en.json:L2891",
+    "recommendation": "حذف إشارات «الجولة» والأسماء والتواريخ وأرقام القرارات؛ وصف السلوك الحالي فقط («يرى العميل إشعاراً داخل التطبيق.»، «معطّل عند الإطلاق (مستوى واحد).»).",
+    "effort": "S",
+    "skill": "CLAUDE.md «no technical leaks» / admin tone",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-039",
+    "severity": "P2",
+    "category": "نص",
+    "app": "client",
+    "screen": "حذف الحساب",
+    "element": "profile.delete.body «يراجع المالك طلب الحذف» · legalDelete.steps.s3 «يراجع المالك الطلب» · EN «the owner»",
+    "title": "دور داخلي («المالك») يُكشف للعميل بلا تعريف",
+    "detail": "العميل لا يعرف من «المالك»؛ الكلمة اسم دور في لوحة الموظفين.",
+    "evidence": "ar.json:L1200 / en.json:L1200; ar.json:L3306 / en.json:L3306",
+    "recommendation": "«يراجع فريق FPT طلب الحذف» / “Deletion is reviewed by the FPT team”.",
+    "effort": "S",
+    "skill": "design:ux-copy",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-040",
+    "severity": "P2",
+    "category": "نص",
+    "app": "client",
+    "screen": "الشهادة / كشف الدفعة",
+    "element": "client.certificate.subtitleFunded · client.certificate.subtitlePassed · client.statement.subtitle (AR = EN) ↔ purchases.receiptSubtitle «Fiper Pro Traders · رسوم التقييم»",
+    "title": "سطر فرعي إنجليزي بالكامل في الشهادة والكشف العربيين بينما الإيصال مترجم",
+    "detail": "«Funded Account Certificate · Fiper Pro Traders» يظهر كما هو في النسخة العربية؛ إن كان تصميم ثنائي اللغة مقصوداً فليكن ذلك على الإيصال أيضاً، وإلا فيُترجم.",
+    "evidence": "ar.json:L442 / en.json:L442; ar.json:L461 / en.json:L461; ar.json:L3288 / en.json:L3288",
+    "recommendation": "«شهادة حساب ممول · Fiper Pro Traders» / «كشف الدفعة · Fiper Pro Traders» (المعجم § 7)، أو توثيق قرار السطر اللاتيني وتطبيقه على الإيصال.",
+    "effort": "S",
+    "skill": "brand glossary § 7",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "TXT-041",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "عمولة المستوى الأعلى",
+    "element": "affiliatesAdmin.overrideOnSub «+2 % علوية» · affiliatesAdmin.kinds.override «علوية» · admin.events.commissionKinds.override «من مسوّق فرعي» · settings.affiliates.uplineOverride «عمولة المستوى الأعلى» · partners.tiers.override «+2 % على مبيعات الشركاء الفرعيين» · affiliatesAdmin.model.override «الشريك الأعلى: 2 %»",
+    "title": "override بأربع ترجمات، و«مسوّق» تسرّب لمصطلح «شريك»",
+    "detail": "«علوية» وحدها لا تُفهم؛ «مسوّق فرعي» المرة الوحيدة التي يُسمّى فيها الشريك مسوّقاً.",
+    "evidence": "ar.json:L2619 / en.json:L2619; admin.events.commissionKinds.override; ar.json:L2883 / en.json:L2883",
+    "recommendation": "«عمولة المستوى الأعلى (2 %)» في كل المواضع، و«شريك فرعي» بدل «مسوّق فرعي».",
+    "effort": "S",
+    "skill": "terminology consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-042",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "إعادة المحاولة",
+    "element": "common.retry «أعد المحاولة» · admin.error.retry «أعد المحاولة» · client.error.retry / client.actions.retry / shop.ret.retry / payouts.kyc.retry / profile.kyc.retry «إعادة المحاولة» · common.error / shop.transfer.errors.generic «حاول مرة أخرى» · shop.checkout.paymentFailed / shop.ret.failedBody «المحاولة مجدداً» · auth.errors.generic «يرجى إعادة المحاولة» · auth.errors.sessionExpired «مجدداً»",
+    "title": "Retry بأربع صيغ",
+    "detail": "المعجم INHERITED: «إعادة المحاولة». الصيغ الأخرى تتوزع على الشاشات نفسها.",
+    "evidence": "ar.json:L8 / en.json:L8; ar.json:L314 / en.json:L314; ar.json:L17 / en.json:L17; ar.json:L687 / en.json:L687",
+    "recommendation": "«إعادة المحاولة» للأزرار (أو «أعد المحاولة» إن اعتُمد الأمر في TXT-028) و«… ثم أعد المحاولة» في الجمل، بلا «حاول مرة أخرى» و«مجدداً».",
+    "effort": "S",
+    "skill": "brand glossary § 2 (Retry)",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-043",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "تسميات حدود الخسارة (AR/EN)",
+    "element": "AR: client.rule.daily «الخسارة اليومية» · client.finance.dailyLabel / client.rules.daily / dashboard.daily «الخسارة اليومية القصوى» · client.rule.overall «الخسارة الإجمالية» · client.finance.maxLabel / dashboard.max «الخسارة الإجمالية القصوى» · admin.breachKind.max_loss / products.rule.max / accounts.gauge.max «الخسارة القصوى» · engine.kind.max_loss «الخسارة الأقصى» · notifications.ending_max_loss.title «حدّ الخسارة الأقصى» — EN: «Daily Drawdown» / «Daily loss» / «daily drawdown» · «Max Drawdown» / «Maximum loss» / «Max loss» / «Overall loss» / «overall drawdown»",
+    "title": "القاعدتان الأساسيتان بثلاث تسميات عربية وخمس إنجليزية",
+    "detail": "المعجم § 3: «الخسارة اليومية القصوى / Daily Drawdown (Max Daily Loss)» و«الخسارة الإجمالية القصوى (الخسارة القصوى) / Max Drawdown (Max Loss)». التطبيق يضيف «الخسارة الإجمالية» و«الخسارة الأقصى» و«Overall loss» و«Maximum loss».",
+    "evidence": "ar.json:L254 / en.json:L254; ar.json:L357 / en.json:L357; ar.json:L254 / en.json:L254; ar.json:L1735 / en.json:L1735; ar.json:L1467 / en.json:L1467; brand/glossary.md § 3",
+    "recommendation": "تسمية طويلة واحدة («الخسارة اليومية القصوى» / «الخسارة الإجمالية القصوى») وقصيرة واحدة («اليومية» / «الإجمالية») في العميل والإدارة؛ الإنجليزية: Daily Drawdown / Max Drawdown (طويلة) وDaily / Overall (قصيرة).",
+    "effort": "S",
+    "skill": "brand glossary § 3",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-044",
+    "severity": "P2",
+    "category": "هوية",
+    "app": "client",
+    "screen": "تذييل التطبيق ↔ تذييل البريد",
+    "element": "client.footer.rights «جميع الحقوق محفوظة.» + footer.tsx:30 «{legalName} · {brandFull}. {rights}» ↔ mail.common.copyright «© 2026 Fiper Pro Traders — شركة تابعة لـ Fiper Global. جميع الحقوق محفوظة.»",
+    "title": "سطرا حقوق مختلفان: البريد يحمل السطر الملاحَظ F1 حرفياً، والتطبيق يركّب سطراً جديداً باسم كيان غير مقرَّر",
+    "detail": "التذييل يعرض «Fiper Global UAE · Fiper Pro Traders. جميع الحقوق محفوظة.» بلا © ولا سنة ولا عبارة «شركة تابعة لـ Fiper Global»، وهو نص جديد غير وارد في مصفوفة النصوص.",
+    "evidence": "ar.json:L296 / en.json:L296; apps/client/src/components/footer.tsx:30; ar.json:L57 / en.json:L57; brand/regulatory-matrix.md § 1 F1",
+    "recommendation": "استخدام السطر F1 حرفياً في التطبيق كما في البريد حتى صدور القرار 1 (ثم تحديثهما معاً من مكان واحد).",
+    "effort": "S",
+    "skill": "brand regulatory-matrix § 1 (F1) / § 4",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json",
+      "apps/client/src/components/footer.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-045",
+    "severity": "P2",
+    "category": "نص",
+    "app": "both",
+    "screen": "حالات التحقق من الهوية",
+    "element": "profile.kycStatus.pending «جارٍ» · payoutsAdmin.kyc.pending / kycAdmin.userStatus.pending «قيد التحقق» · admin.events.kyc_result_pending «قيد المعالجة» · kycAdmin.caseStatus.pending «معلّق» · profile.kycStatus.approved «موثَّق» · payouts.kyc.approved «تم التحقق من الهوية» · mail.common.states.verified «تم التحقق» · payoutsAdmin.kyc.approved «موثّقة» · kycAdmin.userStatus.approved «موثَّقة»",
+    "title": "حالة KYC الواحدة بأربع كلمات للانتظار وثلاث للقبول",
+    "detail": "في الإدارة «قيد التحقق» و«معلّق» و«قيد المعالجة» لنفس الحالة حسب الصفحة.",
+    "evidence": "ar.json:L1277 / en.json:L1277; ar.json:L2428 / en.json:L2428; ar.json:L1698 / en.json:L1698; ar.json:L1278 / en.json:L1278; ar.json:L1016 / en.json:L1016",
+    "recommendation": "«قيد التحقق» / «تم التحقق» / «لم يُقبل» / «لم يبدأ» في كل المواضع.",
+    "effort": "S",
+    "skill": "terminology consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-046",
+    "severity": "P2",
+    "category": "RTL",
+    "app": "client",
+    "screen": "لماذا أُوقف حسابي",
+    "element": "dashboard.breach «لماذا أوقف حسابي» ↔ client.screen.breach / breach.title «لماذا أُوقف حسابي» · EN «Why was my account stopped» (بلا ؟)",
+    "title": "غياب الضمة يقلب المعنى («لماذا أوقف حسابي؟» = لماذا أوقفَ هو حسابي)، وعنوان استفهامي بلا علامة استفهام في اللغتين",
+    "detail": "المفتاح نفسه مكتوب بالضمة في مكان وبدونها في آخر؛ والعنوان سؤال بلا «؟» / “?”.",
+    "evidence": "ar.json:L792 / en.json:L792; ar.json:L915 / en.json:L915",
+    "recommendation": "«لماذا أُوقف حسابي؟» / “Why was my account stopped?” في المفاتيح الثلاثة.",
+    "effort": "S",
+    "skill": "Arabic punctuation / web-interface-guidelines",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-047",
+    "severity": "P3",
+    "category": "RTL",
+    "app": "both",
+    "screen": "التطويل وأداة التعريف قبل الأرقام",
+    "element": "certificates.issuedTo «صادرة لـ» · dashboard.status.expired.body «مدة الـ 31 يوماً» · payouts.reasons.cycle_not_elapsed «دورة الـ 14 يوماً» · affiliatesAdmin.model.tiers «لـ 1–9 مبيعات» · shop.checkout.crypto «الدفع بـ USDT» · mail.common.copyright «تابعة لـ Fiper Global»",
+    "title": "حرف جرّ معلّق بتطويل قبل اسم، و«الـ» قبل رقم",
+    "detail": "«صادرة لـ» ثم اسم العميل في سطر منفصل؛ «الـ 31 يوماً» صياغة عامية. التطويل قبل الكلمات اللاتينية (لـ Fiper) مقبول كعرف لكن يُفضَّل تجنّبه.",
+    "evidence": "ar.json:L1077 / en.json:L1077; ar.json:L862 / en.json:L862; ar.json:L967 / en.json:L967",
+    "recommendation": "«صادرة باسم»؛ «انتهت مدة التقييم (31 يوماً) دون بلوغ الهدف.»؛ «لم تنتهِ دورة 14 يوماً بعد.»؛ «لعدد 1–9 عمليات بيع».",
+    "effort": "S",
+    "skill": "Arabic style",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-048",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "التشكيل غير المتسق",
+    "element": "status.funded «ممول» / dashboard.status.funded.title «مموَّل» / products.rule.minDays «مموّل» · profile.kycStatus.approved «موثَّق» / payoutsAdmin.kyc.approved «موثّقة» · risk.description «حيّاً» / risk.live «حياً» · client.rule.limit «الحد» / breach.limit «الحدّ» · dashboard.status.closed.title «مُقفل» / accounts.actions.status.closed «مقفل» · client.landing.phase1Body «حقق» / dashboard.status.evaluation.body «حقّق»",
+    "title": "الكلمة الواحدة بثلاثة أشكال تشكيل (شدّة وفتحة / شدّة / بلا تشكيل)",
+    "detail": "التشكيل الجزئي حسن لرفع اللبس، لكنه يجب أن يكون متّسقاً للكلمة الواحدة عبر الشاشات.",
+    "evidence": "ar.json:L35 / en.json:L35; ar.json:L851 / en.json:L851; ar.json:L1864 / en.json:L1864; ar.json:L2163 / en.json:L2163; ar.json:L2183 / en.json:L2183",
+    "recommendation": "قاعدة تشكيل واحدة تُسجَّل في المعجم (مثل: «مموَّل»، «موثَّق»، «حدّ»، «مُقفل») وتطبيقها بالبحث والاستبدال.",
+    "effort": "S",
+    "skill": "Arabic typography",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-049",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "«(اختياري)» بعد اسم مؤنث",
+    "element": "auth.password.totpTitle «المصادقة الثنائية (اختياري)» · shop.transfer.note «ملاحظة (اختياري)» · paymentsAdmin.approveNote «ملاحظة (اختياري)» ↔ health.alerts.noteHint «اختيارية» (صحيحة)",
+    "title": "عدم مطابقة في التأنيث",
+    "detail": "«المصادقة» و«ملاحظة» مؤنثتان.",
+    "evidence": "ar.json:L539 / en.json:L539; ar.json:L618 / en.json:L618; ar.json:L2296 / en.json:L2296",
+    "recommendation": "«(اختيارية)».",
+    "effort": "S",
+    "skill": "Arabic grammar",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-050",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "علامات الاقتباس والفاصلة العليا في الإنجليزية",
+    "element": "straight: mail.breach.kinds.daily_loss «day's», client.finance.dailyBase, client.landing.phase2Body «firm's», partners.overrideRow «sub-partners'», admin.result.deletion_approved «client's», settings.platform.widgetsHint — curly: legal.draft «founder’s», partners.tiers.override «sub-partners’», affiliatesAdmin.model.review «affiliate’s», accounts.actions.copierBody «account’s/client’s», risk.description «engine’s», staff.inviteBody «mail’s», simulator.order.body «trader’s», shop.ret.browserReturn «provider’s» — quotes: legalDelete.steps.s1 «More» · admin.events.account_status “{status}” · affiliatesAdmin.runWeeklyBody \"already queued\"",
+    "title": "فاصلة عليا مستقيمة وأخرى منحنية، وثلاثة أنماط اقتباس («»، “”، \"\") في النصوص الإنجليزية",
+    "detail": "الاختلاف يظهر في الصفحة نفسها (partners.overrideRow مستقيمة وpartners.tiers.override منحنية).",
+    "evidence": "ar.json:L1097 / en.json:L1097; ar.json:L1145 / en.json:L1145; ar.json:L3304 / en.json:L3304; ar.json:L1681 / en.json:L1681; ar.json:L2558 / en.json:L2558",
+    "recommendation": "الإنجليزية: فاصلة عليا منحنية (’) واقتباس “ ” دائماً؛ العربية: «» دائماً.",
+    "effort": "S",
+    "skill": "web-interface-guidelines Content & Copy (typography)",
+    "files": [
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-051",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "التهجئة البريطانية/الأمريكية",
+    "element": "client.screen.help / client.more.help «Help Center» ↔ client.footer.help / faq.title / faq.eyebrow / settings.entity.help «Help centre» · partners.title «Partner program» / LEGAL programDescriptor «program» ↔ mail.account_ready.note / mail.breach.body «programme» / affiliatesAdmin.emptyBody «partner programme» / settings.affiliates.body · products.eyebrow «Catalogue» · adminAuth.enrol «enrol» · admin.events.user_anonymised «anonymised»",
+    "title": "Center/centre وprogram/programme في النصوص نفسها",
+    "detail": "المعجم (الموقع الملاحَظ): “Help Center”. البريطانية تغلب على البقية.",
+    "evidence": "ar.json:L252 / en.json:L252; ar.json:L290 / en.json:L290; ar.json:L1121 / en.json:L1121; ar.json:L114 / en.json:L114",
+    "recommendation": "اعتماد تهجئة واحدة (الأمريكية لمطابقة الموقع: Center, program, catalog, enroll, anonymized) أو البريطانية — وتسجيلها في المعجم.",
+    "effort": "S",
+    "skill": "brand glossary § 1 (Help Center)",
+    "files": [
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-052",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "حالة الأحرف في العناوين الإنجليزية",
+    "element": "Title Case: client.rules.target «Profit Target», client.rules.daily «Daily Drawdown», client.rules.minDays «Minimum Trading Days», dashboard.daily/max/target, shop.size «Account Size», shop.title «Choose Your Challenge», client.landing.howTitle «How It Works» ↔ Sentence case: client.rule.target «Profit target», client.finance.legendTarget, accounts.gauge.target, client.screen.shop «Choose your challenge», partners.rules.title «How it works», certificates.size «Account size»",
+    "title": "عناوين مطابقة بأسلوبين (Title Case من الموقع وSentence case في التطبيق)",
+    "detail": "النصوص الملاحَظة من الموقع تُنقل بـ Title Case بينما الأشقاء داخل التطبيق بـ Sentence case؛ «Choose Your Challenge» و«Choose your challenge» لنفس الشاشة.",
+    "evidence": "ar.json:L588 / en.json:L588; ar.json:L252 / en.json:L252; ar.json:L404 / en.json:L404; ar.json:L254 / en.json:L254",
+    "recommendation": "Sentence case لكل عناوين التطبيق والأزرار؛ Title Case يبقى للشعارات الحرفية فقط (§ 5).",
+    "effort": "S",
+    "skill": "web-interface-guidelines Content & Copy",
+    "files": [
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-053",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "تذكير/تأنيث «FPT»",
+    "element": "client.landing.honesty «لا يضمن FPT» ↔ notifications.account_closed.body «أقفلت FPT» · certificates.publicLead «FPT أصدرت» · finance.refundsPolicy «تعتمد FPT»",
+    "title": "FPT مذكّر في جملة ومؤنث في البقية",
+    "detail": "الاتساق يقتضي اعتبار FPT مؤنثاً (شركة) أو مذكراً (برنامج) في كل مكان.",
+    "evidence": "ar.json:L400 / en.json:L400; ar.json:L1381 / en.json:L1381; ar.json:L1081 / en.json:L1081",
+    "recommendation": "اعتماد التأنيث (شركة/منصة) وتعديل honesty: «لا تضمن FPT أرباحاً ولا تقدّم…».",
+    "effort": "S",
+    "skill": "Arabic grammar",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-054",
+    "severity": "P3",
+    "category": "نص",
+    "app": "client",
+    "screen": "الإشعارات",
+    "element": "notifications.profit_target.title «بلغت هدف الربح» / body «بلغ الحساب {reference}» · notifications.passed.title «اجتزت التقييم» / body «مبارك — اجتاز الحساب» ↔ mail.passed.subject «تهانينا:»",
+    "title": "انتقال الفاعل بين العنوان (أنت) والنص (الحساب)، وكلمتا تهنئة مختلفتان",
+    "detail": "العنوان يخاطب العميل والنص يتحدث عن الحساب؛ «مبارك» في الإشعار و«تهانينا» في البريد.",
+    "evidence": "ar.json:L1408 / en.json:L1408; ar.json:L1409 / en.json:L1409; ar.json:L1413 / en.json:L1413; ar.json:L126 / en.json:L126",
+    "recommendation": "فاعل واحد (الحساب) في العنوان والنص، و«تهانينا» في الموضعين.",
+    "effort": "S",
+    "skill": "design:ux-copy",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-055",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "تعليم كمقروء",
+    "element": "dashboard.markRead «تعليم كمقروء» · dashboard.markAllRead · profile.notificationsPage.markAllRead · fraud.markReviewed «تعليم كمُراجَعة» · health.alerts.acknowledgeBody «يُعلّم التنبيه كمقروء» (EN: as seen)",
+    "title": "«تعليم» تعني التدريس؛ والإقرار بالتنبيه يُترجم «كمقروء» بينما الإنجليزية “as seen”",
+    "detail": "الصيغة الشائعة «وضع علامة مقروء». وacknowledge = «تأكيد الاطلاع».",
+    "evidence": "ar.json:L795 / en.json:L795; ar.json:L2472 / en.json:L2472; ar.json:L3071 / en.json:L3071",
+    "recommendation": "«وضع علامة «مقروء»» / «وضع علامة «مُراجَعة»» / «يؤكد اطلاعك على التنبيه باسمك».",
+    "effort": "S",
+    "skill": "Arabic style",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-056",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "«لم يمكن»",
+    "element": "admin.error.body «لم يمكن تحميل الصفحة» · notifications.max_accounts_refused.body «لم يُمكن إنشاء الحساب» · products.sim.noResults «لم يُمكن تقييم» ↔ client.error.body «تعذّر تحميل الصفحة»",
+    "title": "صيغة ثقيلة مقابل «تعذّر» المستخدمة في العميل",
+    "detail": "",
+    "evidence": "ar.json:L1534 / en.json:L1534; ar.json:L1449 / en.json:L1449; ar.json:L285 / en.json:L285",
+    "recommendation": "«تعذّر تحميل الصفحة»، «تعذّر إنشاء الحساب الجديد»، «تعذّر تقييم أي حالة حساب».",
+    "effort": "S",
+    "skill": "Arabic style",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-057",
+    "severity": "P3",
+    "category": "نص",
+    "app": "mail",
+    "screen": "سطور البريد المشتركة",
+    "element": "mail.ops_alert.subject «تشغيل FPT · …» · mail.common.noReply «راسلنا على {support}»",
+    "title": "«تشغيل FPT» لا تعني operations، و«راسلنا على» حرف جر غير مناسب",
+    "detail": "",
+    "evidence": "ar.json:L203 / en.json:L203; ar.json:L54 / en.json:L54",
+    "recommendation": "«عمليات FPT · {severity}: {title}»؛ «للمساعدة راسلنا عبر {support}» أو «اكتب إلى {support}».",
+    "effort": "S",
+    "skill": "Arabic style",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-058",
+    "severity": "P3",
+    "category": "نص",
+    "app": "mail",
+    "screen": "الأيام المتبقية",
+    "element": "format.ts days() (k = 0 → «0 يوماً») · mail.expiry_warning.subject «{daysLeft} متبقية» · mail.expiry_warning.body «يتبقى للحساب {reference} {daysLeft}»",
+    "title": "«يوم واحد متبقية» و«يومان متبقية» (تأنيث مع مذكّر) و«0 يوماً»",
+    "detail": "days() تعيد «يوم واحد/يومان» (مذكّر) والموضوع يلحقها بصفة مؤنثة؛ الصفر يعطي «0 يوماً».",
+    "evidence": "packages/adapters/src/mail/templates/format.ts:66-73; ar.json:L155 / en.json:L155",
+    "recommendation": "«الحساب {reference}: تبقّى {daysLeft} في التقييم» (بلا صفة)، وفي days(): k = 0 → «لا أيام متبقية» أو «0 أيام».",
+    "effort": "S",
+    "skill": "Arabic grammar",
+    "files": [
+      "packages/adapters/src/mail/templates/format.ts",
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-059",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "مفاتيح ميتة أو مكررة",
+    "element": "dashboard.credentials.{password,reveal,reauth,fptPassword,submit,failed,hide,login} · shop.ret.{login,password,revealOnce,reveal} · mail.common.labels.{login,password} · client.certificate.regulatory · client.statement.regulatory · client.units.{usd,days,day,lots} · common.entity · partners.stats.nextBatch (= nextPayout) · staff.me.current_ (= current)",
+    "title": "مفاتيح غير مستخدمة تحمل نموذج «كلمة مرور المنصة تُعرض مرة واحدة» الذي تخلّى عنه المنتج",
+    "detail": "credentials-panel.tsx لا يعرض كلمة مرور (التعليق: «No MT5-style password row»)، وprovisioning-watcher لا يستخدم revealOnce/reveal/password/login، وspec() في index.ts لا يستدعي labels.login/password. بقاؤها خطر إعادة توصيل نموذج متناقض (TXT-005) وعبء ترجمة.",
+    "evidence": "apps/client/src/components/credentials-panel.tsx:9-10,28-30; apps/client/src/app/[locale]/(app)/checkout/[orderId]/return/provisioning-watcher.tsx (قائمة t() المستخدمة); packages/adapters/src/mail/templates/index.ts (لا L('login')/L('password'))",
+    "recommendation": "حذف المفاتيح الميتة بعد تأكيد عدم الاستخدام بفحص آلي (unused-keys test بجوار parity.test.ts).",
+    "effort": "S",
+    "skill": "i18n hygiene",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json",
+      "packages/i18n/test/parity.test.ts"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "TXT-060",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "«توقيت دبي» بصيغ متعددة",
+    "element": "common.dubaiTime «بتوقيت دبي» · dashboard.resetDubai «00:00 دبي» · partners.becomeBody «(09:00 دبي)» · partners.rules.weekly «09:00 بتوقيت دبي» · admin.events.reset_daily «منتصف ليل دبي» · breaches.col.at «الوقت (دبي)» · affiliatesAdmin.model.approval «الاثنين 09:00 دبي»",
+    "title": "صيغة واحدة للمنطقة الزمنية مطلوبة",
+    "detail": "",
+    "evidence": "ar.json:L761 / en.json:L761; ar.json:L1124 / en.json:L1124; ar.json:L1151 / en.json:L1151",
+    "recommendation": "«00:00 بتوقيت دبي» دائماً في النصوص، و«(دبي)» فقط في رؤوس الأعمدة.",
+    "effort": "S",
+    "skill": "consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-061",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "نطاقات الأرقام",
+    "element": "partners.t1Sales «1 – 9» · partners.t2Sales «10 – 29» ↔ affiliatesAdmin.model.tiers «1–9» ↔ partners.tiers.t1 «من 1 إلى 9»",
+    "title": "شرطة طويلة بمسافات، وبلا مسافات، و«من… إلى» للنطاق نفسه",
+    "detail": "",
+    "evidence": "ar.json:L1094 / en.json:L1094; ar.json:L2563 / en.json:L2563; ar.json:L1141 / en.json:L1141",
+    "recommendation": "في الجداول «1–9» (شرطة قصيرة بلا مسافات داخل وحدة LTR)، وفي الجمل «من 1 إلى 9».",
+    "effort": "S",
+    "skill": "typography",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-062",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "Placeholders",
+    "element": "shop.checkout.couponPlaceholder «اختياري» · accounts.searchPlaceholder «المرجع أو البريد أو الاسم» · audit.actionPlaceholder «ابحث في الإجراءات (مثل: السحب)» · faq.search «ابحث في مركز المساعدة»",
+    "title": "نصوص placeholder لا تنتهي بـ «…» وواحدة تعمل كتلميح لا كمثال",
+    "detail": "دليل Vercel: الـ placeholder مثال ينتهي بثلاث نقاط. «اختياري» حالة الحقل لا مثال عليه.",
+    "evidence": "ar.json:L668 / en.json:L668; ar.json:L2028 / en.json:L2028; ar.json:L1307 / en.json:L1307",
+    "recommendation": "«مثال: FPT20…»، «المرجع أو البريد أو الاسم…»، «ابحث في الإجراءات…»، و«(اختياري)» في التسمية لا في الـ placeholder.",
+    "effort": "S",
+    "skill": "web-interface-guidelines Forms",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-063",
+    "severity": "P3",
+    "category": "RTL",
+    "app": "admin",
+    "screen": "نصوص تقنية داخل جمل عربية",
+    "element": "simulator.scenario.body «(pass, daily_breach, …)» · integrations.statusNote «(pnpm --filter @fpt/adapters contract:status)» · settings.copier.body «copier.enabled وcopier.max_lots_per_fill و…» · settings.platform.body · settings.news.tsHint «Asia/Dubai، UTC+4» · affiliatesAdmin.model.attribution «‎?ref=CODE‎»",
+    "title": "معرّفات لاتينية بفواصل لاتينية وواو عطف ملتصقة داخل العربية",
+    "detail": "عرض bidi قد يعكس ترتيب القائمة؛ الواو الملتصقة بمعرّف لاتيني («وcopier.max_open_lots») غير مقروءة.",
+    "evidence": "ar.json:L3177 / en.json:L3177; ar.json:L2962 / en.json:L2962",
+    "recommendation": "وضع كل معرّف في <code dir=\"ltr\"> مع فاصل «،» عربي ومسافة بعد الواو، أو نقل القوائم إلى أسطر منفصلة.",
+    "effort": "S",
+    "skill": "RTL bidi",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-064",
+    "severity": "P3",
+    "category": "نص",
+    "app": "mail",
+    "screen": "رسائل بلا خطوة تالية",
+    "element": "mail.expiry_warning (بلا زر) · mail.payout_requested (بلا زر) · mail.payout_approved (بلا زر)",
+    "title": "ثلاث رسائل تخبر ولا تقود إلى الشاشة المعنية",
+    "detail": "spec() لا يضيف primary لهذه القوالب رغم وجود صفحات طلب الدفعة ولوحة الحساب.",
+    "evidence": "packages/adapters/src/mail/templates/index.ts cases expiry_warning / payout_requested / payout_approved (no primary)",
+    "recommendation": "زر «افتح لوحة التحكم» في expiry_warning و«عرض الطلب» في payout_requested/approved (يتطلب تمرير URL من المحرّك).",
+    "effort": "S",
+    "skill": "mail clarity (recipient's next step)",
+    "files": [
+      "packages/adapters/src/mail/templates/index.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-065",
+    "severity": "P3",
+    "category": "نص",
+    "app": "mail",
+    "screen": "بريد تنفيذ الدفعة",
+    "element": "mail.payout_paid.body «شهادة السحب الخاصة بك تحت الزر» / EN «under the button»",
+    "title": "تعبير غير مألوف",
+    "detail": "",
+    "evidence": "ar.json:L145 / en.json:L145",
+    "recommendation": "«نزّل شهادة الدفعة بالزر أدناه.» / “Download your payout certificate with the button below.”",
+    "effort": "S",
+    "skill": "design:ux-copy",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-066",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "صياغات إنجليزية ركيكة",
+    "element": "mail.breach.body «crossed a rule of the programme» · mail.expiry_warning.body «Objectives not met by then close the evaluation.» · shop.ret.browserReturn «Your return from {provider} was received.» · shop.transfer.errors.not_pending «no longer waits for a proof» · shop.steps.choose «Choice» · orders.signatureInvalid «signature INVALID»",
+    "title": "تراكيب غير طبيعية وحروف كبيرة صارخة",
+    "detail": "",
+    "evidence": "ar.json:L114 / en.json:L114; ar.json:L157 / en.json:L157; ar.json:L704 / en.json:L704; ar.json:L579 / en.json:L579; ar.json:L2015 / en.json:L2015",
+    "recommendation": "“broke a rule of the program”; “If the objectives are not met by then, the evaluation ends.”; “You are back from {provider}.”; “is no longer waiting for a proof”; “Choose”; “signature invalid”.",
+    "effort": "S",
+    "skill": "design:ux-copy",
+    "files": [
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-067",
+    "severity": "P3",
+    "category": "نص",
+    "app": "client",
+    "screen": "مسار طلب الدفعة",
+    "element": "payouts.flow.youReceive / payouts.flow.amountLead «تتسلم» ↔ payouts.form.share / payouts.clientShare / payouts.form.amountHint «تحصل على»",
+    "title": "receive بكلمتين في الخطوات المتتالية",
+    "detail": "",
+    "evidence": "ar.json:L950 / en.json:L950; ar.json:L978 / en.json:L978",
+    "recommendation": "«تحصل على» في الموضعين.",
+    "effort": "S",
+    "skill": "consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-068",
+    "severity": "P3",
+    "category": "نص",
+    "app": "admin",
+    "screen": "طابور الأوامر",
+    "element": "admin.result.granted «في الطابور» · admin.result.queued / admin.result.approved «قائمة الانتظار» · admin.command.pending «في الانتظار» · health.queue.title «طابور الأوامر» · overview.queueDepth «عمق قائمة الانتظار»",
+    "title": "queue = الطابور / قائمة الانتظار / الانتظار",
+    "detail": "",
+    "evidence": "ar.json:L1582 / en.json:L1582; ar.json:L1552 / en.json:L1552; ar.json:L1800 / en.json:L1800",
+    "recommendation": "«قائمة الانتظار» في كل المواضع.",
+    "effort": "S",
+    "skill": "consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-069",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "فحوص/فحوصات",
+    "element": "payouts.status.checks_passed «الفحوص» · admin.payoutStatus.checks_passed «الفحوصات» · payouts.timeline.checks «الفحوص الآلية» · payoutsAdmin.checks «الفحوصات الآلية» · admin.result.not_approvable «الفحوصات» · audit.actions.payout_recheck «فحوص»",
+    "title": "جمعان لكلمة واحدة",
+    "detail": "",
+    "evidence": "ar.json:L1023 / en.json:L1023; ar.json:L1742 / en.json:L1742",
+    "recommendation": "«الفحوص» في كل المواضع.",
+    "effort": "S",
+    "skill": "consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-070",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "مستند/وثيقة",
+    "element": "client.screen.legal / client.more.legal «المستندات القانونية» · profile.documents «المستندات المقبولة» ↔ settings.tabs.legal «الوثائق القانونية» · audit.kinds.legal «وثيقة قانونية» · settings.legal.key «الوثيقة» · mockGateway.shuftipro.document «نوع الوثيقة»",
+    "title": "document بترجمتين",
+    "detail": "",
+    "evidence": "ar.json:L252 / en.json:L252; ar.json:L2834 / en.json:L2834",
+    "recommendation": "«الوثائق القانونية» / «وثيقة الهوية» في كل المواضع.",
+    "effort": "S",
+    "skill": "consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-071",
+    "severity": "P3",
+    "category": "نص",
+    "app": "admin",
+    "screen": "إشارات الاحتيال",
+    "element": "fraud.dismiss «رفض» · fraud.signalStatus.dismissed «مرفوضة» · fraud.dismissBody «يعلّم الإشارة كإنذار كاذب»",
+    "title": "dismiss (إنذار كاذب) تُترجم «رفض» وهي كلمة رفض الهوية والدفعة",
+    "detail": "",
+    "evidence": "ar.json:L2473 / en.json:L2473; ar.json:L2460 / en.json:L2460",
+    "recommendation": "«استبعاد» / «مستبعَدة (إنذار كاذب)».",
+    "effort": "S",
+    "skill": "terminology",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-072",
+    "severity": "P3",
+    "category": "نص",
+    "app": "admin",
+    "screen": "كلمات حالة تقنية",
+    "element": "engine.status.degraded «متدنٍّ» · admin.events.accountStatus.purchased «مشترى» · admin.events.user_anonymised «أُخفيت البيانات» · admin.command.dead / health.queue.dead «توقف/توقّف» (EN «Gave up»/«Dead»)",
+    "title": "ترجمات حرفية غير دقيقة",
+    "detail": "",
+    "evidence": "ar.json:L1478 / en.json:L1478; ar.json:L1657 / en.json:L1657; ar.json:L1711 / en.json:L1711",
+    "recommendation": "«أداء متدهور»، «تم الشراء»، «مُحيت البيانات الشخصية»، «متوقف نهائياً».",
+    "effort": "S",
+    "skill": "Arabic style",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-073",
+    "severity": "P3",
+    "category": "نص",
+    "app": "client",
+    "screen": "الصفحة العامة",
+    "element": "client.landing.phase1Body «حقق هدف الربح مع الالتزام بمعايير المخاطرة.» (EN: risk limits) · client.landing.lead «لخمسة أيام» · client.landing.sizesTitle «خمسة أحجام»",
+    "title": "«معايير المخاطرة» ≠ «حدود الخسارة»، وأرقام بالحروف خلافاً لقاعدة الأرقام اللاتينية",
+    "detail": "",
+    "evidence": "ar.json:L392 / en.json:L392; ar.json:L384 / en.json:L384; ar.json:L386 / en.json:L386",
+    "recommendation": "«حقّق هدف الربح مع الالتزام بحدود الخسارة.»؛ «لمدة 5 أيام تداول على الأقل»؛ «5 أحجام للحساب» / “5 account sizes”.",
+    "effort": "S",
+    "skill": "brand (Latin digits) / meaning parity",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-074",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "تراكيب تحتاج إعادة ترتيب",
+    "element": "breaches.reverseBody «يجب أن يقدّم موظفان مختلفان بصلاحية الإلغاء سبباً كلٌّ منهما» · coupons.newBody «…وحصر بمنتجات اختيارياً» · settings.payoutChannels.body «حتى توفر المسار» · profile.kyc.manualReview «يدوياً من فريق FPT» · faq.lead «قواعد FPT وإجاباتها»",
+    "title": "ترتيب كلمات وحروف جرّ غير سليمة",
+    "detail": "",
+    "evidence": "ar.json:L2206 / en.json:L2206; ar.json:L1945 / en.json:L1945; ar.json:L2871 / en.json:L2871; ar.json:L1306 / en.json:L1306",
+    "recommendation": "«يجب أن يقدّم كلٌّ من موظفَين مختلفَين بصلاحية الإلغاء سبباً»؛ «(اختياري: حدّ استخدام، صلاحية، ربط بشريك، حصر بمنتجات)»؛ «حتى يتوفر المسار»؛ «من قِبل فريق FPT»؛ «قواعد FPT والأسئلة الشائعة».",
+    "effort": "S",
+    "skill": "Arabic grammar",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-075",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "تسميات بصيغة فعل أو ناقصة",
+    "element": "client.rule.resetAt «يُعاد الضبط» (تسمية موعد) · profile.created «تسجيل الدخول» (تسمية وقت) · risk.col.dailyLeft «متبقي اليوم» · risk.col.overallLeft «متبقي إجمالي»",
+    "title": "تسميات حقول تُقرأ كأفعال أو بلا تعريف",
+    "detail": "",
+    "evidence": "ar.json:L254 / en.json:L254; ar.json:L1266 / en.json:L1266; ar.json:L2182 / en.json:L2182",
+    "recommendation": "«موعد إعادة الضبط»، «وقت الدخول»، «المتبقي اليومي» / «المتبقي الإجمالي».",
+    "effort": "S",
+    "skill": "Arabic style",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-076",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "سقف ربح الأخبار",
+    "element": "notifications.news_cap.title «حُدَّ ربح نافذة الأخبار» · notifications.news_cap.body «خُصم ما زاد عن 1 %» · admin.events.decision.news_profit_cap «طُبّق سقف ربح نافذة الأخبار» · settings.news.rule «يُحدّ ربحها»",
+    "title": "cap بثلاثة أفعال (حُدَّ / سقف / خُصم) و«حُدَّ» صعبة القراءة",
+    "detail": "",
+    "evidence": "ar.json:L1404 / en.json:L1404; ar.json:L1729 / en.json:L1729",
+    "recommendation": "«طُبّق سقف ربح نافذة الأخبار» للعنوان و«خُصم ما زاد عن 1 %» للتفصيل.",
+    "effort": "S",
+    "skill": "consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-077",
+    "severity": "P3",
+    "category": "هوية",
+    "app": "admin",
+    "screen": "إعدادات ← الكيان",
+    "element": "config/legal.ts entity.brandFullAr «فايبر برو تريدرز» · apps/admin/src/app/[locale]/(app)/settings/page.tsx:103",
+    "title": "تعريب اسم المنتج يُعرض في الإدارة بينما المعجم يُبقي الاسم لاتينياً",
+    "detail": "المعجم § 1: «FPT — فايبر برو تريدرز» INHERITED «recorded, not applied (the FPT site keeps the Latin name)».",
+    "evidence": "config/legal.ts:12; apps/admin/src/app/[locale]/(app)/settings/page.tsx:103; brand/glossary.md § 1",
+    "recommendation": "عرض «FPT — Fiper Pro Traders» في اللغتين وحذف brandFullAr أو وسمه بأنه غير مُطبَّق.",
+    "effort": "S",
+    "skill": "brand glossary § 1",
+    "files": [
+      "config/legal.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-078",
+    "severity": "P2",
+    "category": "هوية",
+    "app": "client",
+    "screen": "الوثائق القانونية (مسودة)",
+    "element": "seed-data/legal.ts privacy §5 «licensed payment providers / مزوّدي دفع مرخّصين» · terms §4 AR «100 و10,000 دولار» · risk §6 AR «5 دولارات» · terms EN «10 000 USD»",
+    "title": "ادعاء «مرخّص» ومبالغ بلا رمز عملة في النص القانوني",
+    "detail": "القرار 10 في مصفوفة النصوص يقيّد أي ادعاء ترخيص بالقرار 1؛ والعلامة تشترط رمز العملة والفاصلة الآلاف «10,000 USD».",
+    "evidence": "packages/db/scripts/seed-data/legal.ts privacy bodyEn §5 / bodyAr §5; terms bodyAr §4; risk bodyAr §6; terms bodyEn §4",
+    "recommendation": "حذف «مرخّصين/licensed» أو إسناده لمصدر معتمد؛ «100 USD و10,000 USD»، «5 USD لكل لوت».",
+    "effort": "S",
+    "skill": "brand regulatory-matrix § 3 (10) / finance-semantics",
+    "files": [
+      "packages/db/scripts/seed-data/legal.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-079",
+    "severity": "P3",
+    "category": "نص",
+    "app": "admin",
+    "screen": "أوضاع التكامل",
+    "element": "integrations.modes.{mock,live,sim} AR = «mock/live/sim» ↔ mailPreview.modes.mock «محاكاة» / live «حقيقي»",
+    "title": "أسماء الأوضاع غير مترجمة في صفحة وترجمة في أخرى",
+    "detail": "",
+    "evidence": "ar.json:L2679 / en.json:L2679; ar.json:L3385 / en.json:L3385",
+    "recommendation": "«محاكاة (mock)» / «حقيقي (live)» / «محاكي (sim)» / cTrader في الصفحتين.",
+    "effort": "S",
+    "skill": "i18n completeness",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-080",
+    "severity": "P3",
+    "category": "نص",
+    "app": "admin",
+    "screen": "المحاكي",
+    "element": "simulator.scenario.accountHint «متداولاً جديداً بـ 100k» · simulator.scenario.body (نصوص حتمية) · mockGateway.shuftipro.lead «رحلة حقيقية»",
+    "title": "اختصار «100k» وترجمة حرفية لـ journey",
+    "detail": "",
+    "evidence": "ar.json:L3181 / en.json:L3181; ar.json:L1349 / en.json:L1349",
+    "recommendation": "«بحساب 100,000 USD»؛ «كما تلتقطها عملية تحقق حقيقية من الوثيقة».",
+    "effort": "S",
+    "skill": "Arabic style",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-081",
+    "severity": "P3",
+    "category": "نص",
+    "app": "client",
+    "screen": "مؤشرات التقدم",
+    "element": "shop.transfer.uploading «جارٍ الرفع» ↔ common.loading «جارٍ التحميل…» · mockGateway.processing «جارٍ المعالجة…» · admin.result.pending «يرجى الانتظار…» ↔ client.actions.pleaseWait «يرجى الانتظار»",
+    "title": "علامة الحذف «…» موجودة في بعض مؤشرات التقدم وغائبة في أخرى",
+    "detail": "",
+    "evidence": "ar.json:L621 / en.json:L621; ar.json:L7 / en.json:L7; ar.json:L315 / en.json:L315",
+    "recommendation": "«…» في كل مؤشر تقدم.",
+    "effort": "S",
+    "skill": "consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-082",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "حالة الطلب في الإدارة",
+    "element": "orders.orderStatus.pending «معلّق» ↔ shop.orderStatus.pending / purchases.status.pending «بانتظار الدفع» · auth.errors.suspended «موقوف»",
+    "title": "«معلّق» للطلب غير المدفوع توحي بالتعليق/الإيقاف",
+    "detail": "",
+    "evidence": "ar.json:L1981 / en.json:L1981; ar.json:L578 / en.json:L578",
+    "recommendation": "«بانتظار الدفع» في الإدارة أيضاً.",
+    "effort": "S",
+    "skill": "consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-083",
+    "severity": "P3",
+    "category": "نص",
+    "app": "admin",
+    "screen": "الزمن/الوقت الحقيقي",
+    "element": "health.sim.speedValue «الزمن الحقيقي» ↔ simulator.time.speedHint «الوقت الحقيقي»",
+    "title": "",
+    "detail": "",
+    "evidence": "ar.json:L3030 / en.json:L3030; ar.json:L3171 / en.json:L3171",
+    "recommendation": "«الوقت الحقيقي» في الموضعين.",
+    "effort": "S",
+    "skill": "consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-084",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "بريد رفض التحقق من الهوية",
+    "element": "mail.kyc_result.declined.body «لم تتم الموافقة على التحقق من هويتك. يمكنك مراجعة المتطلبات وتقديم طلب تحقق جديد.»",
+    "title": "النص لا يذكر السبب ولا «المتطلبات» التي يحيل إليها",
+    "detail": "السبب يظهر فقط كصف في بطاقة الوقائع؛ الجسم يقول «راجع المتطلبات» دون أن تُذكر أي متطلبات في الرسالة أو زرّها («أعد المحاولة»).",
+    "evidence": "ar.json:L169 / en.json:L169; packages/adapters/src/mail/templates/index.ts case kyc_result (rows reason)",
+    "recommendation": "إدراج السبب في الجسم: «لم يُقبل التحقق من هويتك للسبب التالي: {reason}. استخدم وثيقة سارية واضحة بالاسم نفسه المسجّل في ملفك، ثم أعد المحاولة.»",
+    "effort": "S",
+    "skill": "ui-ux-pro-max §8 error-clarity",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json",
+      "packages/adapters/src/mail/templates/index.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-085",
+    "severity": "P3",
+    "category": "نص",
+    "app": "client",
+    "screen": "توثيق الهوية — صيغ «موثَّق»",
+    "element": "payouts.rejection.name_mismatch «الاسم الموثَّق» · payoutsAdmin.verifiedName «الاسم الموثّق» · payouts.kyc.body «هوية موثَّقة» · profile.kyc.approved «هويتك موثَّقة» ↔ mail.common.states.verified «تم التحقق»",
+    "title": "«موثَّق» (documented) مقابل «تم التحقق» (verified) للمعنى نفسه",
+    "detail": "",
+    "evidence": "ar.json:L1043 / en.json:L1043; ar.json:L1220 / en.json:L1220; ar.json:L87 / en.json:L87",
+    "recommendation": "«الاسم المتحقَّق منه» / «تم التحقق من هويتك» (مع TXT-045).",
+    "effort": "S",
+    "skill": "consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-086",
+    "severity": "P3",
+    "category": "نص",
+    "app": "both",
+    "screen": "«مرحلة التقييم» و«مدة التقييم»",
+    "element": "client.rules.minDaysValue «في مرحلة التقييم» · mail.expiry_warning.title «مدة التقييم» · dashboard.evaluationEnds «ينتهي التقييم» · client.rule.deadline «نهاية التقييم» · notifications.ending_expired.body «انتهت صلاحية الحساب»",
+    "title": "انتهاء المدة بصيغ متعددة و«صلاحية الحساب» غير دقيقة",
+    "detail": "",
+    "evidence": "ar.json:L1373 / en.json:L1373; ar.json:L254 / en.json:L254; ar.json:L786 / en.json:L786",
+    "recommendation": "«نهاية مدة التقييم» للتسمية، و«انتهت مدة التقييم دون بلوغ الهدف؛ أُغلق الحساب.» للإشعار.",
+    "effort": "S",
+    "skill": "consistency",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TXT-SUMMARY",
+    "counts": {
+      "P0": 2,
+      "P1": 12,
+      "P2": 34,
+      "P3": 38,
+      "total": 86
+    },
+    "automated_checks": {
+      "key_parity_ar_en": "PASS (3029 = 3029)",
+      "duplicate_keys_raw": "PASS (0 في ar.json و0 في en.json)",
+      "interpolation_vars_parity": "PASS",
+      "empty_values": "PASS",
+      "mt4_mt5_metatrader": "0 ذكر",
+      "emoji": "0",
+      "iso_date_patterns_in_copy": "0 (التواريخ في config/legal.ts فقط كبيانات)",
+      "arabic_indic_digits": "0",
+      "three_dots_vs_ellipsis": "0 «...» — «…» متسقة",
+      "double_spaces_or_space_before_punct": "0",
+      "percent_spacing": "متسقة «10 %» (116 موضعاً، 0 بلا مسافة) — مطابقة للمعجم",
+      "latin_comma_qmark_in_arabic_prose": "0 (باستثناء قوائم معرّفات تقنية — TXT-063)",
+      "hamza_taa_marbuta_alef_maqsura": "لم تُرصد أخطاء؛ التنوين على الألف «اً» متسق (194 موضعاً)",
+      "e-mail_spelling_en": "متسق «e-mail/E-mail» (64) — «email» فقط كمتغير {email}",
+      "sign_in_vs_login_en": "متسق «Sign in»؛ «Login» فقط كتسمية رقم دخول cTrader (TXT-023)",
+      "glossary_product_facts": "10 % / 5 % / 9 % / 31 يوماً / 5 و10 أيام / 80 % / 14 يوماً / 10 حسابات / cTrader فقط: مطابقة. الاستثناءات: أساس الخسارة اليومية (TXT-012) والحد الأقصى للدفعة (TXT-006)"
+    },
+    "term_variants": [
+      {
+        "term": "payout (الدفعة)",
+        "variants": {
+          "الدفعة/الدفعات": [
+            "client.nav.payouts",
+            "client.screen.payouts",
+            "client.statement.*",
+            "dashboard.primary.requestPayout",
+            "payouts.eligibleLead",
+            "client.rules.fundedDays",
+            "mail.payout_paid.title",
+            "mail.account_closed.body",
+            "profile.delete.body",
+            "health.alerts.payout_requested.*"
+          ],
+          "السحب/السحوبات/سحب الأرباح": [
+            "payouts.title",
+            "payouts.eyebrow",
+            "payouts.new",
+            "payouts.emptyBody",
+            "payouts.form.channel",
+            "payouts.certificate",
+            "certificates.kindPayout",
+            "engine.certificate.payout",
+            "mail.payout_requested.*",
+            "mail.payout_approved.*",
+            "mail.welcome.body",
+            "mail.affiliate_commission.body",
+            "notifications.payout_*",
+            "profile.kyc.*",
+            "profile.nameHint",
+            "admin.nav.payouts",
+            "overview.openPayouts",
+            "accounts.tabs.payouts",
+            "payoutsAdmin.title",
+            "products.rule.share/cycle/minMax",
+            "products.builder.f.*",
+            "audit.kinds.payout",
+            "finance.openLiabilities",
+            "kycAdmin.*",
+            "deletionsAdmin.facts.openPayouts",
+            "simulator.demoReset.confirmBody",
+            "seed terms/privacy/risk"
+          ],
+          "الصرف": [
+            "mail.common.states.processed",
+            "client.states.processed",
+            "client.certificate.amount",
+            "admin.result.approved_manual",
+            "admin.result.not_approved",
+            "admin.events.payout_execution_recorded",
+            "settings.payoutChannels.*",
+            "mailPreview.templates.payout_paid"
+          ]
+        }
+      },
+      {
+        "term": "drawdown ↔ withdrawal (السحب)",
+        "variants": {
+          "السحب = drawdown": [
+            "mail.passed.body",
+            "client.states.drawdownWarning",
+            "client.finance.legendBand"
+          ],
+          "السحب = payout": [
+            "payouts.new",
+            "payouts.form.channel",
+            "…"
+          ]
+        }
+      },
+      {
+        "term": "evaluation / challenge",
+        "variants": {
+          "تحدي": [
+            "client.nav.challenge",
+            "shop.title",
+            "shop.buy",
+            "shop.rulesMeta",
+            "client.home.newChallenge",
+            "dashboard.primary.newChallenge",
+            "purchases.*",
+            "mail.account_ready.title",
+            "admin.events.order_created"
+          ],
+          "تقييم": [
+            "client.header.buy",
+            "shop.productTitle",
+            "dashboard.emptyCta",
+            "breach.newChallenge",
+            "dashboard.status.breached.next",
+            "mail.account_ready.subject",
+            "status.evaluation",
+            "client.states.evaluation"
+          ]
+        }
+      },
+      {
+        "term": "breach (الحالة)",
+        "variants": {
+          "تجاوز الحد": [
+            "client.states.breached",
+            "mail.common.states.breached",
+            "mail.breach.*"
+          ],
+          "مخالفة": [
+            "dashboard.status.breached.title",
+            "breach.eyebrow",
+            "breach.curve",
+            "products.sim.outcome.breached",
+            "admin.labels.endReason.breach",
+            "admin.nav.breaches"
+          ],
+          "مخروق": [
+            "status.breached"
+          ],
+          "مخالِف": [
+            "admin.events.accountStatus.breached"
+          ]
+        }
+      },
+      {
+        "term": "breach report",
+        "variants": {
+          "تقرير الإيقاف": [
+            "dashboard.primary.viewBreach"
+          ],
+          "تقرير المخالفة": [
+            "breach.eyebrow",
+            "engine.report.title",
+            "dashboard.status.breached.next",
+            "notifications.ending_*"
+          ],
+          "تقرير التجاوز": [
+            "mail.breach.button"
+          ]
+        }
+      },
+      {
+        "term": "equity",
+        "variants": {
+          "حقوق الحساب": [
+            "dashboard.equity",
+            "breach.*",
+            "engine.report.curve",
+            "accounts.*",
+            "risk.*",
+            "breaches.*"
+          ],
+          "الرصيد (منحنى الرصيد)": [
+            "client.finance.equityCurve",
+            "dashboard.chart"
+          ],
+          "glossary PROPOSED": [
+            "الرصيد الحالي",
+            "رصيد الحساب"
+          ]
+        }
+      },
+      {
+        "term": "daily loss base",
+        "variants": {
+          "رصيد بداية اليوم": [
+            "mail.breach.kinds.daily_loss",
+            "client.finance.dailyBase",
+            "client.rules.dailyValue",
+            "accounts.gauge.dailyBase",
+            "accounts.figures.dayStart"
+          ],
+          "حقوق الحساب عند 00:00": [
+            "breach.kinds.daily_loss",
+            "accounts.state.dayStart",
+            "seed terms §3"
+          ]
+        }
+      },
+      {
+        "term": "daily / max loss labels",
+        "variants": {
+          "AR": [
+            "الخسارة اليومية",
+            "الخسارة اليومية القصوى",
+            "حدّ الخسارة اليومي",
+            "حدّ الخسارة اليومية",
+            "الخسارة الإجمالية",
+            "الخسارة الإجمالية القصوى",
+            "الخسارة القصوى",
+            "الخسارة الأقصى",
+            "حدّ الخسارة الأقصى",
+            "حدّ الخسارة الإجمالي"
+          ],
+          "EN": [
+            "Daily Drawdown",
+            "Daily loss",
+            "daily drawdown",
+            "Max Drawdown",
+            "Maximum loss",
+            "Max loss",
+            "Overall loss",
+            "overall drawdown"
+          ]
+        }
+      },
+      {
+        "term": "daily reset",
+        "variants": {
+          "إعادة الضبط": [
+            "dashboard.reset",
+            "dashboard.resetIn",
+            "client.rule.resetAt",
+            "client.rules.dailyValue",
+            "profile.timezoneHint",
+            "admin.events.reset_daily"
+          ],
+          "التصفير": [
+            "client.rule.nextReset",
+            "mail.account_ready.note",
+            "health.reset.*"
+          ],
+          "إعادة التعيين": [
+            "settings.reset.*",
+            "accounts.state.nextReset",
+            "accounts.actions.recompute*"
+          ]
+        }
+      },
+      {
+        "term": "close (account/positions)",
+        "variants": {
+          "إغلاق/أُغلق/مغلق": [
+            "status.closed",
+            "mail.inactivity_warning.*",
+            "mail.breach.body",
+            "admin.events.breach_inactive",
+            "deletionsAdmin.*",
+            "shop.transfer.closedTitle"
+          ],
+          "إقفال/أُقفل/مُقفل": [
+            "dashboard.status.closed.title",
+            "dashboard.status.inactive.body",
+            "notifications.ending_*",
+            "breach.events.closes",
+            "accounts.actions.close",
+            "breach.nextBody"
+          ]
+        }
+      },
+      {
+        "term": "provisioning",
+        "variants": {
+          "التزويد": [
+            "status.provisioning",
+            "shop.steps.provision",
+            "shop.orderStatus.provisioned",
+            "admin.result.granted",
+            "health.components.provisioner",
+            "grants.description"
+          ],
+          "التجهيز": [
+            "dashboard.status.provisioning.title",
+            "admin.events.accountStatus.provisioning",
+            "orders.orderStatus.provisioned",
+            "shop.ret.provisioning",
+            "orders.provisioning"
+          ],
+          "التسليم": [
+            "purchases.status.provisioned",
+            "dashboard.delivered"
+          ]
+        }
+      },
+      {
+        "term": "approve",
+        "variants": {
+          "اعتماد": [
+            "shop.orderStatus.awaiting_review",
+            "paymentsAdmin.*",
+            "admin.payoutStatus.approved",
+            "payoutsAdmin.approveSecond",
+            "admin.result.approved_1"
+          ],
+          "موافقة": [
+            "payouts.timeline.approvals",
+            "payouts.flow.approval1",
+            "payouts.status.approved",
+            "payouts.status.approved_1",
+            "payoutsAdmin.step.first",
+            "mail.payout_approved.*",
+            "mail.kyc_result.*"
+          ]
+        }
+      },
+      {
+        "term": "cTrader login number",
+        "variants": {
+          "رقم الحساب": [
+            "mail.common.labels.accountNumber",
+            "shop.ret.accountNumber",
+            "dashboard.credentials.accountNumber"
+          ],
+          "رقم الدخول": [
+            "accounts.prov.login"
+          ],
+          "اسم الدخول (dead)": [
+            "shop.ret.login",
+            "dashboard.credentials.login"
+          ]
+        }
+      },
+      {
+        "term": "credentials",
+        "variants": {
+          "البيانات": [
+            "client.tabs.credentials",
+            "dashboard.status.purchased.next"
+          ],
+          "بيانات التداول/تداولك": [
+            "dashboard.credentials.title",
+            "shop.ret.credentials"
+          ],
+          "بيانات الدخول (إلى المنصة)": [
+            "notifications.account_ready.body",
+            "notifications.funded_ready.body",
+            "admin.events.account_ready"
+          ]
+        }
+      },
+      {
+        "term": "currency",
+        "variants": {
+          "USD": [
+            "partners.nextBatchBelowMin",
+            "affiliatesAdmin.*",
+            "client.statement.amount",
+            "mail (format.ts)"
+          ],
+          "دولار/دولاراً/بالدولار": [
+            "payouts.reasons.below_minimum",
+            "payouts.form.amount",
+            "payouts.form.errors.amount",
+            "notifications.payout_review_due.body",
+            "notifications.payout_paid.body",
+            "notifications.affiliate_commission.body",
+            "notifications.manual_correction.body",
+            "partners.becomeBody",
+            "partners.rules.weekly",
+            "coupons.newBody",
+            "client.units.usd",
+            "seed terms/risk"
+          ]
+        }
+      },
+      {
+        "term": "Fiper channels",
+        "variants": {
+          "بطاقة Fiper": [
+            "payouts.form.fiperCard",
+            "admin.events.channels.fiper_card"
+          ],
+          "Fiper Card": [
+            "payoutsAdmin.channel.fiper_card",
+            "settings.payoutChannels.fiper_card"
+          ],
+          "فايبر P2P": [
+            "admin.events.channels.fiper_p2p"
+          ],
+          "تحويل Fiper P2P": [
+            "payouts.form.fiperP2p"
+          ],
+          "Fiper P2P": [
+            "payoutsAdmin.channel.fiper_p2p",
+            "settings.payoutChannels.fiper_p2p"
+          ],
+          "الدفع عبر فايبر": [
+            "shop.checkout.manual",
+            "paymentsAdmin.description",
+            "settings.payments.body"
+          ]
+        }
+      },
+      {
+        "term": "retry",
+        "variants": {
+          "إعادة المحاولة": [
+            "client.error.retry",
+            "client.actions.retry",
+            "shop.ret.retry",
+            "payouts.kyc.retry",
+            "profile.kyc.retry",
+            "auth.errors.generic"
+          ],
+          "أعد المحاولة": [
+            "common.retry",
+            "admin.error.retry",
+            "errors.too_many_attempts",
+            "mail.kyc_result.declined.button",
+            "admin.result.locked"
+          ],
+          "حاول مرة أخرى": [
+            "common.error",
+            "shop.transfer.errors.generic"
+          ],
+          "المحاولة مجدداً": [
+            "shop.checkout.paymentFailed",
+            "shop.ret.failedBody",
+            "payouts.kyc.declined"
+          ]
+        }
+      },
+      {
+        "term": "KYC pending/approved",
+        "variants": {
+          "pending": [
+            "جارٍ (profile.kycStatus.pending)",
+            "قيد التحقق (payoutsAdmin.kyc.pending, kycAdmin.userStatus.pending)",
+            "قيد المعالجة (admin.events.kyc_result_pending)",
+            "معلّق (kycAdmin.caseStatus.pending)"
+          ],
+          "approved": [
+            "موثَّق/موثّقة (profile.kycStatus.approved, payoutsAdmin.kyc.approved, kycAdmin.userStatus.approved)",
+            "تم التحقق (payouts.kyc.approved, mail.common.states.verified)"
+          ]
+        }
+      },
+      {
+        "term": "override commission",
+        "variants": {
+          "علوية": [
+            "affiliatesAdmin.overrideOnSub",
+            "affiliatesAdmin.kinds.override"
+          ],
+          "من مسوّق فرعي": [
+            "admin.events.commissionKinds.override"
+          ],
+          "عمولة المستوى الأعلى": [
+            "settings.affiliates.uplineOverride"
+          ],
+          "+2 % على مبيعات الشركاء الفرعيين": [
+            "partners.tiers.override",
+            "affiliatesAdmin.model.overrideShort"
+          ]
+        }
+      },
+      {
+        "term": "checks",
+        "variants": {
+          "الفحوص": [
+            "payouts.status.checks_*",
+            "payouts.timeline.checks",
+            "notifications.payout_checks_*",
+            "health.alerts.payout_check_failed.body",
+            "audit.actions.payout_recheck"
+          ],
+          "الفحوصات": [
+            "admin.payoutStatus.checks_*",
+            "payoutsAdmin.checks",
+            "payoutsAdmin.step.checks",
+            "admin.result.not_approvable",
+            "staff.description"
+          ]
+        }
+      },
+      {
+        "term": "document",
+        "variants": {
+          "مستند": [
+            "client.screen.legal",
+            "client.more.legal",
+            "profile.documents",
+            "profile.groups.docsGroup",
+            "shop.checkout.termsRequired"
+          ],
+          "وثيقة": [
+            "settings.tabs.legal",
+            "settings.legal.key",
+            "audit.kinds.legal",
+            "mockGateway.shuftipro.document",
+            "profile.nameHint"
+          ]
+        }
+      },
+      {
+        "term": "queue",
+        "variants": {
+          "الطابور": [
+            "admin.result.granted",
+            "health.queue.title",
+            "health.components.commands",
+            "payoutsAdmin.queue"
+          ],
+          "قائمة الانتظار": [
+            "admin.result.queued",
+            "admin.result.approved",
+            "admin.result.reversal_2",
+            "overview.queueDepth"
+          ],
+          "في الانتظار": [
+            "admin.command.pending",
+            "health.queue.pending",
+            "mailPreview.mailStatus.queued"
+          ]
+        }
+      },
+      {
+        "term": "receive (share)",
+        "variants": {
+          "تتسلم": [
+            "payouts.flow.amountLead",
+            "payouts.flow.youReceive",
+            "payouts.flow.channelLead"
+          ],
+          "تحصل على": [
+            "payouts.form.share",
+            "payouts.form.amountHint",
+            "payouts.clientShare"
+          ]
+        }
+      },
+      {
+        "term": "Dubai time",
+        "variants": {
+          "بتوقيت دبي": [
+            "common.dubaiTime",
+            "partners.rules.weekly",
+            "…"
+          ],
+          "دبي": [
+            "dashboard.resetDubai",
+            "partners.becomeBody",
+            "affiliatesAdmin.model.approval"
+          ],
+          "(دبي)": [
+            "breaches.col.at",
+            "accounts.state.nextReset"
+          ],
+          "منتصف ليل دبي": [
+            "admin.events.reset_daily",
+            "simulator.time.midnight"
+          ]
+        }
+      },
+      {
+        "term": "Help Center (EN)",
+        "variants": {
+          "Help Center": [
+            "client.screen.help",
+            "client.more.help"
+          ],
+          "Help centre": [
+            "client.footer.help",
+            "faq.eyebrow",
+            "faq.title",
+            "settings.entity.help"
+          ]
+        }
+      },
+      {
+        "term": "program (EN)",
+        "variants": {
+          "program": [
+            "partners.title",
+            "LEGAL.programDescriptor",
+            "seed terms"
+          ],
+          "programme": [
+            "mail.account_ready.note",
+            "mail.breach.body",
+            "affiliatesAdmin.emptyBody",
+            "settings.affiliates.body"
+          ]
+        }
+      }
+    ],
+    "tone_note": "اللغة العربية سليمة إملائياً إلى حدّ لافت: لا أخطاء همزة أو تاء مربوطة أو ألف مقصورة، التنوين والترقيم العربي («،» «؛» «؟») متسقان، والأرقام لاتينية و«10 %» بمسافة كما في المعجم، ولا ذكر لـ MT4/MT5 ولا رموز تعبيرية ولا تواريخ ISO. المشكلة الحقيقية ليست في النحو بل في (1) المصطلح: مفهوم الدفعة وحده بأربع كلمات على شاشات متجاورة، و«السحب» يعني drawdown وwithdrawal معاً، والحالة الواحدة للحساب بثلاث كلمات حسب المكوّن؛ (2) النبرة: تناوب غير محكوم بين «نحن» الودّية والمبني للمجهول الرسمي داخل الرسالة الواحدة، وبين صيغة الأمر والمصدر في أزرار الفعل نفسه؛ (3) العدّ: غياب قواعد الجمع يجعل التمييز العددي خاطئاً في عشرات المفاتيح؛ (4) الوقائع والقانون: نصوص قانونية وبيانات مخاطر واسم كيان مؤلَّفة داخلياً تُعرض للعميل وتُقبل عند الدفع خلافاً لمصفوفة النصوص التنظيمية، وعبارة «النص التنظيمي: بانتظار قرار» تُطبع في كل بريد. الإنجليزية جيدة عموماً مع تذبذب بريطاني/أمريكي وفي حالة الأحرف وعلامات الاقتباس. السجل المخاطِب (أنت) ثابت بلا «حضرتك» ولا عامية، وهذا جيد."
+  }
+]

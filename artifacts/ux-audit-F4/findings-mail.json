@@ -1,0 +1,1129 @@
+[
+  {
+    "id": "MAIL-001",
+    "severity": "P1",
+    "category": "RTL",
+    "app": "mail",
+    "screen": "payout_paid",
+    "element": "body",
+    "title": "نسبة الأرباح تظهر «20/80» بدل «80/20» في النسخة العربية",
+    "detail": "في فقرة بريد «تمت معالجة دفعتك» تُكتب الحقيقة المنتجية «نسبة الأرباح 80/20 ثابتة»، لكن withUnits يلفّ «80» و«20» كوحدتين منفصلتين (الشرطة المائلة ليست ضمن صنف الأرقام في التعبير النمطي)، فيعيد محرك bidi ترتيبهما في السياق العربي ويظهر للقارئ «20/80». الحقيقة المنتجية (80 % للمتداول) تُعرض معكوسة.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/payout_paid-ar.png (السطر الأول من الفقرة: «نسبة الأرباح 20/80 ثابتة») · packages/adapters/src/mail/templates/layout.ts: withUnits regex `[+−]?\\d(?:[\\d,.:]*\\d)?` · packages/i18n/src/messages/ar.json mail.payout_paid.body",
+    "recommendation": "إمّا إضافة «/» إلى صنف الأرقام في withUnits ليصبح «80/20» وحدة واحدة معزولة LTR، أو إعادة صياغة النص العربي: «حصة المتداول 80 % ثابتة» وحذف الصيغة بالشرطة. وأضف اختبار عقد يفحص أن «80/20» لا تُقسم.",
+    "effort": "S",
+    "skill": "fpt-brand mail rules (unbreakable units) / finance-semantics",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts",
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-002",
+    "severity": "P1",
+    "category": "RTL",
+    "app": "mail",
+    "screen": "payout_requested",
+    "element": "body",
+    "title": "مرجع الحساب ينكسر على سطرين داخل الفقرة العربية على الهاتف",
+    "detail": "المراجع مثل FPT-100K-5L78C وFPT-CC7B3D73 تُترك عمداً خارج الوحدات في withUnits (تعليق الدالة: «leaves references untouched»)، فعند عرض 390 px ينكسر المرجع عند الشرطة: «-FPT-100K» في نهاية السطر و«5L78C» في بداية السطر التالي، وبترتيب bidi يصبح غير قابل للقراءة/النسخ الصحيح. تكرر الأمر في manual_payment_confirmed («-FPT» / «CC7B3D73»).",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/payout_requested-ar-390.png · artifacts/ux-audit-F4/evidence/mail/manual_payment_confirmed-ar-390.png · packages/adapters/src/mail/templates/layout.ts withUnits (تعليق «leaves references such as FPT-7K2M9Q untouched»)",
+    "recommendation": "لفّ أي رمز مرجع بنمط ^FPT-[A-Z0-9-]+$ (وكذلك رقم الحساب والخادم) في الفقرات بوحدة .fpt-unit (nowrap + direction:ltr + unicode-bidi:isolate)، مثلما يُفعل في بطاقة الحقائق. بديل: تمرير المرجع من القالب داخل span جاهز بدل النص الخام.",
+    "effort": "S",
+    "skill": "fpt-brand mail rules (unbreakable units)",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts",
+      "packages/adapters/src/mail/templates/index.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-003",
+    "severity": "P1",
+    "category": "نص",
+    "app": "mail",
+    "screen": "kyc_result",
+    "element": "body",
+    "title": "سبب رفض التحقق يصل العميل كرمز/جملة خام من المزوّد",
+    "detail": "صف «السبب» يعرض القيمة كما وردت: في العينة «document_unreadable»، وفي الإنتاج مسار الويب هوك يمرّر cb.declineReason مباشرة (جملة إنجليزية من Shufti Pro مثل «Face is not matching with the document» أو اسم الحدث الخام) إلى بريد عربي. تسريب تقني وغير مترجم في بريد للعميل.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/kyc_result-ar.png (السبب: document_unreadable) · artifacts/ux-audit-F4/evidence/mail/kyc_result-en.png · apps/client/src/lib/webhooks.ts:105 (`reason: cb.declineReason ?? undefined`) · packages/adapters/src/kyc/shuftipro/contract.ts:159",
+    "recommendation": "ترجمة declined_codes إلى نصوص مفاتيح i18n (kyc.reasons.<code>) في كلا اللغتين، والاكتفاء بـ noReason عندما لا يوجد رمز معروف؛ عدم تمرير الجملة الخام للمزوّد أبداً إلى بريد العميل.",
+    "effort": "M",
+    "skill": "web-interface-guidelines Content & Copy / ui-ux-pro-max §8",
+    "files": [
+      "apps/client/src/lib/webhooks.ts",
+      "packages/adapters/src/mail/templates/index.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-004",
+    "severity": "P1",
+    "category": "نص",
+    "app": "mail",
+    "screen": "payout_paid",
+    "element": "body",
+    "title": "طريقة الدفع تُطبع بالرمز الخام «crypto» في العنوان والبطاقة",
+    "detail": "القالب يطبع x.channel كما هو؛ محرك الصرف يمرّر p.channel (crypto | wire | fiper_card | fiper_p2p). النتيجة في البريد العربي «أُرسل إليك مبلغ 1,250.00 USD عبر crypto» و«طريقة الدفع: crypto»، رغم وجود تسميات جاهزة في القاموس (payoutsAdmin.channel.crypto = «عملة رقمية (USDT TRC20)»).",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/payout_paid-ar.png · artifacts/ux-audit-F4/evidence/mail/payout_paid-en-390.png · services/engine/src/payouts.ts:348 (`channel: p.channel`) · packages/adapters/src/mail/templates/index.ts case 'payout_paid' · packages/i18n/src/messages/ar.json payoutsAdmin.channel",
+    "recommendation": "ترجمة القناة داخل القالب: `t(locale, \"mail.common.channels.\" + channel)` بقيم «USDT (TRC20)» / «تحويل بنكي» / «Fiper Card» / «Fiper P2P» مع سقوط إلى القيمة الخام عند قناة مجهولة.",
+    "effort": "S",
+    "skill": "fpt-brand mail rules / Content & Copy",
+    "files": [
+      "packages/adapters/src/mail/templates/index.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json",
+      "services/engine/src/payouts.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-005",
+    "severity": "P1",
+    "category": "RTL",
+    "app": "mail",
+    "screen": "ops_alert",
+    "element": "body",
+    "title": "نص التنبيه الإنجليزي يُعرض داخل فقرة RTL فتنتقل النقطة إلى بداية السطر",
+    "detail": "عنوان التنبيه ونصه يأتيان من المحرّك (في العينة إنجليزيان: «Engine behind» / «The engine has not advanced for 15 minutes.») لكن الحاوية تحمل dir=rtl، فتظهر الجملة «.The engine has not advanced for 15 minutes» بالنقطة في أقصى اليسار ومحاذاة يمين. في الإنتاج يحدث هذا كلما غاب alert.text[locale] (السقوط إلى title/body الخام).",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/ops_alert-ar.png · artifacts/ux-audit-F4/evidence/mail/ops_alert-ar-390.png · services/engine/src/alerts.ts:114 (`alert.text?.[locale] ?? { title: alert.title, body: alert.body }`) · packages/adapters/src/mail/templates/layout.ts layout(): `<div lang dir=...>`",
+    "recommendation": "للعنوان والفقرات التي تأتي من متغيرات غير مترجمة ضع dir=\"auto\" (أو احسب الاتجاه من أول حرف قوي) مع محاذاة start؛ والأفضل ضمان أن كل تنبيه يحمل text.ar وtext.en في المحرّك.",
+    "effort": "S",
+    "skill": "fpt-brand mail rules / RTL",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts",
+      "services/engine/src/alerts.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-006",
+    "severity": "P1",
+    "category": "هوية",
+    "app": "mail",
+    "screen": "all",
+    "element": "footer",
+    "title": "عبارة «النص التنظيمي: بانتظار قرار» المؤقتة ظاهرة للعميل في كل بريد",
+    "detail": "في أسفل كل القوالب العشرين، بالعربية والإنجليزية، يظهر صندوق متقطع الحدود يحمل «النص التنظيمي: بانتظار قرار · Regulatory text: pending decision». هذا نص داخلي (REQUIRED DECISION) لا معنى له للعميل ويوحي بأن الشركة غير مكتملة التنظيم؛ النسخة النصية تحمله أيضاً. التعليق HTML الذي يسبقه كافٍ للتوثيق.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/account_ready-ar.png · artifacts/ux-audit-F4/evidence/mail/welcome-en.png · كل الصور · packages/adapters/src/mail/templates/layout.ts foot(): `<p class=\"mut reg\" ...>${t('ar','mail.common.regulatoryPending')} · ...` و textVersion()",
+    "recommendation": "إخفاء السطر المرئي في بيئة الإنتاج (إبقاء التعليق HTML فقط) إلى حين تسليم النص القانوني من config/legal.ts؛ أو عرضه فقط عندما يكون NODE_ENV !== 'production'. لا يُخترع نص بديل.",
+    "effort": "S",
+    "skill": "fpt-brand (regulatory-matrix: do not invent) / Content & Copy",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-007",
+    "severity": "P1",
+    "category": "هوية",
+    "app": "mail",
+    "screen": "all",
+    "element": "header",
+    "title": "رسائل الإنتاج الصادرة من تطبيقات Next تخرج بلا شعار (نص «Fiper Pro Traders» فقط)",
+    "detail": "الشعار يُقرأ وقت التحميل من brand/logos/derived عبر import.meta.url (خمسة مستويات لأعلى). لقطة الأدمن على الإنتاج (admin.fptraders.app، بريد manual_proof_received الذي أدرجه تطبيق العميل) تُظهر رأس البريد كنص عادي «Fiper Pro Traders» بدل الـ lockup، بينما العينات المحلية (tsx من المصدر) تُظهر الشعار. أي أن الحزمة المبنية بـ Next لا تجد الملف فتسقط إلى النص.",
+    "evidence": "artifacts/real-device/coverage-20261030/local-chromium-1440/admin-admin-mail-detail.png (رأس نصي) مقابل artifacts/ux-audit-F4/evidence/admin-mail-detail-ar-desktop.png (شعار) · packages/adapters/src/mail/templates/layout.ts readLogo()/LOGO_DIR · apps/client/next.config.ts:16 transpilePackages يشمل @fpt/adapters",
+    "recommendation": "توليد وحدة TypeScript تحمل base64 الشعارين وقت البناء (script في brand/ أو packages/adapters) بدل القراءة من القرص وقت التشغيل، وإضافة اختبار عقد يفشل إذا كان LOGO_HEADER_B64 فارغاً في بناء الإنتاج.",
+    "effort": "M",
+    "skill": "fpt-brand (logo usage: official asset only)",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts",
+      "apps/client/next.config.ts",
+      "apps/admin/next.config.ts"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-008",
+    "severity": "P1",
+    "category": "نص",
+    "app": "mail",
+    "screen": "breach",
+    "element": "subject",
+    "title": "عنوان «تجاوز الحد — أُوقف التداول» يُستخدم أيضاً لانتهاء المدة وعدم النشاط",
+    "detail": "القالب الواحد يخدم كل أنواع الإنهاء (daily_loss, max_loss, expired, inactive, manual) بعنوان وموضوع ثابتين «تجاوز الحد — أُوقف التداول» / «limit breached — trading stopped» وبحالة «تجاوز الحد». عند انتهاء 31 يوماً أو قرار مراجعة يدوية لم يُتجاوز أي حد، فالعنوان حقيقة غير دقيقة تصل العميل.",
+    "evidence": "packages/adapters/src/mail/templates/index.ts case 'breach' (الحالة S('breached') ثابتة لكل الأنواع) · packages/i18n/src/messages/ar.json mail.breach.subject/title · artifacts/ux-audit-F4/evidence/mail/breach-ar.png",
+    "recommendation": "تفريع العنوان والحالة حسب kind: للخسارتين «تجاوز الحد — أُوقف التداول»؛ لـ expired «انتهت مدة التقييم (31 يوماً)»؛ لـ inactive «أُغلق الحساب لعدم النشاط»؛ لـ manual «أُنهي التقييم بقرار مراجعة». الموضوع بالمثل.",
+    "effort": "M",
+    "skill": "Content & Copy / fpt-prop-platform rulebook",
+    "files": [
+      "packages/adapters/src/mail/templates/index.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-009",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "manual_proof_received",
+    "element": "body",
+    "title": "تسمية «مرجع الحساب» تُستخدم لمرجع الطلب في قوالب التحويل اليدوي الأربعة",
+    "detail": "في manual_proof_received وmanual_payment_confirmed وmanual_proof_rejected وmanual_payment_reminder الصف الأول يحمل L('reference') = «مرجع الحساب» / «Account reference» بينما القيمة FPT-CC7B3D73 هي مرجع الطلب الذي كتبه العميل على التحويل (الفقرة نفسها تقول «للطلب»). تسمية مضلّلة قبل أن يوجد حساب أصلاً.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/manual_proof_received-ar.png · artifacts/ux-audit-F4/evidence/mail/manual_payment_reminder-en-390.png · packages/adapters/src/mail/templates/index.ts cases manual_* (`L('reference')`)",
+    "recommendation": "إضافة مفتاح mail.common.labels.orderReference = «مرجع الطلب» / «Order reference» واستخدامه في القوالب الأربعة.",
+    "effort": "S",
+    "skill": "Content & Copy",
+    "files": [
+      "packages/adapters/src/mail/templates/index.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-010",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "account_ready",
+    "element": "subject",
+    "title": "تذبذب بين «حساب التقييم» في الموضوع و«حساب تحديك» في العنوان",
+    "detail": "الموضوع: «حساب التقييم FPT-50K-7F3K2 جاهز على cTrader» / «Your evaluation account … is ready»؛ العنوان داخل البريد: «حساب تحديك جاهز على cTrader» / «Your challenge account is ready». مصطلحان لنفس الشيء في الرسالة نفسها؛ المعجم يعتمد «التقييم» للمرحلة و«التحدي» للمنتج المشترى.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/account_ready-ar.png · artifacts/ux-audit-F4/evidence/mail/account_ready-en.png · packages/i18n/src/messages/ar.json mail.account_ready.subject/title",
+    "recommendation": "توحيد العنوان على «حساب التقييم جاهز على cTrader» / «Your evaluation account is ready on cTrader».",
+    "effort": "S",
+    "skill": "Content & Copy / brand glossary §3",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-011",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "passed",
+    "element": "body",
+    "title": "«حدود السحب» تعني هنا الخسارة (drawdown) بينما «السحب» في بقية الرسائل يعني صرف الأرباح",
+    "detail": "نص الاجتياز: «حقّق الحساب هدف الربح مع الالتزام بحدود السحب وعدد أيام التداول». في payout_* تُستخدم «طلب السحب» بمعنى payout. القارئ العربي يقرأ «حدود السحب» كحدود صرف الأرباح. المعجم يستخدم «الخسارة اليومية القصوى / الخسارة الإجمالية القصوى».",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/passed-ar.png · packages/i18n/src/messages/ar.json mail.passed.body · brand/glossary.md §3",
+    "recommendation": "«مع الالتزام بحدود الخسارة اليومية والإجمالية والحد الأدنى لأيام التداول».",
+    "effort": "S",
+    "skill": "Content & Copy / brand glossary",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-012",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "payout_paid",
+    "element": "subject",
+    "title": "ثلاثة مصطلحات لمفهوم الصرف الواحد: سحب / دفعة / صرف",
+    "detail": "الموضوعات: «تم استلام طلب السحب»، «تمت الموافقة على السحب»، ثم «تمت معالجة دفعتك»، والحالة «تم الصرف»، والمعجم «دورة الصرف». تنوّع يُضعف التعرّف على سلسلة الرسائل الثلاث لنفس الطلب.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/index.json (subjects) · packages/i18n/src/messages/ar.json mail.payout_requested/approved/paid · mail.common.states.processed",
+    "recommendation": "اعتماد «السحب» للطلب و«الصرف» للتنفيذ باتساق: «تم استلام طلب السحب: 1,250.00 USD» → «تمت الموافقة على طلب السحب» → «تم صرف سحبك: 1,250.00 USD»؛ العنوان الداخلي «تم صرف المبلغ».",
+    "effort": "S",
+    "skill": "Content & Copy",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-013",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "passed",
+    "element": "subject",
+    "title": "«Congratulations:» / «تهانينا:» في موضوع الاجتياز كلمة مصنّفة كمحفّز بريد مزعج",
+    "detail": "موضوع passed يبدأ بـ «Congratulations: account … passed the evaluation». «Congratulations» من أكثر الكلمات التي ترفع درجة السبام في مرشّحات البريد، وهي لا تضيف حقيقة؛ المرجع والحدث كافيان.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/index.json → passed · packages/i18n/src/messages/en.json mail.passed.subject",
+    "recommendation": "«Account FPT-50K-7F3K2 passed the evaluation — next: identity verification» / «اجتاز الحساب FPT-50K-7F3K2 التقييم — الخطوة التالية: التحقق من الهوية».",
+    "effort": "S",
+    "skill": "web-interface-guidelines Content & Copy",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-014",
+    "severity": "P2",
+    "category": "تقني",
+    "app": "mail",
+    "screen": "all",
+    "element": "header",
+    "title": "الـ preheader يكرر الموضوع حرفياً في كل القوالب",
+    "detail": "لا قالب يمرّر preheader، فيسقط التخطيط إلى الموضوع (`input.preheader ?? input.subject`). في صندوق الوارد يظهر الموضوع مرتين متتاليتين (مثلاً «Payout approved: 1,250.00 USD — Payout approved: 1,250.00 USD») وتضيع فرصة إعطاء الحقيقة التالية.",
+    "evidence": "packages/adapters/src/mail/templates/layout.ts layout(): `const preheader = escapeHtml(input.preheader ?? input.subject)` · packages/adapters/src/mail/templates/index.ts renderMail() لا يضبط preheader",
+    "recommendation": "إضافة مفتاح mail.<template>.preheader يحمل الحقيقة الثانية (المرجع، الموعد، الخطوة التالية) وتمريره من renderMail؛ مثال: payout_requested → «تُنجَز المراجعة قبل 2 نوفمبر 2026».",
+    "effort": "S",
+    "skill": "ui-ux-pro-max §8 e-mail",
+    "files": [
+      "packages/adapters/src/mail/templates/index.ts",
+      "packages/adapters/src/mail/templates/layout.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-015",
+    "severity": "P2",
+    "category": "وصول",
+    "app": "mail",
+    "screen": "all",
+    "element": "footer",
+    "title": "التذييل بحجم 11 px دون حدّ F1 (لا شيء مرئي أقل من 12 px)",
+    "detail": "سطور «جزء من Fiper Global · © 2026 …» والصندوق التنظيمي مكتوبة بـ font-size:11px في كلا اللغتين. docs/design-system.md §2 يفرض 12 px كحدّ أدنى لأي عنصر مرئي؛ بالعربية الحجم الصغير بخط بديل يجعلها غير مقروءة فعلياً على الهاتف.",
+    "evidence": "packages/adapters/src/mail/templates/layout.ts foot(): `font-size:11px` (ثلاث مرات) · artifacts/ux-audit-F4/evidence/mail/account_ready-ar-390.png (التذييل)",
+    "recommendation": "رفع التذييل إلى 12–13 px مع line-height 1.6، أو 13 px للسطر العربي.",
+    "effort": "S",
+    "skill": "F1 UX floors (docs/design-system.md §2)",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-016",
+    "severity": "P2",
+    "category": "وصول",
+    "app": "mail",
+    "screen": "all",
+    "element": "body",
+    "title": "الملاحظة وسطر «لماذا وصلتك» أصغر من حدّ النص الأساسي 15 px",
+    "detail": "الملاحظة (note) بـ 14 px وسطر «وصلتك هذه الرسالة…» بـ 13 px، وكلاهما نص أساسي يحمل معلومة مهمة (كيفية فتح cTrader، عدم طلب كلمات المرور، عنوان الدعم). حدّ F1 للنص الأساسي 15 px.",
+    "evidence": "packages/adapters/src/mail/templates/layout.ts layout(): note `font-size:14px` · why line `font-size:13px` · artifacts/ux-audit-F4/evidence/mail/account_ready-en-390.png",
+    "recommendation": "الملاحظة 15 px، وسطر «لماذا» 14 px على الأقل (أو 15 px بلون muted).",
+    "effort": "S",
+    "skill": "F1 UX floors",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-017",
+    "severity": "P2",
+    "category": "وصول",
+    "app": "mail",
+    "screen": "all",
+    "element": "header",
+    "title": "العنوان الرئيسي عنصر <p> لا <h1>؛ لا بنية عناوين دلالية",
+    "detail": "العنوان الواحد للبريد مكتوب كـ `<p class=\"txt\" style=\"font-size:24px;font-weight:700\">`. قارئات الشاشة في Apple Mail/Gmail لا تستطيع القفز إلى العنوان، والـ title الوحيد هو <title>.",
+    "evidence": "packages/adapters/src/mail/templates/layout.ts layout(): `<p class=\"txt\" style=\"margin:0;font-size:24px;font-weight:700...\">${escapeHtml(input.title)}</p>`",
+    "recommendation": "استخدام `<h1 style=\"margin:0;font-size:24px;...\">` (مع إعادة ضبط الهوامش) للعنوان، وإبقاء الباقي فقرات.",
+    "effort": "S",
+    "skill": "web-interface-guidelines Accessibility",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-018",
+    "severity": "P2",
+    "category": "بصري",
+    "app": "mail",
+    "screen": "all",
+    "element": "button",
+    "title": "الزر على عرض الهاتف ليس بعرض كامل (154–182 px) ومحاذى لجهة واحدة",
+    "detail": "القياس على 390 px: زر account_ready 154×48، breach 163×48، ops_alert 182×48؛ الزر حبّة مدوّرة في الطرف. الهدف باللمس ≥ 44 px محقق، لكن المطلوب في معيار البريد على الهاتف زر بعرض البطاقة ليُلمس بسهولة ويقع في محور القراءة.",
+    "evidence": "قياس Playwright على HTML العينات عند 390 px (a.btn width 154/163/182, height 48) · artifacts/ux-audit-F4/evidence/mail/account_ready-ar-390.png · packages/adapters/src/mail/templates/layout.ts button(): `display:inline-block`",
+    "recommendation": "في @media (max-width:420px) اجعل `.btn{display:block !important;width:auto;text-align:center}` وجدول الزر width:100%؛ تبقى حبّة 48 px.",
+    "effort": "S",
+    "skill": "ui-ux-pro-max §8 / mobile e-mail",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-019",
+    "severity": "P2",
+    "category": "تقني",
+    "app": "mail",
+    "screen": "all",
+    "element": "button",
+    "title": "روابط المحرّك بلا بادئة لغة فيُحوَّل المستخدم الإنجليزي إلى الواجهة العربية",
+    "detail": "paths في services/engine/src/comms.ts تبني `/accounts/<id>`، `/c/<code>`، `/payouts` بلا /en أو /ar، بينما توجيه العميل localePrefix:'always' يختار اللغة من الكوكي أو لغة المتصفح لا من لغة الرسالة. مستخدم ضبط لغته إنجليزية في ملفه وفتح الرابط من جهاز آخر يصل إلى /ar/…",
+    "evidence": "services/engine/src/comms.ts:14-26 (paths, urlOf) · apps/client/src/i18n/routing.ts:5 (localePrefix:'always') · مقارنة: apps/client/src/lib/webhooks.ts:104 يبني `/${locale}/payouts`",
+    "recommendation": "إدراج locale في urlOf (`${origin}/${locale}${path}`) في كل مراسلات المحرّك (breach, passed, payout_*, inactivity, expiry, account_ready).",
+    "effort": "S",
+    "skill": "Content & Copy / i18n routing",
+    "files": [
+      "services/engine/src/comms.ts",
+      "services/engine/src/ending.ts",
+      "services/engine/src/payouts.ts"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-020",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "expiry_warning",
+    "element": "button",
+    "title": "تحذير انتهاء المدة بلا زر رغم أنه يطلب فعلاً من المتداول",
+    "detail": "expiry_warning («3 أيام متبقية — الأهداف غير المحققة تُنهي التقييم») هو أكثر الرسائل حاجة إلى فعل، لكنه القالب الوحيد من التحذيرات بلا زر (inactivity_warning يحمل «افتح لوحة التحكم»). النسخة النصية بلا رابط كذلك.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/expiry_warning-en-390.png · packages/adapters/src/mail/templates/index.ts case 'expiry_warning' (لا primary) · MailVariables.expiry_warning بلا dashboardUrl",
+    "recommendation": "إضافة dashboardUrl إلى متغيرات expiry_warning وزر «افتح الحساب» / «Open the account».",
+    "effort": "S",
+    "skill": "ui-ux-pro-max §8 (one message, one action)",
+    "files": [
+      "packages/adapters/src/mail/templates/index.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json",
+      "services/engine/src/ending.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-021",
+    "severity": "P2",
+    "category": "RTL",
+    "app": "mail",
+    "screen": "admin",
+    "element": "subject",
+    "title": "موضوع البريد العربي يُعرض مقلوباً في واجهة الأدمن الإنجليزية",
+    "detail": "صفحة تفاصيل البريد في الأدمن بالإنجليزية تطبع الموضوع العربي داخل عنوان LTR بلا dir=auto فيظهر «cTrader جاهز على FPT-10K-J854H حساب التقييم» بترتيب معكوس غير قابل للقراءة.",
+    "evidence": "artifacts/ux-audit-F4/evidence/admin-mail-detail-en-phone.png (العنوان أعلى الصفحة) · apps/admin/src/app/[locale]/(app)/mail/[id]/page.tsx:29 (`title={m.subject}`)",
+    "recommendation": "تمرير dir=\"auto\" وlang لعنوان الصفحة (وفي قائمة البريد) عند عرض موضوع بلغة مخالفة للواجهة.",
+    "effort": "S",
+    "skill": "RTL / web-interface-guidelines",
+    "files": [
+      "apps/admin/src/app/[locale]/(app)/mail/[id]/page.tsx",
+      "apps/admin/src/app/[locale]/(app)/mail/page.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-022",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "admin",
+    "element": "body",
+    "title": "الأدمن يعرض أسماء قوالب F3 السبعة خاماً («manual proof received»)",
+    "detail": "قاموس mailPreview.templates يغطي 13 قالباً فقط؛ ops_alert وmanual_proof_received/confirmed/rejected/reminder وemail_change_notice وaccount_closed تسقط إلى m.template.replaceAll('_',' ') فتظهر إنجليزية خاماً في الواجهة العربية (لقطة الإنتاج: «manual proof received»).",
+    "evidence": "artifacts/real-device/coverage-20261030/local-chromium-1440/admin-admin-mail-detail.png (القالب: manual proof received) · packages/i18n/src/messages/ar.json mailPreview.templates (13 مفتاحاً) · apps/admin/src/app/[locale]/(app)/mail/[id]/page.tsx:25",
+    "recommendation": "إضافة المفاتيح السبعة: «تنبيه تشغيلي»، «استلام إثبات التحويل»، «اعتماد التحويل»، «رفض إثبات التحويل»، «تذكير بإثبات التحويل»، «إشعار تغيير البريد»، «إغلاق الحساب» (والإنجليزية بالمثل).",
+    "effort": "S",
+    "skill": "Content & Copy / i18n parity",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-023",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "payout_requested",
+    "element": "body",
+    "title": "صياغة إنجليزية ركيكة: «The review is completed by …; the outcome reaches you by e-mail»",
+    "detail": "الجملة بصيغة المضارع البسيط توحي بأن المراجعة تمت بالفعل. وكذلك payout_paid «your payout certificate is under the button» وbreach «crossed a rule of the programme» وaffiliate «becomes available for withdrawal».",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/payout_requested-en.png · artifacts/ux-audit-F4/evidence/mail/payout_paid-en-390.png · packages/i18n/src/messages/en.json mail.payout_requested.body, mail.payout_paid.body, mail.breach.body",
+    "recommendation": "«The review will be completed by 2 Nov 2026, 01:13 GMT+4; we will e-mail you the outcome.» · «Your payout certificate is available from the button below.» · «Account … breached a rule of the programme: …».",
+    "effort": "S",
+    "skill": "Content & Copy",
+    "files": [
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-024",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "payout_paid",
+    "element": "body",
+    "title": "«شهادة السحب الخاصة بك تحت الزر» صياغة غير طبيعية بالعربية",
+    "detail": "الجملة تشير إلى موضع الزر لا إلى الفعل. كذلك «نسبة الأرباح 80/20 ثابتة» (التي تنقلب بصرياً، انظر MAIL-001).",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/payout_paid-ar.png · packages/i18n/src/messages/ar.json mail.payout_paid.body",
+    "recommendation": "«أُرسل إليك مبلغ {amount} عبر {channel} بحصة المتداول 80 % الثابتة. يمكنك تنزيل شهادة الصرف من الزر أدناه.»",
+    "effort": "S",
+    "skill": "Content & Copy",
+    "files": [
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-025",
+    "severity": "P2",
+    "category": "تقني",
+    "app": "mail",
+    "screen": "account_closed",
+    "element": "footer",
+    "title": "سنة حقوق النشر «© 2026» مثبّتة يدوياً في القاموس",
+    "detail": "mail.common.copyright يحمل «© 2026» كنص ثابت في العربية والإنجليزية؛ سيصبح خاطئاً مع أول يناير 2027 في كل بريد.",
+    "evidence": "packages/i18n/src/messages/ar.json mail.common.copyright · packages/i18n/src/messages/en.json mail.common.copyright · packages/adapters/src/mail/templates/layout.ts foot()",
+    "recommendation": "جعل السنة متغيراً {year} يُملأ من تاريخ الإرسال (Dubai) في foot() وtextVersion().",
+    "effort": "S",
+    "skill": "Content & Copy",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json",
+      "packages/adapters/src/mail/templates/layout.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-026",
+    "severity": "P2",
+    "category": "هوية",
+    "app": "mail",
+    "screen": "welcome",
+    "element": "header",
+    "title": "الخط العربي للهوية غير مضمّن؛ العرض الفعلي يسقط إلى خط النظام",
+    "detail": "لا @font-face ولا رابط خط في البريد؛ العائلة 'IBM Plex Sans Arabic','Segoe UI',Tahoma,Arial. في كل لقطات العينات العربية ظهر خط نسخي بديل (لا Plex)، وهذا ما سيراه معظم المستلمين على الهاتف (iOS Mail، Gmail) أيضاً. الهوية العربية للبريد غير محققة عملياً وإن كانت مقبولة بمصفوفة الاختبار كسقوط.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/welcome-ar.png وartifacts/ux-audit-F4/evidence/mail/account_ready-ar.png (الخط العربي) · packages/adapters/src/mail/templates/layout.ts FONT_CSS · brand/templates/email/TEST-MATRIX.md",
+    "recommendation": "إضافة @font-face لـ IBM Plex Sans Arabic (woff2 من brand/fonts) داخل <style> للعملاء الداعمين (Apple Mail، iOS Mail، Outlook Mac، Thunderbird) مع إبقاء السقوط للباقي؛ أو توثيق القرار صراحة كـ PROPOSED.",
+    "effort": "M",
+    "skill": "fpt-brand (typography)",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-027",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "manual_proof_rejected",
+    "element": "body",
+    "title": "ملاحظة الموظف الحرة تُلحق بسبب الرفض بلغة الموظف لا لغة العميل",
+    "detail": "في الإنتاج يُبنى السبب كـ `${tr(locale, shop.transfer.reasons.<code>)} — ${reason}` حيث reason نص حر يكتبه الموظف (3–500 حرف) غالباً بلغة واحدة؛ يصل العميل الإنجليزي بالعربية والعكس. في العينة يظهر الرمز الخام amount_mismatch (عينة غير ممثلة).",
+    "evidence": "apps/admin/src/lib/actions/payments.ts:103-105 · artifacts/ux-audit-F4/evidence/mail/manual_proof_rejected-ar.png",
+    "recommendation": "جعل الملاحظة الحرة اختيارية في البريد (تُعرض في الأدمن فقط) والاكتفاء بالسبب المترجم + ملاحظة القالب؛ أو إلزام الموظف بحقلين ar/en عند الرفض.",
+    "effort": "M",
+    "skill": "Content & Copy",
+    "files": [
+      "apps/admin/src/lib/actions/payments.ts"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-028",
+    "severity": "P2",
+    "category": "RTL",
+    "app": "mail",
+    "screen": "all",
+    "element": "footer",
+    "title": "اسم «Fiper Global» ينكسر على سطرين في سطر الحقوق العربي على الهاتف",
+    "detail": "على 390 px سطر «© 2026 Fiper Pro Traders — شركة تابعة لـ Fiper Global. جميع الحقوق محفوظة.» ينقسم إلى «… شركة تابعة لـ Fiper» ثم «Global. جميع الحقوق محفوظة.» فيبدو اسم الشركة الأم مقطوعاً، في كل القوالب.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/account_ready-ar-390.png · artifacts/ux-audit-F4/evidence/mail/verify_code-en-390.png (السطر العربي) · packages/adapters/src/mail/templates/layout.ts foot()",
+    "recommendation": "لفّ أسماء العلامات (Fiper Global، Fiper Pro Traders) في span بـ white-space:nowrap داخل التذييل، أو فصل سطر العلاقة عن سطر الحقوق في فقرتين.",
+    "effort": "S",
+    "skill": "fpt-brand (name handling: Latin name kept whole)",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-029",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "verify_code",
+    "element": "subject",
+    "title": "رمز التحقق يظهر في الموضوع وفي الـ preheader معاً",
+    "detail": "الموضوع «رمز التحقق الخاص بك في FPT: 482913» والـ preheader يكرره؛ الرمز يظهر مرتين في معاينة الإشعار على شاشة القفل. وضع الرمز في الموضوع مقبول، لكن تكراره يزيد انكشافه بلا فائدة.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/index.json → verify_code · packages/adapters/src/mail/templates/layout.ts preheader default",
+    "recommendation": "preheader خاص بـ verify_code: «صالح 10 دقائق ويُستخدم مرة واحدة» / «Valid for 10 minutes, single use».",
+    "effort": "S",
+    "skill": "ui-ux-pro-max §8",
+    "files": [
+      "packages/adapters/src/mail/templates/index.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-030",
+    "severity": "P2",
+    "category": "وصول",
+    "app": "mail",
+    "screen": "all",
+    "element": "footer",
+    "title": "لا ترويسة List-Unsubscribe ولا تفضيلات للرسائل غير الحرجة",
+    "detail": "كل الرسائل تُرسل بالترويسات نفسها؛ لا List-Unsubscribe/List-Unsubscribe-Post في live.ts. affiliate_commission وinactivity_warning وexpiry_warning رسائل خدمة لكنها متكررة، وGmail/Yahoo يشترطان ترويسة إلغاء الاشتراك للمرسلين بالجملة (أكثر من 5000/يوم) ويخفّضان السمعة دونها.",
+    "evidence": "packages/adapters/src/mail/live.ts (buildSendRequest بلا headers) · grep -i unsubscribe packages/adapters/src/mail → لا نتيجة",
+    "recommendation": "إضافة List-Unsubscribe (mailto + https) وList-Unsubscribe-Post: One-Click لرسائل الشراكة والتذكيرات، مع صفحة تفضيلات في الملف الشخصي؛ إبقاء الرسائل الحرجة (رمز، تجاوز، صرف) بلا إلغاء.",
+    "effort": "M",
+    "skill": "e-mail deliverability (RFC 8058)",
+    "files": [
+      "packages/adapters/src/mail/live.ts",
+      "packages/adapters/src/mail/templates/layout.ts"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-031",
+    "severity": "P2",
+    "category": "بصري",
+    "app": "mail",
+    "screen": "breach",
+    "element": "body",
+    "title": "فراغ مزدوج ظاهر بين الرقم و«%» داخل الوحدات (5  %، 80  %)",
+    "detail": "الوحدة «5 %» تُعرض بخط mono حيث المسافة أعرض، فتبدو كمسافتين: «daily drawdown 5  % of the day's» و«حصة المتداول 80  %». يظهر في breach وpayout_paid في اللغتين.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/breach-en-390.png · artifacts/ux-audit-F4/evidence/mail/payout_paid-en-390.png · artifacts/ux-audit-F4/evidence/mail/breach-ar.png · packages/adapters/src/mail/templates/layout.ts withUnits (`(?: ?(?:%|USD))?`)",
+    "recommendation": "استبدال المسافة قبل % وUSD داخل الوحدة بمسافة رفيعة غير قاطعة (U+202F) أو إزالة المسافة قبل % مع إبقاء الوحدة LTR.",
+    "effort": "S",
+    "skill": "fpt-brand formats",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-032",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "staff_invite",
+    "element": "body",
+    "title": "تكرار «48 ساعة» في صف البطاقة وفي الملاحظة",
+    "detail": "بطاقة الحقائق تحمل صفاً واحداً «صلاحية الدعوة: 48 ساعة»، والملاحظة تحته تقول «تُستخدم الدعوة مرة واحدة وتنتهي صلاحيتها بعد 48 ساعة». بطاقة بصف واحد مكرّر لا تضيف شيئاً.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/staff_invite-ar.png · artifacts/ux-audit-F4/evidence/mail/staff_invite-en.png · packages/adapters/src/mail/templates/index.ts case 'staff_invite'",
+    "recommendation": "إزالة البطاقة والاكتفاء بالملاحظة، أو جعل البطاقة تحمل الدور المدعو إليه والمُرسِل (اسم الموظف الذي دعا) وتاريخ انتهاء الدعوة بتوقيت دبي.",
+    "effort": "S",
+    "skill": "ui-ux-pro-max §8",
+    "files": [
+      "packages/adapters/src/mail/templates/index.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-033",
+    "severity": "P2",
+    "category": "نص",
+    "app": "mail",
+    "screen": "ops_alert",
+    "element": "footer",
+    "title": "سطر «لماذا وصلتك» الموجّه للعملاء يظهر في تنبيه الموظفين",
+    "detail": "ops_alert يحمل السطر العام «وصلتك هذه الرسالة لأن حساباً أو دعوة في FPT مرتبطة بهذا العنوان. لا نطلب كلمات المرور…» وعنوان الدعم العام، وهو غير مناسب لرسالة تشغيلية داخلية.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/ops_alert-en.png · packages/adapters/src/mail/templates/layout.ts whyLine() ثابت لكل القوالب",
+    "recommendation": "سطر مخصّص للموظفين: «وصلك هذا التنبيه لأنك عضو نشط في فريق FPT؛ أوقف التنبيهات من صفحة صحة النظام.»",
+    "effort": "S",
+    "skill": "Content & Copy",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts",
+      "packages/adapters/src/mail/templates/index.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-034",
+    "severity": "P3",
+    "category": "نص",
+    "app": "mail",
+    "screen": "all",
+    "element": "text-version",
+    "title": "النسخة النصية تكرر الفعل: «افتح: افتح لوحة التحكم» / «Open: Open the dashboard»",
+    "detail": "textVersion يسبق كل زر بـ mail.common.open = «افتح: {label}» بينما أغلب التسميات تبدأ بفعل، فتُقرأ «افتح: افتح لوحة التحكم»، «Open: Upload the transfer proof».",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/account_ready-ar.txt:47 · artifacts/ux-audit-F4/evidence/mail/manual_payment_reminder-en.txt · packages/adapters/src/mail/templates/layout.ts textVersion()",
+    "recommendation": "طباعة التسمية ثم الرابط في السطر التالي بلا بادئة، أو بادئة محايدة «← {label}».",
+    "effort": "S",
+    "skill": "Content & Copy",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-035",
+    "severity": "P3",
+    "category": "هوية",
+    "app": "mail",
+    "screen": "payout_requested",
+    "element": "body",
+    "title": "صيغة المبلغ الإنجليزية «1,250.00 USD» تخالف صيغة الدليل للإنجليزية «USD 1,250.00»",
+    "detail": "brand/README.md §Formats: amounts «55,312.50 USD» AR · «USD 55,312.50» أو «$55,312.50» EN. القوالب تستخدم الرمز بعد المبلغ في اللغتين (format.ts يستند إلى README §D). تضارب توثيقي يحتاج قراراً.",
+    "evidence": "brand/README.md:157 · packages/adapters/src/mail/templates/format.ts money() · artifacts/ux-audit-F4/evidence/mail/payout_requested-en.png",
+    "recommendation": "حسم الصيغة الإنجليزية في README (PROPOSED: «1,250.00 USD» في البريد لتوحيد الوحدات مع التطبيق) وتوثيق الاستثناء، أو تطبيق «USD 1,250.00» في EN.",
+    "effort": "S",
+    "skill": "fpt-brand formats (value-sources)",
+    "files": [
+      "packages/adapters/src/mail/templates/format.ts",
+      "brand/README.md"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-036",
+    "severity": "P3",
+    "category": "بصري",
+    "app": "mail",
+    "screen": "account_ready",
+    "element": "body",
+    "title": "كلمة «e-mail» تنكسر عند الواصلة على الهاتف (e-/mail)",
+    "detail": "على 390 px: «linked to your e-\\nmail below» وتسمية «cTrader ID (e-\\nmail)» تنكسر داخل الكلمة.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/account_ready-en-390.png · artifacts/ux-audit-F4/evidence/mail/verify_code-en-390.png («this e-\\nmail»)",
+    "recommendation": "استخدام واصلة غير قاطعة (U+2011) في «e‑mail» في قاموس البريد الإنجليزي، أو اعتماد «email».",
+    "effort": "S",
+    "skill": "Content & Copy",
+    "files": [
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-037",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "mail",
+    "screen": "verify_code",
+    "element": "body",
+    "title": "لون رمز التحقق غير محدد صراحة (يعتمد على لون المتصفح الافتراضي)",
+    "detail": "خلية الرمز 28 px لا تحمل class=txt ولا color؛ في الوضع الفاتح يُعرض بأسود المتصفح (#000 لا #120D0E)، وفي الوضع الداكن يعتمد على color-scheme للعميل. عملاء لا يحترمون color-scheme (Gmail iOS) قد يعرضونه أسود على بطاقة داكنة.",
+    "evidence": "packages/adapters/src/mail/templates/layout.ts factsCard(): `unit(escapeHtml(input.code), ';font-size:28px;...')` بلا color · لقطة الوضع الداكن (Chromium) سليمة",
+    "recommendation": "إضافة class=\"txt\" وstyle color:#120D0E لخلية الرمز ليتبع قواعد الوضع الداكن مثل بقية النصوص.",
+    "effort": "S",
+    "skill": "fpt-brand tokens",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-038",
+    "severity": "P3",
+    "category": "بصري",
+    "app": "mail",
+    "screen": "payout_requested",
+    "element": "body",
+    "title": "قيمة «تُنجَز المراجعة قبل» تلتف بترك «(GMT+4)» وحيداً في سطر",
+    "detail": "في بطاقة الحقائق على 390 px القيمة «2 نوفمبر 2026، 01:13 بتوقيت دبي (GMT+4)» تلتف إلى سطرين ويبقى «(GMT+4)» في سطر منفصل محاذى يساراً، كما ينكسر التاريخ في الفقرة بين «2026،» و«01:13».",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/payout_requested-ar-390.png · artifacts/ux-audit-F4/evidence/mail/ops_alert-ar-390.png",
+    "recommendation": "جعل «بتوقيت دبي (GMT+4)» وحدة غير قاطعة مع الوقت (nowrap)، أو عرض التاريخ والوقت في صفين على الهاتف.",
+    "effort": "S",
+    "skill": "fpt-brand formats",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts",
+      "packages/adapters/src/mail/templates/format.ts"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-039",
+    "severity": "P3",
+    "category": "نص",
+    "app": "mail",
+    "screen": "email_change_notice",
+    "element": "subject",
+    "title": "موضوع إنجليزي بصيغة مبنية للمجهول وغير محدد: «A change of your FPT e-mail was requested»",
+    "detail": "الموضوع لا يقول للمستلم القديم ما المطلوب منه؛ العربية «طُلب تغيير بريدك في FPT» أوضح قليلاً. الرسالة أمنية فيُفضّل الفعل المباشر.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/index.json → email_change_notice · packages/i18n/src/messages/en.json mail.email_change_notice.subject",
+    "recommendation": "«Your FPT e-mail is about to change — was this you?» / «هل طلبت تغيير بريدك في FPT؟».",
+    "effort": "S",
+    "skill": "Content & Copy",
+    "files": [
+      "packages/i18n/src/messages/en.json",
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-040",
+    "severity": "P3",
+    "category": "نص",
+    "app": "mail",
+    "screen": "welcome",
+    "element": "subject",
+    "title": "اسم عربي داخل موضوع وجملة إنجليزية («Welcome to FPT, خالد» / «خالد, your FPT account is ready»)",
+    "detail": "عند اختيار الإنجليزية مع اسم مخزّن بالعربية يبدأ البريد الإنجليزي بحرف عربي وتظهر الفاصلة في موضع bidi غير مريح. العينة تبرز الحالة الواقعية لمستخدمي الخليج.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/welcome-en.png · artifacts/ux-audit-F4/evidence/mail/staff_invite-en.png",
+    "recommendation": "إسقاط الاسم من الموضوع الإنجليزي عندما يكون غير لاتيني، وفي الفقرة وضعه داخل span dir=auto؛ أو طلب الاسم اللاتيني في الملف.",
+    "effort": "S",
+    "skill": "RTL / Content & Copy",
+    "files": [
+      "packages/adapters/src/mail/templates/index.ts",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-041",
+    "severity": "P3",
+    "category": "نص",
+    "app": "mail",
+    "screen": "all",
+    "element": "text-version",
+    "title": "النسخة النصية تحمل الصندوق التنظيمي المؤقت ورأساً نصياً مكرراً",
+    "detail": "textVersion يطبع «Fiper Pro Traders» ثم العنوان، وينتهي بالسطرين التنظيميين المؤقتين بالعربية والإنجليزية معاً في كل بريد (نفس MAIL-006 في النص).",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/welcome-en.txt · packages/adapters/src/mail/templates/layout.ts textVersion()",
+    "recommendation": "تطبيق قرار MAIL-006 على النسخة النصية؛ تبقى الحقائق والرابط تحت تسمية الزر.",
+    "effort": "S",
+    "skill": "Content & Copy",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-042",
+    "severity": "P3",
+    "category": "نص",
+    "app": "mail",
+    "screen": "payout_approved",
+    "element": "subject",
+    "title": "موضوعات السحب تحمل المبلغ بلا مرجع الحساب، وموضوعات التحويل اليدوي تحمل المرجع بلا مبلغ",
+    "detail": "«تمت الموافقة على السحب: 1,250.00 USD» بلا FPT-100K-5L78C؛ «اعتُمد تحويلك: FPT-CC7B3D73» بلا 280.00 USD. المستخدم بعدة حسابات/طلبات لا يميّز من الموضوع.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/index.json (subjects)",
+    "recommendation": "«تمت الموافقة على السحب 1,250.00 USD — الحساب FPT-100K-5L78C» و«اعتُمد تحويلك 280.00 USD للطلب FPT-CC7B3D73».",
+    "effort": "S",
+    "skill": "Content & Copy",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-043",
+    "severity": "P3",
+    "category": "هوية",
+    "app": "mail",
+    "screen": "all",
+    "element": "header",
+    "title": "الوضع الداكن مُتحقق منه بمحاكاة Chromium فقط؛ Gmail يقلب الألوان بلا media query",
+    "detail": "الـ HTML يعلن color-scheme light dark ويحمل قواعد prefers-color-scheme و[data-ogsc]، وقد تحقق الفاحص أن المحاكاة تُظهر البلاطة والنص الأبيض على #0A0A0A. لكن Gmail (Android/iOS) يتجاهل media queries ويعكس الألوان آلياً، فيبقى الـ lockup (مربع أبيض بكلمة سوداء) ويصبح الزر الأحمر غامقاً. TEST-MATRIX يوثّق أن العملاء الحقيقيين غير مختبرين.",
+    "evidence": "لقطات الوضع الداكن (scratchpad) · packages/adapters/src/mail/templates/layout.ts <style> dark rules · brand/templates/email/TEST-MATRIX.md",
+    "recommendation": "اختبار على Gmail Android/iOS وOutlook عبر Litmus/Email on Acid أو حساب حقيقي قبل الإطلاق؛ ضبط شفافية خلفية الـ lockup (PNG بخلفية شفافة) لتقليل أثر القلب.",
+    "effort": "M",
+    "skill": "fpt-brand (TEST-MATRIX)",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-044",
+    "severity": "P3",
+    "category": "نص",
+    "app": "mail",
+    "screen": "breach",
+    "element": "body",
+    "title": "تسمية «مرجع الحساب» في الصف الأول تلتف على سطرين على الهاتف الإنجليزي",
+    "detail": "«Account reference» تلتف إلى «Account / reference» على 390 px لأن عمود التسمية ضيّق بجانب القيمة mono. مقروء لكنه يكسر إيقاع البطاقة.",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/breach-en-390.png · artifacts/ux-audit-F4/evidence/mail/payout_paid-en-390.png («Payout / method»)",
+    "recommendation": "على الهاتف اجعل الصف عمودياً (التسمية فوق القيمة) عبر display:block للخليتين تحت 420 px.",
+    "effort": "S",
+    "skill": "ui-ux-pro-max §8 mobile",
+    "files": [
+      "packages/adapters/src/mail/templates/layout.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "MAIL-045",
+    "severity": "P3",
+    "category": "نص",
+    "app": "mail",
+    "screen": "inactivity_warning",
+    "element": "body",
+    "title": "«مؤخراً» غامضة؛ لا تذكر عدد أيام عدم النشاط الذي تحسبه القاعدة",
+    "detail": "الفقرة: «لم تُنفَّذ أي صفقة على الحساب … مؤخراً. نفّذ صفقة واحدة على الأقل خلال 5 أيام». لا يعرف المتداول منذ متى يُعدّ غير نشط ولا ما القاعدة (المدة الكاملة).",
+    "evidence": "artifacts/ux-audit-F4/evidence/mail/inactivity_warning-ar-390.png · packages/i18n/src/messages/ar.json mail.inactivity_warning.body",
+    "recommendation": "«لم تُنفَّذ أي صفقة على الحساب منذ {lastTradeDate}. قاعدة عدم النشاط {inactiveDays} يوماً؛ تبقّى {daysLeft}.» مع تمرير التاريخ من المحرّك.",
+    "effort": "S",
+    "skill": "Content & Copy / rulebook",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json",
+      "packages/adapters/src/mail/templates/index.ts"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "MAIL-SUMMARY",
+    "counts": {
+      "P0": 0,
+      "P1": 8,
+      "P2": 25,
+      "P3": 12,
+      "total": 45
+    },
+    "byCategory": {
+      "نص": 23,
+      "بصري": 4,
+      "RTL": 5,
+      "هوية": 5,
+      "وصول": 4,
+      "تقني": 4
+    },
+    "verdictTable": [
+      {
+        "template": "verify_code",
+        "ar": "مقبول — الرمز واضح، لا رابط، تكرار الرمز في الـ preheader (MAIL-029)",
+        "en": "مقبول — e-mail تنكسر على الهاتف (MAIL-036)"
+      },
+      {
+        "template": "welcome",
+        "ar": "مقبول",
+        "en": "مقبول — اسم عربي في موضوع إنجليزي (MAIL-040)"
+      },
+      {
+        "template": "account_ready",
+        "ar": "مقبول — لا كلمة مرور، cTrader ID = البريد ورقم الحساب حاضران؛ تحدي/تقييم (MAIL-010)",
+        "en": "مقبول — challenge/evaluation (MAIL-010)"
+      },
+      {
+        "template": "breach",
+        "ar": "يحتاج إصلاحاً — العنوان الثابت لكل أنواع الإنهاء (MAIL-008)، فراغ 5  % (MAIL-031)",
+        "en": "يحتاج إصلاحاً — MAIL-008، «crossed a rule» (MAIL-023)"
+      },
+      {
+        "template": "passed",
+        "ar": "مقبول — «حدود السحب» ملتبسة (MAIL-011)",
+        "en": "مقبول — «Congratulations» في الموضوع (MAIL-013)"
+      },
+      {
+        "template": "payout_requested",
+        "ar": "يحتاج إصلاحاً — المرجع ينكسر على الهاتف (MAIL-002)، التفاف (GMT+4) (MAIL-038)",
+        "en": "مقبول — صياغة «is completed by» (MAIL-023)"
+      },
+      {
+        "template": "payout_approved",
+        "ar": "مقبول — بلا زر (مقصود)",
+        "en": "مقبول"
+      },
+      {
+        "template": "payout_paid",
+        "ar": "يحتاج إصلاحاً — «20/80» مقلوبة (MAIL-001)، «crypto» خام (MAIL-004)، «تحت الزر» (MAIL-024)",
+        "en": "يحتاج إصلاحاً — «crypto» خام (MAIL-004)"
+      },
+      {
+        "template": "inactivity_warning",
+        "ar": "مقبول — «مؤخراً» غامضة (MAIL-045)",
+        "en": "مقبول"
+      },
+      {
+        "template": "expiry_warning",
+        "ar": "مقبول — بلا زر رغم الحاجة لفعل (MAIL-020)",
+        "en": "مقبول — MAIL-020"
+      },
+      {
+        "template": "kyc_result",
+        "ar": "يحتاج إصلاحاً — سبب خام من المزوّد (MAIL-003)",
+        "en": "يحتاج إصلاحاً — MAIL-003"
+      },
+      {
+        "template": "affiliate_commission",
+        "ar": "مقبول — لا List-Unsubscribe (MAIL-030)",
+        "en": "مقبول"
+      },
+      {
+        "template": "staff_invite",
+        "ar": "مقبول — تكرار 48 ساعة (MAIL-032)",
+        "en": "مقبول"
+      },
+      {
+        "template": "ops_alert",
+        "ar": "يحتاج إصلاحاً — نص إنجليزي في فقرة RTL (MAIL-005)، سطر «لماذا» للعملاء (MAIL-033)",
+        "en": "مقبول — الخطورة والحقائق والزر واضحة"
+      },
+      {
+        "template": "manual_proof_received",
+        "ar": "مقبول — «مرجع الحساب» لمرجع طلب (MAIL-009)",
+        "en": "مقبول — MAIL-009"
+      },
+      {
+        "template": "manual_payment_confirmed",
+        "ar": "يحتاج إصلاحاً — المرجع ينكسر على الهاتف (MAIL-002)، MAIL-009",
+        "en": "مقبول — MAIL-009"
+      },
+      {
+        "template": "manual_proof_rejected",
+        "ar": "مقبول — ملاحظة الموظف بلغة واحدة (MAIL-027)",
+        "en": "مقبول — MAIL-027"
+      },
+      {
+        "template": "manual_payment_reminder",
+        "ar": "مقبول — MAIL-009",
+        "en": "مقبول — MAIL-009"
+      },
+      {
+        "template": "email_change_notice",
+        "ar": "مقبول — العنوان المقنّع معزول LTR بشكل صحيح",
+        "en": "مقبول — موضوع مبني للمجهول (MAIL-039)"
+      },
+      {
+        "template": "account_closed",
+        "ar": "مقبول — بلا رابط (مقصود)، 90 يوماً صحيحة نحوياً",
+        "en": "مقبول"
+      }
+    ],
+    "subjectTable": [
+      {
+        "template": "verify_code",
+        "ar": "رمز التحقق الخاص بك في FPT: 482913",
+        "en": "Your FPT verification code: 482913",
+        "verdict": "جيد — محدد ويحمل الرمز"
+      },
+      {
+        "template": "welcome",
+        "ar": "مرحباً بك في FPT، خالد",
+        "en": "Welcome to FPT, خالد",
+        "verdict": "جيد"
+      },
+      {
+        "template": "account_ready",
+        "ar": "حساب التقييم FPT-50K-7F3K2 جاهز على cTrader",
+        "en": "Your evaluation account FPT-50K-7F3K2 is ready on cTrader",
+        "verdict": "جيد — المرجع والمنصة حاضران"
+      },
+      {
+        "template": "breach",
+        "ar": "الحساب FPT-50K-7F3K2: تجاوز الحد — أُوقف التداول",
+        "en": "Account FPT-50K-7F3K2: limit breached — trading stopped",
+        "verdict": "غير دقيق لغير الخسارتين (MAIL-008)"
+      },
+      {
+        "template": "passed",
+        "ar": "تهانينا: اجتاز الحساب FPT-50K-7F3K2 التقييم",
+        "en": "Congratulations: account FPT-50K-7F3K2 passed the evaluation",
+        "verdict": "محفّز سبام «Congratulations/تهانينا» (MAIL-013)"
+      },
+      {
+        "template": "payout_requested",
+        "ar": "تم استلام طلب السحب: 1,250.00 USD",
+        "en": "Payout request received: 1,250.00 USD",
+        "verdict": "جيد — المبلغ حاضر، المرجع غائب (MAIL-042)"
+      },
+      {
+        "template": "payout_approved",
+        "ar": "تمت الموافقة على السحب: 1,250.00 USD",
+        "en": "Payout approved: 1,250.00 USD",
+        "verdict": "جيد — المرجع غائب (MAIL-042)"
+      },
+      {
+        "template": "payout_paid",
+        "ar": "تمت معالجة دفعتك: 1,250.00 USD",
+        "en": "Payout processed: 1,250.00 USD",
+        "verdict": "جيد — «دفعتك» تخالف «السحب» (MAIL-012)"
+      },
+      {
+        "template": "inactivity_warning",
+        "ar": "الحساب FPT-50K-7F3K2: 5 أيام قبل الإغلاق لعدم النشاط",
+        "en": "Account FPT-50K-7F3K2: 5 days before closure for inactivity",
+        "verdict": "جيد — المرجع والمهلة"
+      },
+      {
+        "template": "expiry_warning",
+        "ar": "الحساب FPT-50K-7F3K2: 3 أيام متبقية في التقييم",
+        "en": "Account FPT-50K-7F3K2: 3 days left in the evaluation",
+        "verdict": "جيد"
+      },
+      {
+        "template": "kyc_result",
+        "ar": "لم تتم الموافقة على التحقق من الهوية",
+        "en": "Identity verification not approved",
+        "verdict": "مقبول — بلا سياق FPT"
+      },
+      {
+        "template": "affiliate_commission",
+        "ar": "عمولة شراكة جديدة: 48.00 USD",
+        "en": "New affiliate commission: 48.00 USD",
+        "verdict": "جيد"
+      },
+      {
+        "template": "staff_invite",
+        "ar": "أنت مدعو إلى لوحة موظفي FPT",
+        "en": "You are invited to the FPT staff console",
+        "verdict": "جيد"
+      },
+      {
+        "template": "ops_alert",
+        "ar": "تشغيل FPT · حرج: Engine behind",
+        "en": "FPT operations · Critical: Engine behind",
+        "verdict": "جيد — الخطورة والعنوان"
+      },
+      {
+        "template": "manual_proof_received",
+        "ar": "استلمنا إثبات تحويلك: FPT-CC7B3D73",
+        "en": "We received your transfer proof: FPT-CC7B3D73",
+        "verdict": "جيد — المرجع حاضر، المبلغ غائب (MAIL-042)"
+      },
+      {
+        "template": "manual_payment_confirmed",
+        "ar": "اعتُمد تحويلك: FPT-CC7B3D73",
+        "en": "Your transfer is approved: FPT-CC7B3D73",
+        "verdict": "جيد — MAIL-042"
+      },
+      {
+        "template": "manual_proof_rejected",
+        "ar": "لم يُقبل إثبات تحويلك: FPT-CC7B3D73",
+        "en": "Your transfer proof was not accepted: FPT-CC7B3D73",
+        "verdict": "جيد"
+      },
+      {
+        "template": "manual_payment_reminder",
+        "ar": "تذكير: طلبك FPT-CC7B3D73 بانتظار إثبات التحويل",
+        "en": "Reminder: order FPT-CC7B3D73 is waiting for your transfer proof",
+        "verdict": "جيد — واضح الفعل"
+      },
+      {
+        "template": "email_change_notice",
+        "ar": "طُلب تغيير بريدك في FPT",
+        "en": "A change of your FPT e-mail was requested",
+        "verdict": "مبني للمجهول (MAIL-039)"
+      },
+      {
+        "template": "account_closed",
+        "ar": "أُغلق حسابك في FPT",
+        "en": "Your FPT account has been closed",
+        "verdict": "جيد"
+      }
+    ],
+    "sharedFindings": [
+      "MAIL-006",
+      "MAIL-007",
+      "MAIL-014",
+      "MAIL-015",
+      "MAIL-016",
+      "MAIL-017",
+      "MAIL-018",
+      "MAIL-028",
+      "MAIL-030",
+      "MAIL-034",
+      "MAIL-041",
+      "MAIL-043"
+    ],
+    "verified": {
+      "templates": 20,
+      "locales": 2,
+      "widths": [
+        640,
+        390
+      ],
+      "darkMode": "محاكاة Chromium على verify_code-en وpayout_paid-ar وaccount_ready-ar: الخلفية #0A0A0A، النص أبيض، البلاطة تظهر بدل الـ lockup",
+      "phone": "لا تمرير أفقي (scrollWidth = 390) في العينات المقاسة؛ الزر 48 px ارتفاعاً وعرضه 154–182 px",
+      "secrets": "لا كلمة مرور في أي قالب؛ account_ready يحمل cTrader ID = البريد ورقم الحساب والخادم فقط",
+      "urlsInHtml": "لا رابط نصي في أي HTML؛ النسخة النصية تحمل الروابط تحت تسمية الزر فقط"
+    },
+    "overall": "بنية البريد متينة ومتسقة عبر القوالب العشرين: أرضية ورقية، lockup رسمي، عنوان واحد، بطاقة حقائق، زر واحد، تذييل ثابت، ولا تسريب لأي سر؛ وبريد بيانات cTrader يحمل المعرّف ورقم الحساب فقط كما تقتضي القاعدة. لم يُرصد خطأ منتجي (P0) في الأرقام 10 %/5 %/9 %/31 يوماً/80-20، لكن ثمانية عيوب P1 تمسّ ما يراه العميل فعلاً: انقلاب «80/20» إلى «20/80» بالعربية، انكسار مراجع الحساب والطلب على الهاتف، رموز خام («crypto»، سبب رفض الهوية من المزوّد) في نص العميل، نص التنبيه الإنجليزي داخل فقرة RTL، والعبارة التنظيمية المؤقتة الظاهرة للعملاء في كل بريد. أهم ما يستحق التحقق في الإنتاج فوراً هو غياب الشعار في الرسائل الصادرة من تطبيقات Next (لقطة الأدمن على admin.fptraders.app تُظهر رأساً نصياً). على مستوى الوصول تنزل أحجام التذييل (11 px) والملاحظة (14 px) وسطر «لماذا» (13 px) دون سقوف F1، والعنوان ليس h1، والزر على الهاتف ليس بعرض كامل. لغوياً، الإنجليزية تحتاج تمريراً تحريرياً لجمل ركيكة، والعربية تحتاج توحيد مصطلح السحب/الصرف وتصحيح «حدود السحب» إلى الخسارة. الموضوعات عموماً محددة وتحمل المرجع أو المبلغ، وتبقى التوصية بإضافة preheader حقيقي بدل تكرار الموضوع."
+  }
+]

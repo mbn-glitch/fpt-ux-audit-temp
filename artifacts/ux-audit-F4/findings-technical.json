@@ -1,0 +1,1064 @@
+[
+  {
+    "id": "TEC-001",
+    "severity": "P1",
+    "category": "تقني",
+    "app": "client",
+    "screen": "/sw.js (كل صفحات الحساب)",
+    "element": "apps/client/public/sw.js — fetch handler (navigate)",
+    "title": "عامل الخدمة يخزّن HTML الصفحات المصادَق عليها ويعرضها دون اتصال بعد تسجيل الخروج",
+    "detail": "معالج fetch يخزّن كل استجابة تنقّل ناجحة غير مُعاد توجيهها في مخزن `fpt-client-v2-pages` (`cache.put(req, res.clone())`) متجاهلاً `Cache-Control: private, no-store` الذي يرسله الخادم لكل صفحة ديناميكية. صفحات مثل `/ar/accounts/[id]` (البريد بصفته cTrader ID، رقم الحساب، الخادم، الرصيد والصفقات) تبقى في Cache Storage. عند انقطاع الاتصال يعيد المعالج `caches.match(req)` دون فحص الجلسة، ومسار `/api/signout` يلغي الجلسة ويمسح الكوكي لكنه لا يُفرغ المخزن. على جهاز مشترك: تسجيل خروج ثم وضع الطيران ثم فتح العنوان يعرض آخر نسخة من صفحة الحساب.",
+    "evidence": "apps/client/public/sw.js:37-45 (`if (res.ok && !res.redirected) caches.open(PAGES).then((cache) => cache.put(req, res.clone()))` و`.catch(async () => (await caches.match(req)) || Response.error())`); apps/client/src/app/api/signout/route.ts:13-22 (لا postMessage ولا `caches.delete`); curl https://fptraders.app/ar → `cache-control: private, no-cache, no-store, max-age=0, must-revalidate`; apps/client/src/components/credentials-panel.tsx:26-32 (البيانات المعروضة).",
+    "recommendation": "في معالج التنقّل: لا تخزّن أي استجابة تحمل `no-store`/`private` في `cache-control` ولا أي مسار داخل `(app)` (accounts/payouts/orders/profile/notifications/checkout)؛ خزّن مسبقاً صفحة واحدة `/[locale]/offline` ذات هوية وأعدها كبديل. عند تسجيل الخروج أرسل `navigator.serviceWorker.controller.postMessage({type:'signout'})` فيمسح العامل مخزن PAGES (أو امسحه من العامل عند رؤية 303 من `/api/signout`).",
+    "effort": "M",
+    "skill": "security-audit + web-interface-guidelines § Navigation & State",
+    "files": [
+      "apps/client/public/sw.js",
+      "apps/client/src/app/api/signout/route.ts",
+      "apps/client/src/app/[locale]/(app)/more/page.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-002",
+    "severity": "P2",
+    "category": "هوية",
+    "app": "client",
+    "screen": "دون اتصال (أي مسار)",
+    "element": "apps/client/public/sw.js — البديل دون اتصال",
+    "title": "لا توجد صفحة «دون اتصال» ذات هوية: البديل هو `Response.error()` أي صفحة خطأ المتصفح الخام",
+    "detail": "عند فشل الشبكة وغياب نسخة مخزّنة يعيد العامل `Response.error()`، فيعرض Safari/Chrome صفحة خطأ الشبكة الخاصة بهما: بلا شعار ولا لغة عربية ولا زر إعادة محاولة. مفاتيح الترجمة لا تحوي أي نص «دون اتصال» للصفحات (المفتاح الوحيد `offline` هو شارة البث الحي).",
+    "evidence": "apps/client/public/sw.js:44 (`|| Response.error()`); apps/client/public/sw.js:8 (المخزّن المسبق: أيقونات وmanifest فقط، لا صفحة)؛ packages/i18n/src/messages/ar.json (لا مفتاح لصفحة دون اتصال).",
+    "recommendation": "أضف مسار `/[locale]/offline` (Shell مجرّد + البلاطة + جملة «لا يوجد اتصال» + زر «إعادة المحاولة» = `location.reload()`)، خزّنه في `install` لكلا اللغتين، وأعده في `catch` بدل `Response.error()` مع اختيار اللغة من مقطع المسار.",
+    "effort": "S",
+    "skill": "fpt-brand + web-interface-guidelines § Content Handling",
+    "files": [
+      "apps/client/public/sw.js",
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-003",
+    "severity": "P2",
+    "category": "تقني",
+    "app": "admin",
+    "screen": "/ar/<مسار غير موجود> (404 الجذر)",
+    "element": "apps/admin/src/app/not-found.tsx",
+    "title": "صفحة 404 الجذرية للوحة الموظفين تُسبق بناؤها فتشحن 18 سكربت بلا nonce وتحجبها CSP كلها",
+    "detail": "الإصلاح RD1 طُبّق على العميل فقط (`await headers()` يجعل الصفحة تُصيَّر لكل طلب فتنال nonce الوسيط). صفحة 404 للوحة ما زالت ثابتة: الإنتاج يعيد 404 مع CSP تحمل nonce لكن لا سكربت يحملها، فتُسجَّل 18 رسالة «Refused to load/execute» في الكونسول ولا يحدث hydration (الرابط `<a>` يعمل لأنه HTML خام). كل عنوان خاطئ يُدخله موظف يُنتج ضجيج أخطاء يخفي الأخطاء الحقيقية في بوابات الكونسول.",
+    "evidence": "curl https://admin.fptraders.app/ar/nonexistent-xyz → `HTTP/2 404`، `scripts total: 18 ; nonced: 0` مقابل العميل `17/17`؛ apps/admin/src/app/not-found.tsx:47-58 (مكوّن متزامن بلا `headers()`)؛ apps/client/src/app/not-found.tsx:20-21 (النمط المُصلَح).",
+    "recommendation": "الحد الأدنى: `export default async function NotFound(){ await headers(); … }` في apps/admin/src/app/not-found.tsx (كما في العميل)، أو أضف `apps/admin/src/app/[locale]/not-found.tsx` مترجَماً داخل تخطيط اللغة الديناميكي. تحقّق بعد النشر بأن `grep -c 'nonce=' == grep -c '<script'`.",
+    "effort": "S",
+    "skill": "security-audit (CSP) ",
+    "files": [
+      "apps/admin/src/app/not-found.tsx",
+      "apps/client/src/app/not-found.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-004",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "client",
+    "screen": "الصفحات العامة على iPhone حقيقي (landing/signin/signup/reset/help/not-found)",
+    "element": "packages/core/src/csp.ts — style-src / style-src-elem / style-src-attr",
+    "title": "تحليل رسالة Safari iOS «Refused to apply a stylesheet… style-src»: ليست سمات `style=` ولا نقص دعم `style-src-attr`؛ المصدر عنصر `<style>` بلا nonce غير مرئي في المصدر، ويلزم جامع تقارير",
+    "detail": "الفرضية «iOS 17 لا يدعم style-src-attr» غير صحيحة: WebKit يدعم `script-src-elem/attr` و`style-src-elem/attr` منذ Safari 15.4، ومع `style-src-attr 'unsafe-inline'` لا يبلّغ WebKit أي مخالفة لسمة `style=` أصلاً (المسار `violatedDirectiveForUnsafeInlineStyleAttribute` يعود null عندما يسمح التوجيه بالـ inline). الرسالة نصّها «its hash, its nonce, or 'unsafe-inline'» وهي رسالة التنسيق المضمّن (عنصر `<style>` أو ورقة مضمّنة) والتوجيه المذكور `style-src` هو الاحتياطي. المصدر لا يحوي أي `<style>` في JSX (grep صفر)، وSVG شعار cTrader (الوحيد المحمَّل كصورة في الصفحات العامة) لا يحوي `<style>` ولا `style=`؛ وعلى Chromium المحلي سجّل التشخيص `unnoncedStyles: []`. أي أن العنصر يُحقن أثناء التشغيل على iOS فقط: مرشّحوه (أ) التنسيقات التي يحقنها جامع كونسول BrowserStack/الحارس عبر Web Inspector، (ب) عناصر `<style>` يحقنها WebKit نفسه لواجهات الـ AutoFill/Reader (عادة في شجرة UA وتتخطى CSP)، (ج) تنسيق يحقنه كود طرف أول على العميل فقط في فرع iOS. الأثر الوظيفي صفر على الصفحات المُلتقطة (البوابات مرّت: لا قصّ ولا فيض)، لذلك P3؛ لكن بدون `report-uri` لا يمكن حسم المصدر، وجامع `securitypolicyviolation` مركّب فقط لمحرّكات Playwright لا للجهاز الحقيقي.",
+    "evidence": "artifacts/real-device/coverage-20261030/iphone-15-pro-max/coverage-receipt.json → `screens[client/landing@ar|signin@ar|signup@ar|reset@ar|help@ar|not-found@ar].detail.consoleErrors[*].text`; packages/core/src/csp.ts:56-58; scripts/real-device-coverage.mjs:95-99 (`unnoncedStyles`, `cspViolations` من init script لـ Playwright فقط) و:101-105 (`CSP_COLLECTOR`)؛ artifacts/real-device/coverage-20261030/local-chromium-390/coverage-receipt.json → `\"unnoncedStyles\": []` ×17؛ apps/client/public/brand/third-party/ctrader/ctrader-logo-light.svg (0 `<style>`، 0 `style=`).",
+    "recommendation": "الإصلاح الأدنى الآمن: أضف `report-uri /api/csp-report` إلى سياسة المستندات (Safari لا يدعم `report-to`) ومعالجاً يسجّل `violated-directive`, `effective-directive`, `blocked-uri`, `source-file`, `line-number`, `script-sample` (بلا تخزين بيانات شخصية، مع حدّ معدل)؛ شغّل جولة iPhone واحدة ثم: إن كان المصدر حارس القياس → أضفه إلى قائمة التجاهل مثل سكربت التتبّع في إطار البريد؛ إن كان عنصراً من الطرف الأول → مرّر له `nonce` من `headers().get('x-nonce')` أو أضف تجزئته `'sha256-…'` إلى `style-src-elem`. لا تضف `'unsafe-inline'` إلى `style-src`/`style-src-elem` بأي حال.",
+    "effort": "S",
+    "skill": "security-audit (CSP)",
+    "files": [
+      "packages/core/src/csp.ts",
+      "apps/client/src/middleware.ts",
+      "scripts/real-device-coverage.mjs"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "TEC-005",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "both",
+    "screen": "كل الاستجابات",
+    "element": "packages/core/src/csp.ts HSTS / next.config.ts headers()",
+    "title": "HSTS الفعلي في الإنتاج هو الافتراضي للمنصة (`max-age=63072000`) بلا `includeSubDomains; preload` خلافاً للمصدر",
+    "detail": "المصدر يضيف `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload` فقط عندما يكون `FPT_*_ORIGIN` يبدأ بـ https وقت تقييم `headers()` (وقت البناء). الرأس الملاحَظ على الأصلين هو `max-age=63072000` فقط، بينما CSP الوسيط (وقت التشغيل) تحمل `upgrade-insecure-requests` أي أن المتغير https في وقت التشغيل لا وقت البناء، أو أن رأس المنصة يطغى. النتيجة: النطاقات الفرعية (admin.) غير مشمولة من رأس العميل ولا يمكن إدراج النطاق في قائمة preload.",
+    "evidence": "curl -I https://fptraders.app/ar و https://admin.fptraders.app/ar → `strict-transport-security: max-age=63072000`؛ packages/core/src/csp.ts:85,101; apps/client/next.config.ts:223; apps/admin/next.config.ts:253; .env.example:12-13 (`FPT_CLIENT_ORIGIN=` فارغ).",
+    "recommendation": "اجعل الرأس غير مشروط في الإنتاج: `if (process.env.NODE_ENV === 'production') h.push(HSTS)` (الإنتاج https دائماً على fptraders.app)، أو عرّف `FPT_CLIENT_ORIGIN`/`FPT_ADMIN_ORIGIN` كمتغيرات بناء في Vercel؛ تحقّق بـ curl بعد النشر.",
+    "effort": "S",
+    "skill": "security-audit (headers)",
+    "files": [
+      "packages/core/src/csp.ts",
+      "apps/client/next.config.ts",
+      "apps/admin/next.config.ts"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "TEC-006",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "both",
+    "screen": "كل المستندات",
+    "element": "next-intl middleware — كوكي NEXT_LOCALE",
+    "title": "كوكي اللغة `NEXT_LOCALE` تُرسل بلا `Secure` (ومن الوسيط بلا HttpOnly) بينما `/api/lang` يضبط الكوكي نفسها بـ Secure",
+    "detail": "الوسيط (next-intl) يضبط `Set-Cookie: NEXT_LOCALE=ar; Path=/; SameSite=lax` على كل تحويل؛ مسار `/api/lang` يضبطها بـ `secure: cookieSecure()`. التضارب يعني أن قيمة اللغة يمكن أن تُستبدل عبر اتصال غير مشفّر لنطاق فرعي (HSTS بلا includeSubDomains — انظر TEC-005). الأثر محدود (تفضيل لغة) لكنه يخالف قاعدة «كل الكوكيز Secure في الإنتاج».",
+    "evidence": "curl -I https://fptraders.app/ → `set-cookie: NEXT_LOCALE=ar; Path=/; SameSite=lax`؛ apps/client/src/app/api/lang/route.ts:22؛ apps/client/src/i18n/routing.ts (إعداد next-intl).",
+    "recommendation": "في `defineRouting` أضف `localeCookie: { secure: true, sameSite: 'lax', maxAge: 31536000 }` (next-intl ≥ 3.22) في كلا التطبيقين، أو عطّل كوكي الوسيط (`localeCookie: false`) واعتمد `/api/lang` وحده.",
+    "effort": "S",
+    "skill": "security-audit (cookies)",
+    "files": [
+      "apps/client/src/i18n/routing.ts",
+      "apps/admin/src/i18n/routing.ts",
+      "apps/client/src/app/api/lang/route.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-007",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "client",
+    "screen": "/api/lang",
+    "element": "apps/client/src/app/api/lang/route.ts GET",
+    "title": "تبديل اللغة عبر GET يعدّل الملف الشخصي: تنقّل من موقع آخر يكفي لقلب لغة المستخدم المسجّل",
+    "detail": "المعالج GET يحدّث `users.locale` للمستخدم المسجّل ثم يحوّل. الكوكي `SameSite=Lax` تمنع الطلبات الفرعية عبر المواقع (img) لكنها تُرسل مع التنقّل الأعلى (`<a href>`/`location`)، فأي صفحة خارجية تستطيع تحويل المتصفح إلى `/api/lang?to=en` وتغيير لغة الحساب وبريده اللاحق. الأثر منخفض (لا مال ولا بيانات) لكنه تغيير حالة عبر GET خلافاً لنمط `/api/signout` الذي يفحص المصدر في POST.",
+    "evidence": "apps/client/src/app/api/lang/route.ts:14-24 (GET يكتب في `users`)؛ apps/client/src/app/api/signout/route.ts:12-14 (`sameOriginRequest` للـ POST فقط).",
+    "recommendation": "اجعل GET يضبط الكوكي ويحوّل فقط؛ انقل تحديث الملف الشخصي إلى الإجراء الخادمي الموجود في صفحة الملف أو إلى POST مع `sameOriginRequest`؛ مبدّل اللغة في الرأس يبقى رابطاً GET.",
+    "effort": "S",
+    "skill": "security-audit (CSRF)",
+    "files": [
+      "apps/client/src/app/api/lang/route.ts",
+      "apps/client/src/lib/csrf.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-008",
+    "severity": "P2",
+    "category": "تقني",
+    "app": "client",
+    "screen": "كل الإجراءات الخادمية في (app) — خاصة /payouts/new و/profile",
+    "element": "apps/client/src/lib/session.ts requireUser + apps/client/src/app/[locale]/(auth)/signin/page.tsx",
+    "title": "انتهاء الجلسة (خمول 30 دقيقة) أثناء تعبئة نموذج يُفقد كل ما كُتب بلا أي تفسير، ومفتاح «انتهت جلستك» موجود وغير مستخدم",
+    "detail": "كل إجراء خادمي يستدعي `requireUser(locale)` الذي ينفّذ `redirect('/signin?next=…')` داخل الإجراء. في نموذج الصرف ذي الأربع خطوات تُحفظ القيم في `useState` فقط؛ عند الضغط على «إرسال» بعد 30 دقيقة من الخمول يُنقل المستخدم إلى تسجيل الدخول، وبعد العودة إلى `/payouts/new` يبدأ من الصفر. صفحة تسجيل الدخول لا تقرأ أي سبب ولا تعرض `auth.errors.sessionExpired` (المفتاح موجود في القاموس وغير مُستخدم في أي ملف).",
+    "evidence": "apps/client/src/lib/session.ts:70-77; apps/client/src/app/[locale]/(app)/payouts/actions.ts:28; apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx:30-34 (حالة محلية فقط)؛ grep `sessionExpired` في apps/client/src → لا نتائج؛ packages/i18n/src/messages/ar.json `auth.errors.sessionExpired`؛ apps/client/src/lib/session-rules.ts:77 (`SESSION_IDLE_MS = 30 min`).",
+    "recommendation": "(1) في `requireUser` أضف `&reason=expired` عندما يكون الحكم `idle|expired|revoked`، واعرض في صفحة تسجيل الدخول تنبيه `auth.errors.sessionExpired` عند وجوده. (2) للنماذج الطويلة (الصرف، الإغلاق، KYC) احفظ المسودّة في `sessionStorage` بمفتاح الحساب واستعدها بعد العودة. (3) اختياري: إنذار قبل انتهاء الخمول بخمس دقائق من مؤقّت على العميل.",
+    "effort": "M",
+    "skill": "web-interface-guidelines § Forms (unsaved changes) + security-audit (session)",
+    "files": [
+      "apps/client/src/lib/session.ts",
+      "apps/client/src/app/[locale]/(auth)/signin/page.tsx",
+      "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-009",
+    "severity": "P2",
+    "category": "تقني",
+    "app": "client",
+    "screen": "/signin?mfa=locked",
+    "element": "apps/client/src/app/[locale]/(auth)/signin/page.tsx",
+    "title": "قفل المصادقة الثنائية يحوّل إلى `/signin?mfa=locked` لكن صفحة تسجيل الدخول تتجاهل المعامل: المستخدم يعود إلى النموذج بلا أي رسالة",
+    "detail": "عند الفشل المتكرر في رمز TOTP يُلغى الجلسة وتُمسح الكوكي ويُحوَّل المستخدم مع `mfa=locked`. صفحة تسجيل الدخول تقرأ `next|mode|reset` فقط؛ لا تنبيه ولا توضيح لمدة القفل، فيعيد المستخدم كلمة مروره ثم يُقفل من جديد عند الرمز.",
+    "evidence": "apps/client/src/app/[locale]/(auth)/actions.ts:222-226 (`redirect(`/${locale}/signin?mfa=locked`)`)؛ apps/client/src/app/[locale]/(auth)/signin/page.tsx:17-19 (`searchParams: { next?, mode?, reset? }` — لا `mfa`).",
+    "recommendation": "اقرأ `mfa` في الصفحة واعرض `Alert tone=\"warn\"` بنص «محاولات كثيرة لرمز المصادقة. انتظر 10 دقائق ثم سجّل الدخول من جديد.» (مطابق لمدة القفل في `lockout`)، مع `role=\"alert\"`.",
+    "effort": "S",
+    "skill": "ui-ux-pro-max § feedback / security-audit (lockout UX)",
+    "files": [
+      "apps/client/src/app/[locale]/(auth)/signin/page.tsx",
+      "apps/client/src/app/[locale]/(auth)/actions.ts",
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-010",
+    "severity": "P1",
+    "category": "تقني",
+    "app": "client",
+    "screen": "/payouts/new (خطوة المبلغ وخطوة بيانات USDT)",
+    "element": "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx",
+    "title": "الإرسال الضمني بمفتاح Enter يُرسل طلب الصرف من خطوة سابقة ويتخطّى المراجعة، أو يفشل صامتاً",
+    "detail": "النموذج واحد لكل الخطوات؛ زر الإرسال يُصيَّر في خطوة المراجعة فقط وزر «التالي» من نوع `button`. وفق قاعدة الإرسال الضمني في HTML: نموذج بلا زر إرسال يُرسَل عند Enter إذا كان فيه حقل نصي واحد فقط. خطوة المبلغ تحوي حقلاً نصياً واحداً (`amount-visible`)، وخطوة بيانات USDT تحوي حقلاً واحداً (`address-visible`). Enter على لوحة مفاتيح مادية/Android «Done»: (أ) في خطوة المبلغ يُستدعى `submitPayout` ببيانات ناقصة فيعود `errors.address` الذي لا يُعرض في هذه الخطوة (التنبيه العام يُصيَّر في خطوة المراجعة فقط) → فشل صامت؛ (ب) في خطوة العنوان مع مبلغ وعنوان صالحين يُنشأ طلب الصرف فعلاً ويُحوَّل المستخدم إلى صفحته دون أن يرى شاشة المراجعة (المبلغ المستلم 80 %، الوجهة).",
+    "evidence": "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx:54 (`<form action={action}`), :90 (الحقل الوحيد في خطوة المبلغ), :137 (الحقل الوحيد في خطوة crypto), :193 (التنبيه داخل `step === 'review'` فقط), :198-205 (`SubmitButton` في المراجعة فقط و`Button type=\"button\"` للتالي)؛ HTML Living Standard § 4.10.21.2 implicit submission.",
+    "recommendation": "أضف للنموذج `onKeyDown={(e) => { if (step !== 'review' && e.key === 'Enter' && (e.target as HTMLElement).tagName === 'INPUT') { e.preventDefault(); if (canNext) next(); } }}`؛ وبديل أمتن: اجعل «التالي» `type=\"submit\"` مع `onSubmit` يتقدّم خطوة ويستدعي الإجراء فقط في المراجعة. أضف اختبار e2e يضغط Enter في خطوة المبلغ ويؤكّد بقاء `data-step=\"channel\"`.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Forms + security-audit (business flow)",
+    "files": [
+      "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx",
+      "apps/client/src/app/[locale]/(app)/payouts/actions.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-011",
+    "severity": "P2",
+    "category": "تقني",
+    "app": "client",
+    "screen": "/accounts/[id] (نظرة عامة حية)",
+    "element": "apps/client/src/components/account-overview.tsx",
+    "title": "استطلاع البث الحي كل ثانية يعامل 401 (انتهاء الجلسة) كـ«غير متصل» ويستمر إلى الأبد",
+    "detail": "`tick` يستدعي `/api/accounts/[id]/live` كل 1000 مللي ثانية؛ أي `!res.ok` يُرمى ويُضبط `online=false`. بعد خمول 30 دقيقة (الاستطلاع نفسه يمدّد `last_seen_at` ما دام التبويب مرئياً، لكن بعد إخفاء التبويب ثم إظهاره بعد الخمول) يعيد الخادم 401 فتظهر شارة «غير متصل» البرتقالية بينما الشبكة سليمة، ويستمر طلب فاشل كل ثانية. كذلك 429 مع `Retry-After: 60` لا يُحترم.",
+    "evidence": "apps/client/src/components/account-overview.tsx:11 (`POLL_MS = 1000`), :47-55 (`if (!res.ok) throw` → `setOnline(false)`), :60; apps/client/src/app/api/accounts/[id]/live/route.ts:15 (401), :20 (429 + Retry-After).",
+    "recommendation": "في `tick`: عند 401/403 أوقف المؤقّت وانتقل إلى `/signin?next=<المسار>&reason=expired`؛ عند 429 انتظر `Retry-After`؛ عند أخطاء الشبكة طبّق تراجعاً أسّياً (1s→2s→4s…≤30s) وأعد التسمية إلى «انقطع الاتصال» بدل «غير متصل» الدائم. ملاحظة تصميمية: الاستطلاع يلمس `last_seen_at` فيعطّل مهلة الخمول عملياً أثناء عرض التبويب — وثّق ذلك أو استثنِ مسار live من اللمس.",
+    "effort": "S",
+    "skill": "ui-ux-pro-max § live data / security-audit (session)",
+    "files": [
+      "apps/client/src/components/account-overview.tsx",
+      "apps/client/src/app/api/accounts/[id]/live/route.ts",
+      "apps/client/src/lib/session.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-012",
+    "severity": "P2",
+    "category": "تقني",
+    "app": "client",
+    "screen": "/checkout/[orderId]/transfer (رفع إثبات التحويل)",
+    "element": "apps/client/src/app/[locale]/(app)/checkout/[orderId]/transfer/transfer-form.tsx",
+    "title": "تاريخ التحويل الافتراضي والحد الأقصى يُحسبان بـ UTC داخل مكوّن عميل: عدم تطابق hydration وتاريخ خاطئ لمستخدمي الخليج بعد منتصف الليل",
+    "detail": "`const today = new Date().toISOString().slice(0, 10)` يُنفَّذ على الخادم (UTC) أثناء SSR ثم على العميل؛ الحقل `type=\"date\" max={today} defaultValue={today}`. متداول في دبي الساعة 01:00 يوم 31: UTC ما زال 30 → لا يستطيع اختيار تاريخ اليوم (max) والقيمة الافتراضية أمس؛ وقرب منتصف الليل يختلف SSR عن العميل فيحذّر React من hydration mismatch ويُسقط القيمة.",
+    "evidence": "apps/client/src/app/[locale]/(app)/checkout/[orderId]/transfer/transfer-form.tsx:28, :76; packages/ui/src/lib/format.ts:140-148 (`dateParts` بمنطقة زمنية صريحة متاحة ولا تُستخدم هنا).",
+    "recommendation": "احسب اليوم على الخادم بمنطقة المشاهد: `const p = dateParts(Date.now(), viewer.user.timezone || DUBAI); const today = `${p.year}-${pad(p.month)}-${pad(p.day)}`` ومرّره كخاصية إلى النموذج؛ وعلى الخادم اقبل تاريخاً حتى «اليوم» بمنطقة دبي مع هامش يوم.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Hydration Safety / Locale",
+    "files": [
+      "apps/client/src/app/[locale]/(app)/checkout/[orderId]/transfer/transfer-form.tsx",
+      "apps/client/src/app/[locale]/(app)/checkout/[orderId]/transfer/page.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-013",
+    "severity": "P2",
+    "category": "أداء",
+    "app": "client",
+    "screen": "كل الصفحات (مثال /ar = 243 KB HTML)",
+    "element": "apps/client/src/app/[locale]/layout.tsx NextIntlClientProvider + apps/client/src/i18n/request.ts",
+    "title": "كل صفحة تشحن القاموس كاملاً (193 KB عربي) بما فيه نصوص لوحة الموظفين، فيتضخّم HTML وTBT على الهاتف",
+    "detail": "`getRequestConfig` يعيد `messages[locale]` كاملاً و`NextIntlClientProvider` بلا `messages` يرث الكل إلى العميل. صفحة الهبوط العامة 243,585 بايت وتحوي نصوصاً من فضاء `admin.result` (مثل «محاولات إعادة تحقق فاشلة»). Lighthouse هاتف: صفحة تسجيل الدخول TBT 850 ms وأقصى FID 1,010 ms مع 1.3 ثانية «Unattributable» على الخيط الرئيسي، متوافق مع تحليل حمولة RSC ضخمة. ليس تسريباً أمنياً (لا أسرار) لكنه يكشف تسميات واجهة الإدارة لأي زائر.",
+    "evidence": "curl https://fptraders.app/ar | wc -c → 243585؛ grep «محاولات إعادة تحقق فاشلة» في HTML الهبوط → 1؛ apps/client/src/i18n/request.ts:9; apps/client/src/app/[locale]/layout.tsx:118; ls -la packages/i18n/src/messages → ar.json 192,936 B; artifacts/ux-audit-F4/lighthouse/client-signin.json (TBT 850 ms, max-potential-fid 1,010 ms, bootup Unattributable 1,355 ms).",
+    "recommendation": "مرّر إلى المزوّد فضاءات العميل فقط: `messages={pick(messages, ['client','auth','dashboard','payouts','profile','common','errors',…])}` (next-intl يدعم القاموس الجزئي)، أو قسّم القاموس إلى `client.json`/`admin.json`/`shared.json` في @fpt/i18n وصدّر لكل تطبيق قاموسه. هدف: HTML الهبوط < 90 KB.",
+    "effort": "M",
+    "skill": "web-interface-guidelines § Performance",
+    "files": [
+      "apps/client/src/i18n/request.ts",
+      "apps/client/src/app/[locale]/layout.tsx",
+      "packages/i18n/src/index.ts",
+      "packages/i18n/src/messages/ar.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-014",
+    "severity": "P2",
+    "category": "أداء",
+    "app": "client",
+    "screen": "كل الصفحات (الخطوط)",
+    "element": "brand/fonts/fonts.css + apps/client/src/app/[locale]/layout.tsx",
+    "title": "الخطوط تُكتشف بعد CSS ولا تُحمَّل مسبقاً: أربعة أوزان من IBM Plex Sans Arabic (~280 KB) مع `font-display: swap` → وميض خط وانزياح تخطيط",
+    "detail": "لا `<link rel=\"preload\" as=\"font\">` في أي تخطيط (grep صفر)، ولا `next/font`. الخط يُطلب فقط بعد تنزيل وتحليل CSS (128 KB). Lighthouse: الأوزان 400/500/600/700 العربية كلها تُنزَّل على صفحة تسجيل الدخول البسيطة (67–72 KB لكل منها)، وصفحة الهبوط تسجّل CLS 0.023 في `section.ui-section` (انزياح نصي نمطي لتبديل الخط).",
+    "evidence": "brand/fonts/fonts.css:13-16 (أربعة أوزان، `font-display:swap`)؛ grep `preload|next/font` في apps/*/src → لا نتائج؛ artifacts/ux-audit-F4/lighthouse/client-signin.json → total-byte-weight: IBMPlexSansArabic-600/500/700/400 ≈ 282 KB; client-landing.json → layout-shifts `<section class=\"ui-section\">` 0.022.",
+    "recommendation": "في تخطيط اللغة أضف لكل لغة `<link rel=\"preload\" href=\"/_next/static/media/IBMPlexSansArabic-400.*.woff2\" as=\"font\" type=\"font/woff2\" crossOrigin=\"anonymous\">` للوزنين 400 و600 فقط (استورد ملفات الخط من حزمة brand لتثبيت الرابط)، واقتصر الأوزان المحمّلة على المستخدمة فعلاً (راجع استخدام 500/700)، وأضف `size-adjust`/`ascent-override` لبديل النظام لتقليل الانزياح. (الخطوط نفسها ملفات العلامة — لا تُعدَّل، التغيير في التخطيط فقط.)",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Performance (fonts) + fpt-brand",
+    "files": [
+      "apps/client/src/app/[locale]/layout.tsx",
+      "apps/admin/src/app/[locale]/layout.tsx",
+      "brand/fonts/fonts.css"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-015",
+    "severity": "P3",
+    "category": "أداء",
+    "app": "client",
+    "screen": "كل الصفحات",
+    "element": "/brand/* (public) — رؤوس التخزين",
+    "title": "صور العلامة تحت `/brand/` تُرسل بـ `max-age=0, must-revalidate` بما فيها بلاطة 45 KB تُحمَّل مسبقاً في كل صفحة",
+    "detail": "كل تنقّل يعيد التحقق الشرطي من البلاطة والأيقونات (304 بعد رحلة شبكة) في المتصفحات التي لا تشغّل عامل الخدمة (Safari الخاص، المتصفحات المكتبية قبل التسجيل). ملفات الخطوط وCSS تحمل `immutable` سنة.",
+    "evidence": "curl -I https://fptraders.app/brand/fpt-logo-icon-rounded.jpeg → `cache-control: public, max-age=0, must-revalidate`, `content-length: 45636`; curl -I …/app-icon-192.png → نفسه؛ مقابل `/_next/static/media/*.woff2` → `public,max-age=31536000,immutable`.",
+    "recommendation": "في `headers()` أضف `{ source: '/brand/:path*', headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }] }` (الملفات تتغير مع إصدار العلامة فقط؛ أو `immutable` مع تسمية بالإصدار).",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Performance",
+    "files": [
+      "apps/client/next.config.ts",
+      "apps/admin/next.config.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-016",
+    "severity": "P3",
+    "category": "أداء",
+    "app": "client",
+    "screen": "الهبوط / 404 / كل صفحة فيها PartnerRow",
+    "element": "packages/ui/src/components/partner-row.tsx + logo.tsx (React 19 image preload)",
+    "title": "صور الذيل (شعار cTrader) تُحمَّل مسبقاً قبل محتوى الطيّة الأولى وتنافس LCP، ولا `loading=\"lazy\"` على أي صورة تحت الطيّة",
+    "detail": "React 19 يصدر `<link rel=\"preload\" as=\"image\">` لكل `<img>` تُصيَّر في الغلاف الأولي ما لم تكن `loading=\"lazy\"`؛ الإنتاج يحمل preload لـ `/brand/third-party/ctrader/ctrader-logo-light.svg` (خط التأييد في الذيل) وللبلاطة على صفحة 404. لا توجد أي `loading=\"lazy\"` في المستودع. LCP الهبوط 2.9 s على الهاتف.",
+    "evidence": "curl https://fptraders.app/ar → `<link rel=\"preload\" as=\"image\" href=\"/brand/third-party/ctrader/ctrader-logo-light.svg\"/>`؛ grep `loading=\"lazy\"` في apps/*/src packages/ui/src → 0؛ packages/ui/src/components/partner-row.tsx:24-26; artifacts/ux-audit-F4/lighthouse/client-landing.json (LCP 2,940 ms).",
+    "recommendation": "أضف `loading=\"lazy\"` إلى صور PartnerRow/EndorsementLine (تحت الطيّة) و`fetchPriority=\"high\"` إلى بلاطة الرأس فقط؛ أعطِ شعار cTrader `width`/`height` صريحين (765×271 مع `height` بالـ CSS).",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Images / Performance",
+    "files": [
+      "packages/ui/src/components/partner-row.tsx",
+      "packages/ui/src/components/logo.tsx",
+      "packages/ui/src/components/endorsement-line.tsx"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "TEC-017",
+    "severity": "P3",
+    "category": "وصول",
+    "app": "both",
+    "screen": "رأس الصفحة (الشعار داخل رابط)",
+    "element": "apps/client/src/components/shell.tsx + packages/ui/src/components/logo.tsx",
+    "title": "نص بديل مكرر: `<img alt=\"Fiper Pro Traders\">` داخل رابط يحمل `aria-label` بالاسم نفسه (axe image-redundant-alt — الفشل الوحيد في Lighthouse Accessibility 99)",
+    "detail": "قارئ الشاشة يقرأ «Fiper Pro Traders، رابط، Fiper Pro Traders». يتكرر على كل شاشات العميل (رأس Shell) وعلى الهبوط.",
+    "evidence": "artifacts/ux-audit-F4/lighthouse/client-signin.json → audits.image-redundant-alt: `<img src=\"/brand/fpt-logo-icon-rounded.jpeg\" alt=\"Fiper Pro Traders\" …>`؛ apps/client/src/components/shell.tsx:52 (`aria-label={LEGAL.entity.brandFull}`)؛ packages/ui/src/components/logo.tsx:49.",
+    "recommendation": "مرّر `title=\"\"`/`decorative` إلى `Logo` حين يكون داخل رابط موسوم، فيصبح `alt=\"\"`؛ أو احذف `aria-label` من الرابط واترك alt الصورة. أعد Lighthouse ليصبح Accessibility 100.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Accessibility",
+    "files": [
+      "apps/client/src/components/shell.tsx",
+      "packages/ui/src/components/logo.tsx",
+      "apps/admin/src/components/shell/AdminShell.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-018",
+    "severity": "P3",
+    "category": "وصول",
+    "app": "both",
+    "screen": "/verify, /2fa, /reset, لوحة: /2fa, /enrol",
+    "element": "packages/ui/src/components/otp-input.tsx + field.tsx",
+    "title": "تسمية حقل الرمز `htmlFor` تشير إلى `div role=\"group\"` غير قابل للتسمية: النقر على التسمية لا يركّز الصندوق الأول و`aria-invalid` على مجموعة",
+    "detail": "`Field` يولّد `<label htmlFor={id}>` و`OtpInput` يضع `id` على `div role=group`. العناصر غير القابلة للتسمية لا ترتبط بـ `label`، فلا تنقل التركيز ولا يقرأها قارئ الشاشة كتسمية للمجموعة (المجموعة بلا `aria-labelledby`). الصناديق نفسها موسومة فردياً («الرقم 1 من 6») فالأثر محدود.",
+    "evidence": "packages/ui/src/components/otp-input.tsx:241 (`<div role=\"group\" id={f.id} … aria-invalid={f.invalid}`); packages/ui/src/components/field.tsx:100 (`<label htmlFor={id}`).",
+    "recommendation": "في `OtpInput`: `aria-labelledby={labelId}` على المجموعة (مرّر معرّف التسمية من `Field` عبر السياق) و`onClick` على التسمية ينقل التركيز إلى `refs.current[0]`؛ أزل `aria-invalid` من المجموعة واتركه على الصناديق.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Forms (labels clickable)",
+    "files": [
+      "packages/ui/src/components/otp-input.tsx",
+      "packages/ui/src/components/field.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-019",
+    "severity": "P3",
+    "category": "وصول",
+    "app": "client",
+    "screen": "/accounts/[id] (تبويب البيانات)، الشهادات، الشركاء",
+    "element": "apps/client/src/components/copy-button.tsx",
+    "title": "زر النسخ يعلن النجاح بتغيير `aria-label` فقط (لا منطقة حية) ويبتلع فشل الحافظة بصمت",
+    "detail": "بعد النسخ يتبدّل `IconButton` إلى أيقونة صح و`label='تم النسخ'`؛ تغيّر aria-label لا يُقرأ تلقائياً. `navigator.clipboard.writeText` يفشل في بعض سياقات iOS/الإذن ويُلتقط بلا أي رسالة، فيظن المستخدم أن القيمة نُسخت.",
+    "evidence": "apps/client/src/components/copy-button.tsx:10-18, :27-29; packages/ui/src/components/toast.tsx:360 (منطقة `aria-live` متاحة عبر `useToast`).",
+    "recommendation": "استخدم `useToast().toast({ title: t('copied'), tone: 'success' })` أو `<span role=\"status\" className=\"sr-only\">` يتغيّر مع `done`؛ عند الفشل اعرض «تعذّر النسخ — حدّد النص وانسخه» واختر النص برمجياً (`selection.selectAllChildren`).",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Accessibility (aria-live)",
+    "files": [
+      "apps/client/src/components/copy-button.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-020",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "client",
+    "screen": "/signin, /signup, /reset, /payouts/new",
+    "element": "auth-form.tsx + payout-form.tsx — autoFocus",
+    "title": "`autoFocus` على الهاتف في تسجيل الدخول وخطوات الصرف يفتح لوحة المفاتيح فور التحميل ويدفع المحتوى",
+    "detail": "الإرشادات: autoFocus باعتدال وعلى سطح المكتب فقط. يُطبَّق على بريد الدخول/التسجيل، كلمة المرور الجديدة، حقل المبلغ، والعنوان/اسم الحامل في كل فرع من خطوة البيانات؛ لأن المقطع يُصيَّر شرطياً فيُعاد التركيز عند كل خطوة (مرغوب لنقل التركيز لكنه يفتح اللوحة ويخفي العنوان والمقدّمة على 360–390 px).",
+    "evidence": "apps/client/src/app/[locale]/(auth)/auth-form.tsx:42, :61, :114; apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx:90, :137, :142, :151, :160.",
+    "recommendation": "في `Input` اجعل `autoFocus` فعّالاً فقط عندما `matchMedia('(pointer: fine)')` (أو `focus({ preventScroll: true })` على العنوان `h2` بدل الحقل عند تغيّر الخطوة، فيُقرأ العنوان ولا تفتح اللوحة)؛ اترك autoFocus لحقل رمز OTP (مقبول).",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Touch & Interaction (autoFocus)",
+    "files": [
+      "apps/client/src/app/[locale]/(auth)/auth-form.tsx",
+      "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx",
+      "packages/ui/src/components/input.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-021",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "client",
+    "screen": "/payouts/new, /profile (الإغلاق، KYC، البريد), /partners",
+    "element": "النماذج متعددة الحقول — لا حارس تغييرات غير محفوظة",
+    "title": "لا تحذير قبل مغادرة نموذج فيه بيانات مكتوبة (`beforeunload`/حارس الموجّه غير موجود في أي ملف)",
+    "detail": "نموذج الصرف يحتفظ بالمبلغ والقناة وعنوان المحفظة/IBAN في الحالة المحلية؛ لمسة على شريط التبويبات السفلي أو سحب للرجوع يفقد كل شيء بلا سؤال.",
+    "evidence": "grep `beforeunload` في apps/*/src packages/ui/src → 0؛ apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx:30-34; packages/ui/src/components/bottom-nav.tsx (روابط Link كاملة).",
+    "recommendation": "خطّاف `useUnsavedChanges(dirty)` يسجّل `beforeunload` ويعترض نقرات `Link` داخل الشريط (confirm مترجم) عندما `amount || details.*` غير فارغ ولم يُرسل النموذج.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Forms (warn before navigation)",
+    "files": [
+      "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx",
+      "apps/client/src/app/[locale]/(app)/profile/closure-form.tsx",
+      "apps/client/src/app/[locale]/(app)/profile/kyc-section.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-022",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "both",
+    "screen": "/signin, /signup, /payouts/new (IBAN/SWIFT), لوحة: /signin",
+    "element": "Input attributes",
+    "title": "حقول البريد وIBAN/SWIFT بلا `spellCheck={false}` و`autoCapitalize`، وIBAN بلا `inputMode`",
+    "detail": "التدقيق الإملائي يضع خطوطاً حمراء تحت البريد وIBAN على Android/macOS، ولوحة iOS تبدأ بحرف كبير في حقول نصية عادية. `spellCheck={false}` مستخدم في الصرف لحقول crypto/fiper فقط.",
+    "evidence": "apps/client/src/app/[locale]/(auth)/auth-form.tsx:42, :61 (بريد بلا spellCheck/autoCapitalize)؛ apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx:163 (iban), :166 (swift) بلا `spellCheck` ولا `autoCapitalize=\"characters\"`؛ apps/admin/src/app/[locale]/(auth)/signin/SignInForm.tsx:128.",
+    "recommendation": "أضف `spellCheck={false} autoCapitalize=\"none\"` لكل بريد/اسم مستخدم/رمز، و`autoCapitalize=\"characters\" spellCheck={false}` لـ IBAN/SWIFT، و`inputMode=\"text\"` مع `pattern` للـ IBAN. يمكن جعل `Input mono` يضبطها افتراضياً.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Forms",
+    "files": [
+      "apps/client/src/app/[locale]/(auth)/auth-form.tsx",
+      "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx",
+      "apps/admin/src/app/[locale]/(auth)/signin/SignInForm.tsx",
+      "packages/ui/src/components/input.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-023",
+    "severity": "P3",
+    "category": "وصول",
+    "app": "client",
+    "screen": "/signin (كلمة المرور)",
+    "element": "apps/client/src/app/[locale]/(auth)/auth-form.tsx PasswordSigninForm",
+    "title": "خطأ تسجيل الدخول يُعرض كتنبيه أعلى النموذج بلا `aria-invalid` على الحقول وبلا نقل التركيز إلى الخطأ",
+    "detail": "بعد «البريد أو كلمة المرور غير صحيحة» يبقى التركيز على زر الإرسال؛ الحقلان لا يحملان `error` فلا `aria-invalid`/`aria-describedby`. الإرشادات: أخطاء بجانب الحقول وتركيز أول خطأ.",
+    "evidence": "apps/client/src/app/[locale]/(auth)/auth-form.tsx:57-65 (`{error ? <Alert tone=\"danger\">…` ثم `Field` بلا `error`).",
+    "recommendation": "مرّر `error` إلى حقل كلمة المرور (أو كليهما بالنص نفسه) ليُضاف `aria-invalid` و`role=alert`، وركّز الحقل الأول المخطئ بعد تغيّر `state` (`useEffect` + `ref.focus()`)؛ أبقِ `Alert` للحالات العامة (`suspended`/`closed`).",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Forms (errors inline, focus first error)",
+    "files": [
+      "apps/client/src/app/[locale]/(auth)/auth-form.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-024",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "client",
+    "screen": "كل أزرار الإرسال",
+    "element": "packages/i18n client.actions.pleaseWait",
+    "title": "تسمية التحميل «يرجى الانتظار» بلا نقاط الحذف خلافاً لنمط الإرشادات والإدارة",
+    "detail": "`SubmitButton` يستخدم `client.actions.pleaseWait = 'يرجى الانتظار'` بينما الإدارة تستخدم «يرجى الانتظار…». الإرشادات: حالات التحميل تنتهي بـ «…».",
+    "evidence": "packages/i18n/src/messages/ar.json → client.actions.pleaseWait vs admin.result.pending؛ apps/client/src/components/submit-button.tsx:11.",
+    "recommendation": "غيّر القيمة إلى «يرجى الانتظار…» (و«Please wait…» في en.json).",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Typography",
+    "files": [
+      "packages/i18n/src/messages/ar.json",
+      "packages/i18n/src/messages/en.json"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-025",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "admin",
+    "screen": "كل نماذج الإجراءات",
+    "element": "apps/admin/src/components/ActionForm.tsx",
+    "title": "رمز رسالة غير مترجم يُعرض كما هو للموظف (`state.message` خام) — تسرّب تقني محتمل عند أي رمز جديد",
+    "detail": "`t.has(state.message) ? t(state.message) : state.message` يعرض الرمز الإنجليزي الخام (مثل `not_manual_channel`) إن غاب عن `admin.result`؛ نفس الشيء في `useFieldError`. القاموس يغطي الحالي، لكن أي رمز خادمي جديد يظهر كنص تقني.",
+    "evidence": "apps/admin/src/components/ActionForm.tsx:61, :94.",
+    "recommendation": "استبدل البديل بـ `t('generic')` (جملة عامة مترجمة) وسجّل الرمز المفقود في `console.warn` أثناء التطوير؛ أضف اختبار وحدات يتحقق أن كل `message`/`fields` التي تعيدها الإجراءات موجودة في `admin.result`.",
+    "effort": "S",
+    "skill": "security-audit (information leak) + ui-ux-pro-max § copy",
+    "files": [
+      "apps/admin/src/components/ActionForm.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-026",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "admin",
+    "screen": "كل نماذج الإجراءات بعد خمول 15 دقيقة",
+    "element": "apps/admin/src/components/ActionForm.tsx + apps/admin/src/lib/session.ts actionStaff",
+    "title": "انتهاء جلسة الموظف أثناء نموذج يُظهر «انتهت جلستك» ثم يترك النموذج معلّقاً بلا توجيه إلى تسجيل الدخول",
+    "detail": "`actionStaff` يعيد 401 بلا تحويل (مقصود)، و`ActionForm` يعرض التنبيه ويبقي القيم؛ لا رابط ولا تحويل تلقائي، فيكرّر الموظف الإرسال ويحصل على الرسالة نفسها. الرسالة ليست أيضاً في `role=alert`.",
+    "evidence": "apps/admin/src/lib/session.ts:288-294; apps/admin/src/components/ActionForm.tsx:66-70.",
+    "recommendation": "عند `state.status === 401` اعرض التنبيه مع زر «تسجيل الدخول» يحمل `next=` المسار الحالي، وحوّل تلقائياً بعد 3 ثوانٍ؛ أضف `role=\"alert\"` إلى تنبيه الخطأ.",
+    "effort": "S",
+    "skill": "ui-ux-pro-max § feedback / security-audit (session)",
+    "files": [
+      "apps/admin/src/components/ActionForm.tsx",
+      "apps/admin/src/lib/session.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-027",
+    "severity": "P3",
+    "category": "أداء",
+    "app": "admin",
+    "screen": "/accounts (200), /payouts (200), /orders (300), /deletions (300), /payments (400)",
+    "element": "صفحات القوائم — `.limit(N)` بلا ترقيم ولا إشعار",
+    "title": "القوائم تُقصّ خادمياً عند 200–400 صف بصمت؛ لا ترقيم خادمي ولا سطر «يُعرض آخر N»",
+    "detail": "`DataTableRows` يعرض 100 صف ثم «المزيد» من المصفوفة المُسلَّمة، لكن المصفوفة نفسها مقصوصة بالاستعلام. بعد تجاوز الحد تختفي السجلات الأقدم من القوائم وتظهر فقط عبر مرشّحات أضيق، دون أي إشارة للموظف. بنية `page=` موجودة في صفقات العميل ولا في الإدارة.",
+    "evidence": "apps/admin/src/app/[locale]/(app)/accounts/page.tsx:38 (`.limit(200)`), payouts/page.tsx:36 (200), orders/page.tsx:44 (300), deletions/page.tsx:38 (300), payments/page.tsx:36 (400); packages/ui/src/components/data-table.tsx:71-72, :92-93.",
+    "recommendation": "أضف ترقيماً بالمؤشر (`?before=<createdAt|id>`) مع رابط «الأقدم» أسفل الجدول، أو على الأقل سطراً «يُعرض آخر 200 — ضيّق المرشّحات» عندما `rows.length === LIMIT`.",
+    "effort": "M",
+    "skill": "web-interface-guidelines § Performance / Navigation & State",
+    "files": [
+      "apps/admin/src/app/[locale]/(app)/payments/page.tsx",
+      "apps/admin/src/app/[locale]/(app)/orders/page.tsx",
+      "apps/admin/src/app/[locale]/(app)/accounts/page.tsx",
+      "packages/ui/src/components/data-table.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-028",
+    "severity": "P3",
+    "category": "RTL",
+    "app": "client",
+    "screen": "تثبيت PWA",
+    "element": "apps/client/public/manifest.webmanifest",
+    "title": "البيان ثابت بالعربية (`start_url` و`id` و`lang`/`dir`) ويقفل الاتجاه عمودياً: تطبيق المستخدم الإنجليزي يُفتح بالعربية والأجهزة اللوحية لا تدور",
+    "detail": "`start_url: /ar/accounts`, `lang: ar`, `dir: rtl`, `orientation: portrait`. مستخدم اختار الإنجليزية يثبّت التطبيق فيفتح على `/ar/accounts` (كوكي اللغة تُحوّله بعد تحميل، مع وميض)، واسم التطبيق/الوصف بالاتجاه العربي في قائمة التثبيت. `orientation` يمنع الوضع الأفقي على Android ولوحة المفاتيح الخارجية.",
+    "evidence": "apps/client/public/manifest.webmanifest:52-58; apps/client/src/app/[locale]/layout.tsx:95 (`manifest: '/manifest.webmanifest'` واحد لكل اللغات).",
+    "recommendation": "قدّم البيان من مسار ديناميكي `/[locale]/manifest.webmanifest` (route handler) يملأ `start_url`/`lang`/`dir`/`description` من اللغة، واربطه في `metadata.manifest` لكل لغة؛ احذف `orientation` (أو `any`).",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Locale & i18n + ui-ux-pro-max § PWA",
+    "files": [
+      "apps/client/public/manifest.webmanifest",
+      "apps/client/src/app/[locale]/layout.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-029",
+    "severity": "P2",
+    "category": "هوية",
+    "app": "client",
+    "screen": "أيقونة التطبيق على Android (تثبيت PWA)",
+    "element": "apps/client/public/manifest.webmanifest icons",
+    "title": "لا أيقونة `purpose: \"maskable\"`: Android يحشو البلاطة داخل قناع الشكل التكيّفي فتبدو صغيرة بحواف غير مقصودة",
+    "detail": "الأيقونتان 192/512 بلا `purpose`؛ المشغّلات التكيّفية (Pixel/Samsung) تُصغّر الأيقونة غير القابلة للقناع إلى ~60 % داخل دائرة/مربّع بخلفية بيضاء افتراضية، فتفقد البلاطة الحمراء حجمها وتحيط بها حافة بيضاء على أرضية سوداء — مخالفة لتركيب البلاطة الرسمية. iOS يستخدم `apple-touch-icon-180.png` (موجود).",
+    "evidence": "apps/client/public/manifest.webmanifest:61-64; artifacts/real-device/android/* (لقطات الشاشة داخل المتصفح فقط — لا لقطة للمشغّل).",
+    "recommendation": "أضف `{ \"src\": \"/brand/app-icon-maskable-512.png\", \"sizes\": \"512x512\", \"type\": \"image/png\", \"purpose\": \"maskable\" }` (البلاطة على أرضية `#0A0A0A` مع منطقة أمان 20 % — أصل مُقترَح/PROPOSED يُشتق من brand/logos ويُسجَّل في brand/value-sources.md قبل الاعتماد).",
+    "effort": "S",
+    "skill": "fpt-brand (app icon) + web-interface-guidelines § Images",
+    "files": [
+      "apps/client/public/manifest.webmanifest",
+      "apps/client/public/brand/"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-030",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "client",
+    "screen": "PWA — تحديث عامل الخدمة",
+    "element": "apps/client/public/sw.js VERSION / activate",
+    "title": "إصدار المخزن ثابت `fpt-client-v2`: نسخ HTML القديمة تبقى عبر النشرات، والتفعيل الفوري بلا أي إشعار «تحديث متاح»",
+    "detail": "`skipWaiting` + `clients.claim` يُفعّلان العامل الجديد فوراً، لكن مخزن PAGES لا يُمسح إلا عند تغيّر `VERSION` (لم يتغيّر مع النشرات). دون اتصال قد يُعرض HTML من نشرة سابقة يشير إلى chunks قديمة (مخزّنة أيضاً فيعمل) بلا أي إشارة للمستخدم أنه يرى نسخة قديمة.",
+    "evidence": "apps/client/public/sw.js:3-5, :9, :12-14; apps/client/src/components/sw-register.tsx:9 (لا `updatefound`/`controllerchange`).",
+    "recommendation": "احقن معرّف النشر في `VERSION` وقت البناء (نسخ sw.js عبر سكربت مع `process.env.VERCEL_GIT_COMMIT_SHA`)، أو امسح PAGES في `activate`؛ في `SwRegister` استمع إلى `controllerchange` واعرض toast «تحديث متاح — أعد التحميل».",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Navigation & State (PWA)",
+    "files": [
+      "apps/client/public/sw.js",
+      "apps/client/src/components/sw-register.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-031",
+    "severity": "P3",
+    "category": "أداء",
+    "app": "client",
+    "screen": "PWA — مخزن STATIC",
+    "element": "apps/client/public/sw.js isStatic branch",
+    "title": "مخزن `_next/static` و`/brand` cache-first بلا سقف ولا تنظيف: ينمو مع كل نشرة",
+    "detail": "كل chunk جديد يُضاف ولا يُحذف القديم ما دام `VERSION` ثابتاً؛ على الهواتف منخفضة التخزين تُطرد المواقع كاملة عند تجاوز الحصة.",
+    "evidence": "apps/client/public/sw.js:23-34.",
+    "recommendation": "بعد `cache.put` قصّ المخزن إلى ~80 مدخلاً (أقدم أولاً عبر `cache.keys()`)، أو اربط مسح STATIC بـ `VERSION` المحقون.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Performance",
+    "files": [
+      "apps/client/public/sw.js"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-032",
+    "severity": "P3",
+    "category": "هوية",
+    "app": "client",
+    "screen": "/<مسار غير موجود> (404 الجذر، خارج اللغة)",
+    "element": "apps/client/src/app/not-found.tsx",
+    "title": "404 الجذر: وسم viewport مكرر، بلا `theme-color`/`color-scheme`/manifest، و`lang=\"ar\"` ثابت للزائر الإنجليزي",
+    "detail": "الصفحة تكتب `<meta name=\"viewport\">` يدوياً وNext يضيف واحداً آخر (اثنان في HTML الإنتاج)؛ لا `color-scheme: dark` فتظهر عناصر النموذج/شريط التمرير فاتحة على iOS/Windows، ولا theme-color فيبقى شريط المتصفح بلون افتراضي بدل الأرضية `#0A0A0A`.",
+    "evidence": "curl https://fptraders.app/ar/nonexistent-xyz → `<meta name=\"viewport\" …>` ×2، لا `theme-color` ولا `color-scheme`؛ apps/client/src/app/not-found.tsx:23-30.",
+    "recommendation": "احذف وسم viewport اليدوي، أضف `<meta name=\"color-scheme\" content=\"dark\">` و`<meta name=\"theme-color\" content=\"#0A0A0A\">` (القيمة الوحيدة المسموح بها حرفياً في التخطيطات) ورابط manifest؛ اختر `lang`/`dir` من كوكي `NEXT_LOCALE` عبر `cookies()`.",
+    "effort": "S",
+    "skill": "fpt-brand + web-interface-guidelines § Dark Mode",
+    "files": [
+      "apps/client/src/app/not-found.tsx",
+      "apps/admin/src/app/not-found.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-033",
+    "severity": "P3",
+    "category": "أداء",
+    "app": "both",
+    "screen": "كل المسارات الديناميكية (accounts, account/[id], payouts, orders, لوحة القوائم)",
+    "element": "app router — لا loading.tsx ولا Suspense",
+    "title": "لا هياكل تحميل لأي مسار: كل تنقّل ينتظر تصيير الخادم الكامل (قاعدة البيانات) وتبقى الشاشة الحالية جامدة",
+    "detail": "`dynamic = 'force-dynamic'` على كل الصفحات ولا ملف `loading.tsx` ولا `Suspense` في أي من التطبيقين؛ مكوّن `Skeleton` في @fpt/ui غير مستخدم للمسارات. على 3G/جهاز حقيقي يظهر التنقّل بين التبويبات كتجمّد 0.5–2 ثانية بلا تغذية راجعة (البوابات تقيس DCL لا هذا الفراغ).",
+    "evidence": "find apps/*/src/app -name loading.tsx → 0؛ grep `Suspense` → 0؛ packages/ui/src/components/skeleton.tsx موجود؛ apps/client/src/app/[locale]/layout.tsx:89.",
+    "recommendation": "أضف `loading.tsx` في `(app)/accounts`, `(app)/accounts/[id]`, `(app)/payouts`, `(app)/orders`, و`(app)` في الإدارة بهياكل AccountHeroCard/ListRow (Skeleton) بالارتفاعات الحقيقية لمنع الانزياح؛ أبقِ الرأس والشريط السفلي خارج الهيكل.",
+    "effort": "M",
+    "skill": "web-interface-guidelines § Performance + ui-ux-pro-max § loading states",
+    "files": [
+      "apps/client/src/app/[locale]/(app)/accounts",
+      "apps/client/src/app/[locale]/(app)/payouts",
+      "apps/admin/src/app/[locale]/(app)",
+      "packages/ui/src/components/skeleton.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-034",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "both",
+    "screen": "Sheet / Dialog / Select / DropdownMenu على الهاتف",
+    "element": "packages/ui/src/components.css + sheet.tsx/dialog.tsx",
+    "title": "لا `overscroll-behavior: contain` على الطبقات: تمرير الورقة السفلية يسحب الصفحة خلفها (تأثير المطاط)",
+    "detail": "Radix Dialog يقفل تمرير الجسم لكن لا يمنع السلسلة داخل محتوى قابل للتمرير؛ لا `overscroll-behavior` في أي ملف CSS. كذلك لا `-webkit-tap-highlight-color` مضبوط عمداً (`touch-action: manipulation` موجود).",
+    "evidence": "grep `overscroll-behavior|-webkit-tap-highlight` في packages/ui/src/*.css apps/*/src/app/globals.css → 0؛ packages/ui/src/components.css:112-114 (touch-action)؛ packages/ui/src/components/sheet.tsx:31.",
+    "recommendation": "أضف `overscroll-behavior: contain` إلى محتوى Sheet/Dialog/Select viewport/DropdownMenu content، و`-webkit-tap-highlight-color: transparent` على `button, a, [role=button]` مع الاعتماد على حالة `:active` الموجودة.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Touch & Interaction",
+    "files": [
+      "packages/ui/src/components.css",
+      "packages/ui/src/components/sheet.tsx",
+      "packages/ui/src/components/dialog.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-035",
+    "severity": "P3",
+    "category": "RTL",
+    "app": "both",
+    "screen": "كل الشاشات (أسماء العلامة والرموز)",
+    "element": "JSX — لا `translate=\"no\"`",
+    "title": "لا `translate=\"no\"` على «Fiper Pro Traders / FPT / cTrader» والرموز (رقم الحساب، الخادم، IBAN، العناوين): الترجمة الآلية في المتصفح تشوّهها",
+    "detail": "الهوية تلزم بقاء الاسم اللاتيني داخل العربية؛ الترجمة التلقائية لـ Chrome/Safari تترجم «Fiper Pro Traders» و«cTrader» وقد تلمس القيم داخل `.fpt-unit`. لا استخدام واحد للسمة في المستودع.",
+    "evidence": "grep `translate=\"no\"` في apps/*/src packages/ui/src → 0؛ packages/ui/src/components/logo.tsx, credentials-panel.tsx:17.",
+    "recommendation": "أضف `translate=\"no\"` إلى غلاف الشعار/الاسم، إلى `<bdi className=\"fpt-unit\">` في `Money`/`DateTime`/`KeyValue` وإلى حقول الرموز؛ ويمكن إضافة `<meta name=\"google\" content=\"notranslate\">` لصفحات الحساب فقط.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Locale & i18n + fpt-brand",
+    "files": [
+      "packages/ui/src/components/logo.tsx",
+      "packages/ui/src/components/money.tsx",
+      "packages/ui/src/components/date-time.tsx",
+      "apps/client/src/components/credentials-panel.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-036",
+    "severity": "P3",
+    "category": "أداء",
+    "app": "both",
+    "screen": "RuleMeter / Gauge / Progress",
+    "element": "brand/components/components.css (ملف العلامة — للإبلاغ فقط)",
+    "title": "انتقال `transition: width` على شريط القياس يحرّك خاصية تخطيط لا `transform` (غير مناسب للمركّب)",
+    "detail": "لا `transition: all` في أي ملف (جيد)، لكن شريط العداد ينتقل على `width` فيعيد التخطيط في كل إطار؛ على الهواتف مع تحديث حي كل ثانية قد يسبب jank طفيفاً. الملف من حزمة العلامة المقفلة.",
+    "evidence": "grep -o 'transition:[^;}]*' brand/components/components.css → `transition:width var(--fpt-motion-duration-surface) …`؛ packages/ui/src/components/rule-meter.tsx:75 (`style={{ width: … }}`).",
+    "recommendation": "للإبلاغ إلى إصدار العلامة التالي: استخدم `transform: scaleX(ratio)` مع `transform-origin: var(--fpt-start)` (RTL-aware) بدل `width`؛ في التطبيق لا تغيير حتى يُصدر الـ brand.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Animation",
+    "files": [
+      "brand/components/components.css",
+      "packages/ui/src/components/rule-meter.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-037",
+    "severity": "P3",
+    "category": "أداء",
+    "app": "admin",
+    "screen": "/payments/[id] (معاينة الإثبات)",
+    "element": "apps/admin/src/app/[locale]/(app)/payments/[id]/page.tsx",
+    "title": "صورة الإثبات بلا `width`/`height` → انزياح تخطيط عند التحميل",
+    "detail": "`<img src=/api/proofs/… className=\"max-h-[70vh] w-full object-contain\">` بلا أبعاد؛ المحتوى تحتها (الأحداث، الأزرار) يقفز عند وصول الصورة.",
+    "evidence": "apps/admin/src/app/[locale]/(app)/payments/[id]/page.tsx:150.",
+    "recommendation": "احفظ أبعاد الصورة عند الرفع (sharp/`image-size`) ومرّرها، أو ضع الصورة داخل صندوق `aspect-ratio: 3/4; max-height: 70vh` ثابت.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Images",
+    "files": [
+      "apps/admin/src/app/[locale]/(app)/payments/[id]/page.tsx",
+      "apps/client/src/app/api/orders/[orderId]/proof/route.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-038",
+    "severity": "P2",
+    "category": "تقني",
+    "app": "admin",
+    "screen": "/integrations @ 360 px",
+    "element": "artifacts/ux-gates/gates-phone-360.json (تقرير بوابات محلي غير مُلتزم)",
+    "title": "تقرير البوابات المحلي الحالي يُظهر فيض أفقي في صفحة التكاملات عند 360 px (الجسم 376 > 360) — فشل بوابة ux-floors",
+    "detail": "الملف المعدَّل في شجرة العمل (20:43 بتوقيت الخادم) يسجّل `pass=false` بسبب الفيض؛ رسالة الالتزام RD1 تذكر إصلاح «التفاف رموز المسار الطويلة» لكن التقرير لم يُحدَّث بعد الإصلاح أو الإصلاح لم يغطِّ الحالة. يلزم إعادة التشغيل للحسم.",
+    "evidence": "artifacts/ux-gates/gates-phone-360.json → failures: `phone-360 · admin-integrations · horizontal overflow (doc 360 / body 376 > 360)`؛ git status (الملف M)؛ HEAD 4bd13f8 (وصف الإصلاح).",
+    "recommendation": "شغّل `pnpm exec tsx e2e/boot.ts` ثم `ux-gates` لمشروع phone-360-admin؛ إن استمر الفيض أضف `overflow-wrap: anywhere` + `min-width: 0` إلى خطوات التكامل (`.ui-wrap`)، ثم التزم بالتقرير المحدَّث.",
+    "effort": "S",
+    "skill": "ui-ux-pro-max § responsive / docs/design-system.md § UX floors",
+    "files": [
+      "artifacts/ux-gates/gates-phone-360.json",
+      "apps/admin/src/app/[locale]/(app)/integrations/page.tsx"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "TEC-039",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "admin",
+    "screen": "/mail/[id] (معاينة البريد)",
+    "element": "e2e/ux-gates.spec.ts — قائمة تجاهل أخطاء الكونسول",
+    "title": "خطأ كونسول متوقع من إطار البريد المعزول (`sandbox` بلا allow-scripts) ما زال يُسقط بوابات 1440/390/360 رغم أن حارس الأجهزة الحقيقية يتجاهله",
+    "detail": "الإطار `sandbox` يرفض سكربت التتبّع المحقون — سلوك أمني صحيح — لكن تقارير ux-gates المحلية الثلاثة تسجّله كفشل، فتبدو البوابة حمراء بلا عيب حقيقي.",
+    "evidence": "artifacts/ux-gates/gates-desktop-1440.json, gates-phone-390.json, gates-phone-360.json → `admin-mail-detail · console error (1): Blocked script execution … sandboxed`؛ HEAD 4bd13f8 (التجاهل أُضيف لـ real-device-coverage فقط).",
+    "recommendation": "وحّد قائمة التجاهل (`Blocked script execution in '…/api/mail/*/preview'`) بين e2e/ux-gates.spec.ts وscripts/real-device-coverage.mjs في وحدة مشتركة.",
+    "effort": "S",
+    "skill": "security-audit (sandboxed preview) / tooling",
+    "files": [
+      "e2e/ux-gates.spec.ts",
+      "scripts/real-device-coverage.mjs"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "TEC-040",
+    "severity": "P2",
+    "category": "تقني",
+    "app": "client",
+    "screen": "/signin, /signup, /reset, /verify (نماذج المصادقة)",
+    "element": "apps/client/src/app/[locale]/(auth)/auth-form.tsx — `<form action>` بحقول غير مُتحكَّم بها",
+    "title": "React 19 يفرّغ الحقول غير المتحكَّم بها بعد كل إجراء: عند خطأ التحقق يختفي البريد/كلمة المرور ويعيد المستخدم الكتابة",
+    "detail": "نماذج المصادقة تستخدم `<form action={formAction}>` مع `Input` غير متحكَّم (`name` فقط). React 19 يستدعي `requestFormReset` بعد اكتمال الإجراء حتى عند الخطأ، فبعد «البريد أو كلمة المرور غير صحيحة» يُمسح الحقلان. لوحة الموظفين لاحظت ذلك وتفاديه بإرسال يدوي (`onSubmit` + `startTransition(formAction(fd))`)؛ العميل لا.",
+    "evidence": "apps/client/src/app/[locale]/(auth)/auth-form.tsx:39-47, :57-69, :106-122; apps/admin/src/components/ActionForm.tsx:43-49 (التعليق والحل).",
+    "recommendation": "طبّق نمط الإدارة نفسه في `auth-form.tsx` (و`SubmitButton` يبقى على `useFormStatus` لأنه داخل `<form>`)، أو أعد البريد من الإجراء في `state.values.email` وامنحه `defaultValue`. أضف اختبار e2e: كلمة مرور خاطئة ثم تأكّد بقاء البريد.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Forms / Hydration (controlled vs uncontrolled)",
+    "files": [
+      "apps/client/src/app/[locale]/(auth)/auth-form.tsx",
+      "apps/client/src/components/submit-button.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-041",
+    "severity": "P3",
+    "category": "وصول",
+    "app": "client",
+    "screen": "/payouts/new (خطوة المراجعة)",
+    "element": "payout-form.tsx — أخطاء الخادم للحقول",
+    "title": "أخطاء الخادم على حقول الخطوات السابقة تُعرض في المراجعة كتنبيه عام «حدث خطأ» دون تسمية الحقل ولا نقل التركيز",
+    "detail": "إن أعاد الخادم `errors.iban` مثلاً يُصيَّر النص داخل `Field` في خطوة البيانات (غير معروضة)، وتُظهر المراجعة `tc('error')` فقط؛ على المستخدم الرجوع خطوتين ليكتشف الحقل.",
+    "evidence": "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx:193, :136-168.",
+    "recommendation": "عند وصول `state.errors` بحقل من خطوة سابقة: `setStep('details'|'amount')` تلقائياً وركّز الحقل المخطئ؛ أو اذكر في تنبيه المراجعة أسماء الحقول مع زر «تعديل البيانات».",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Forms (focus first error)",
+    "files": [
+      "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-042",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "client",
+    "screen": "/checkout/[orderId]/transfer (رفع الإثبات)",
+    "element": "transfer-form.tsx submit()",
+    "title": "فشل رفع الإثبات بسبب انتهاء الجلسة (401) يُعرض كخطأ عام بلا دعوة لتسجيل الدخول",
+    "detail": "`fetch('/api/orders/[id]/proof')` يعيد 401 بعد الخمول؛ الرمز `unauthorized` ليس ضمن `KNOWN_ERRORS` فيُعرض «حدث خطأ» ويحاول المستخدم إعادة الرفع مراراً.",
+    "evidence": "apps/client/src/app/[locale]/(app)/checkout/[orderId]/transfer/transfer-form.tsx:10-11, :41-50.",
+    "recommendation": "عند `res.status === 401` وجّه إلى `/signin?next=<المسار>&reason=expired`؛ أضف `unauthorized` إلى الأخطاء المعروفة بنص «انتهت جلستك. سجّل الدخول ثم أعد الرفع».",
+    "effort": "S",
+    "skill": "security-audit (session) + ui-ux-pro-max § errors",
+    "files": [
+      "apps/client/src/app/[locale]/(app)/checkout/[orderId]/transfer/transfer-form.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-043",
+    "severity": "P3",
+    "category": "وصول",
+    "app": "client",
+    "screen": "/checkout/[orderId] (روابط المستندات القانونية)",
+    "element": "checkout-form.tsx",
+    "title": "روابط الشروط تفتح نافذة جديدة (`target=\"_blank\"`) بلا إشارة للمستخدم ولا `rel`",
+    "detail": "قارئ الشاشة لا يُنبَّه أن الرابط يغادر الدفع؛ المتصفحات الحديثة تطبّق `noopener` ضمنياً فالأثر الأمني معدوم (نفس الأصل).",
+    "evidence": "apps/client/src/app/[locale]/(app)/checkout/[orderId]/checkout-form.tsx:42.",
+    "recommendation": "أضف `rel=\"noopener\"` و`<span class=\"sr-only\">(يُفتح في نافذة جديدة)</span>` أو أيقونة `ExternalLink` مع `aria-hidden`.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Accessibility",
+    "files": [
+      "apps/client/src/app/[locale]/(app)/checkout/[orderId]/checkout-form.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-044",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "client",
+    "screen": "/accounts/[id] (التبويب نظرة عامة مفتوح)",
+    "element": "apps/client/src/lib/session.ts resolveSession + account-overview polling",
+    "title": "مهلة الخمول (30 دقيقة) معطّلة عملياً ما دام تبويب الحساب مرئياً: الاستطلاع كل ثانية يلمس `last_seen_at`",
+    "detail": "`viewerFromRequest` → `resolveSession` → `shouldTouch` يحدّث `last_seen_at` كل دقيقة لأي طلب بما فيه `/api/accounts/[id]/live`. شاشة مفتوحة على جهاز مشترك تبقى مصادَقة حتى الحد المطلق 12 ساعة. قرار تصميمي مقبول لكنه غير موثّق في قواعد الجلسة.",
+    "evidence": "apps/client/src/lib/session.ts:50-53, :85-88; apps/client/src/components/account-overview.tsx:11, :47; apps/client/src/lib/session-rules.ts:77-80.",
+    "recommendation": "إمّا توثيق السلوك في `session-rules.ts` (الاستطلاع = نشاط)، أو تمرير `touch: false` من مسار live فيبقى الخمول مقيساً بتفاعل المستخدم (تنقّل/إجراء)، مع إيقاف الاستطلاع عند 401 (TEC-011).",
+    "effort": "S",
+    "skill": "security-audit (session)",
+    "files": [
+      "apps/client/src/lib/session.ts",
+      "apps/client/src/app/api/accounts/[id]/live/route.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-045",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "both",
+    "screen": "global-error (حدّ الخطأ الجذري)",
+    "element": "apps/client/src/app/global-error.tsx + apps/admin/src/app/global-error.tsx",
+    "title": "صفحة الخطأ الجذرية بـ `lang=\"ar\" dir=\"rtl\"` ثابتين ونص ثنائي اللغة: الزائر الإنجليزي يرى تخطيطاً من اليمين؛ لا وسوم theme-color/color-scheme",
+    "detail": "مقبول كحدّ أخير (لا مزوّد ترجمة)، لكن يمكن قراءة `document.documentElement.lang` قبل التصيير لتعيين `dir`؛ لا تسرّب تقني (لا رسالة ولا stack) — جيد.",
+    "evidence": "apps/client/src/app/global-error.tsx:61-66; apps/admin/src/app/global-error.tsx:71-76.",
+    "recommendation": "`const [dir] = useState(() => (typeof document !== 'undefined' && document.documentElement.lang === 'en' ? 'ltr' : 'rtl'))` وطبّقه على `<html>`؛ أضف `<meta name=\"color-scheme\" content=\"dark\">`.",
+    "effort": "S",
+    "skill": "fpt-brand + web-interface-guidelines § Locale",
+    "files": [
+      "apps/client/src/app/global-error.tsx",
+      "apps/admin/src/app/global-error.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-046",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "client",
+    "screen": "قياس الأداء — Lighthouse (artifacts/ux-audit-F4/lighthouse)",
+    "element": "scripts/ux-audit-lighthouse.mjs",
+    "title": "تقارير «client-home» و«client-account» و«client-payouts» قاست صفحة تسجيل الدخول (تحويل بلا جلسة) لا الشاشات المسمّاة",
+    "detail": "`finalDisplayedUrl` لتقرير home هو `/ar/signin?next=%2Far%2Faccounts`؛ أرقام TBT/LCP المنسوبة للوحة والصرف هي أرقام صفحة الدخول. دليل أداء الشاشات المصادَقة غير موجود بعد.",
+    "evidence": "artifacts/ux-audit-F4/lighthouse/client-home.json → finalDisplayedUrl; client-account.json, client-payouts.json (نفس النمط).",
+    "recommendation": "مرّر كوكي جلسة QA (من coverage-prod-ops) إلى Lighthouse عبر `extraHeaders: { cookie }` أو شغّله على المكدّس المحلي بعد تسجيل الدخول؛ أعد تسمية التقارير الحالية إلى signin-*.",
+    "effort": "S",
+    "skill": "tooling (web-interface-guidelines § Performance evidence)",
+    "files": [
+      "scripts/ux-audit-lighthouse.mjs",
+      "artifacts/ux-audit-F4/lighthouse/"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-047",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "client",
+    "screen": "كل المستندات",
+    "element": "packages/core/src/csp.ts — `style-src-attr 'unsafe-inline'`",
+    "title": "قرار معلن: `style-src-attr 'unsafe-inline'` يسمح بأي سمة `style=` محقونة لو وُجد حقن HTML (تغطية/إخفاء عناصر، تسريب عبر CSS) — المتجهات الحالية محصورة ومُتحقَّق منها",
+    "detail": "السماح موثّق في التعليق (أعراض البيانات المُصيَّرة خادمياً: RuleMeter/Gauge/Progress/EquityChart). المصدران الوحيدان لـ `dangerouslySetInnerHTML` هما SVG رمز QR المولَّد خادمياً من مكتبة موثوقة (ملف الموظف والتسجيل)؛ لا `innerHTML` على العميل. يبقى `'unsafe-inline'` أوسع مما تحتاجه الواجهة (قيم عددية لعرض/لون).",
+    "evidence": "packages/core/src/csp.ts:9-12, :58; apps/client/src/app/[locale]/(app)/profile/forms.tsx:107; apps/admin/src/app/[locale]/(auth)/enrol/page.tsx:42; grep `innerHTML|insertAdjacentHTML` → 0.",
+    "recommendation": "أبقِ القرار موثّقاً في security review؛ تحسين اختياري لاحقاً: اضبط العرض عبر `style={{'--w': …}}` ما زال سمة؛ البديل الحقيقي هو ترك العرض الأولي للعميل (CSSOM لا تخضع لـ CSP) مع هيكل SSR بعرض 0 — مقبول للعدادات لا للرسم البياني. لا إجراء إلزامي.",
+    "effort": "M",
+    "skill": "security-audit (CSP design decision)",
+    "files": [
+      "packages/core/src/csp.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-048",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "admin",
+    "screen": "/api/mail/[id]/preview (إطار المعاينة)",
+    "element": "apps/admin/next.config.ts headers + route",
+    "title": "استثناء مسار المعاينة من `API_CSP` صحيح ومقيّد بـ regex ناف — تأكيد لا عيب؛ يبقى التحقق أن المسار يحمل سياسة بريد خاصة",
+    "detail": "`/api/:path((?!mail/).*)` يستثني كل `/api/mail/*` لا المعاينة فقط؛ إن أُضيف لاحقاً مسار JSON تحت `/api/mail/` سيُرسل بلا CSP. الإطار معزول `sandbox` في الصفحة.",
+    "evidence": "apps/admin/next.config.ts:255; artifacts/ux-gates/* (رسالة sandbox).",
+    "recommendation": "ضيّق الاستثناء إلى `/api/:path((?!mail/[^/]+/preview$).*)` أو ضع `API_CSP` افتراضياً داخل معالِجات JSON تحت `/api/mail/`.",
+    "effort": "S",
+    "skill": "security-audit (CSP scope)",
+    "files": [
+      "apps/admin/next.config.ts",
+      "apps/admin/src/app/api/mail/[id]/preview/route.ts"
+    ],
+    "confidence": "medium"
+  },
+  {
+    "id": "TEC-049",
+    "severity": "P3",
+    "category": "أداء",
+    "app": "client",
+    "screen": "/accounts/[id] (الرسم البياني على 1440)",
+    "element": "packages/ui/src/components/equity-chart.tsx",
+    "title": "SVG الرسم يتمدّد بعرض الحاوية (viewBox 358×200، `w-full`) فتتضخّم نصوص المحاور بنسبة التمدّد على سطح المكتب",
+    "detail": "النصوص داخل SVG بوحدات viewBox (fontSize ثابت) تُقاس مع العرض؛ عند 720 px تصبح ~2×. غير مُقاس بصرياً في هذا التدقيق (لقطات 1440 تمرّ البوابات)، لذا تأكيد مطلوب.",
+    "evidence": "packages/ui/src/components/equity-chart.tsx:69 (`width = 358, height = 200`), :122 (`<svg viewBox … width=\"100%\" … className=\"block h-auto w-full\"`).",
+    "recommendation": "مرّر `width` الفعلي من الحاوية (ResizeObserver في مكوّن عميل رقيق) أو حدّ أقصى للعرض (`max-w-[480px]`) مع `preserveAspectRatio=\"xMidYMid meet\"`، وأبقِ النص بحجم ثابت عبر `vector-effect`/مقياس عكسي.",
+    "effort": "S",
+    "skill": "ui-ux-pro-max § charts / dataviz",
+    "files": [
+      "packages/ui/src/components/equity-chart.tsx"
+    ],
+    "confidence": "low"
+  },
+  {
+    "id": "TEC-050",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "client",
+    "screen": "/api/signout عبر GET",
+    "element": "apps/client/src/app/api/signout/route.ts",
+    "title": "تسجيل الخروج متاح بـ GET (موثّق كمقبول): رابط خارجي يستطيع إخراج المستخدم قسراً",
+    "detail": "التعليق يصف GET كهدف رابط حميد؛ `SameSite=Lax` تمنع الطلبات الفرعية لكن التنقّل الأعلى من موقع آخر يُخرج المستخدم ويحوّله. أثر: إزعاج فقط (لا بيانات). مع TEC-001 قد يُترك الجهاز على صفحة الهبوط بينما مخزن SW يحتفظ بالصفحات.",
+    "evidence": "apps/client/src/app/api/signout/route.ts:12-14, :23-24.",
+    "recommendation": "إبقاء القرار مع توثيقه في security review؛ أو جعل GET يعرض صفحة تأكيد صغيرة (POST) — اختياري.",
+    "effort": "S",
+    "skill": "security-audit (CSRF — accepted risk)",
+    "files": [
+      "apps/client/src/app/api/signout/route.ts"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-051",
+    "severity": "P3",
+    "category": "وصول",
+    "app": "client",
+    "screen": "/payouts/new, /checkout (صفوف الاختيار)",
+    "element": "payout-form.tsx / checkout-form.tsx radios",
+    "title": "تأكيد: صفوف الاختيار تجمع التسمية والتحكم في هدف لمس واحد 56 px مع `sr-only` + `peer-focus-visible` — لا عيب؛ ينقص `aria-describedby` لملاحظة «يُنفَّذ يدوياً»",
+    "detail": "الملاحظة «يُنفَّذ يدوياً» بجانب Fiper P2P/Card نص بصري غير مرتبط بالراديو؛ قارئ الشاشة يقرأها مفصولة.",
+    "evidence": "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx:110-120.",
+    "recommendation": "أعطِ الملاحظة `id` واربطها بـ `aria-describedby` على `<input type=radio>`.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Forms (checkbox/radio hit target)",
+    "files": [
+      "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx"
+    ],
+    "confidence": "high"
+  },
+  {
+    "id": "TEC-SUMMARY",
+    "counts": {
+      "total": 51,
+      "bySeverity": {
+        "P1": 2,
+        "P2": 11,
+        "P3": 38
+      },
+      "byCategory": {
+        "تقني": 29,
+        "هوية": 3,
+        "أداء": 10,
+        "وصول": 7,
+        "RTL": 2
+      }
+    },
+    "productionHeadersObserved": {
+      "https://fptraders.app (/ar, 200 document)": {
+        "content-security-policy": "default-src 'self'; script-src 'self' 'nonce-…' 'strict-dynamic'; style-src 'self' 'nonce-…'; style-src-elem 'self' 'nonce-…'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
+        "strict-transport-security": "max-age=63072000",
+        "x-frame-options": "DENY",
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+        "cross-origin-opener-policy": "same-origin",
+        "x-dns-prefetch-control": "off",
+        "cache-control": "private, no-cache, no-store, max-age=0, must-revalidate",
+        "set-cookie": "NEXT_LOCALE=ar; Path=/; SameSite=lax (بلا Secure/HttpOnly)",
+        "link": "hreflang ar/en/x-default; preload image /brand/fpt-logo-icon-rounded.jpeg; preload style (nonced)"
+      },
+      "https://fptraders.app/sw.js": {
+        "content-security-policy": "default-src 'none'; connect-src 'self'; script-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'",
+        "cache-control": "no-cache",
+        "content-type": "application/javascript; charset=utf-8"
+      },
+      "https://fptraders.app/api/* (مثال /api/health → 404)": {
+        "content-security-policy": "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
+        "cache-control": "private, no-cache, no-store, max-age=0, must-revalidate"
+      },
+      "https://fptraders.app/manifest.webmanifest": {
+        "content-type": "application/manifest+json; charset=utf-8",
+        "cache-control": "public, max-age=0, must-revalidate"
+      },
+      "https://fptraders.app/brand/* (jpeg/png)": {
+        "cache-control": "public, max-age=0, must-revalidate"
+      },
+      "https://fptraders.app/_next/static/* (css, woff2)": {
+        "cache-control": "public,max-age=31536000,immutable"
+      },
+      "https://admin.fptraders.app (/ar → 307 /ar/signin; /ar/<404>)": {
+        "content-security-policy": "نفس سياسة العميل (nonce + strict-dynamic، style-src-attr 'unsafe-inline')",
+        "strict-transport-security": "max-age=63072000",
+        "x-frame-options": "DENY",
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+        "cross-origin-opener-policy": "same-origin",
+        "cache-control": "private, no-cache, no-store, max-age=0, must-revalidate",
+        "set-cookie": "NEXT_LOCALE=ar; Path=/; SameSite=lax (مكرر مرتين على 307)",
+        "404 document": "18 <script> بلا nonce (TEC-003)"
+      },
+      "https://admin.fptraders.app/api/*": {
+        "content-security-policy": "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
+      }
+    },
+    "evidenceBase": {
+      "realDevice": "artifacts/real-device/coverage-20261030/iphone-15-pro-max/coverage-receipt.json (6 شاشات عامة، رسالة style-src ×6، 404 قبل الإصلاح ×19 خطأ)",
+      "uxGates": "artifacts/ux-gates/*.json — العميل 73 شاشة ×4 مشاريع: فشل واحد مشترك (إطار البريد المعزول) + فيض 360 في integrations؛ الإدارة 23 شاشة ×3: PASS",
+      "lighthouse": "artifacts/ux-audit-F4/lighthouse/*.json — Accessibility 99 (image-redundant-alt)، Best Practices 100، Performance 79–99 (signin TBT 850 ms)؛ تقارير home/account/payouts قاست صفحة الدخول"
+    },
+    "posture": [
+      "الوضع الأمني لواجهة المتصفح متين في أساسه: CSP بـ nonce + strict-dynamic بلا unsafe-inline للسكربتات، frame-ancestors none مع X-Frame-Options، كوكيز الجلسة HttpOnly/Secure/SameSite (Lax للعميل وStrict للموظفين) مع صف جلسة قابل للإلغاء وتدوير عند كل دخول، مهل خمول/مطلقة واضحة، وإعادة تحقق للموظفين قبل الإجراءات الحساسة؛ لا تسريب تقني في صفحات الخطأ.",
+      "العيب الأعلى هو عامل الخدمة: يخزّن HTML الصفحات المصادَق عليها متجاهلاً no-store ولا يُفرَغ عند تسجيل الخروج، فتُعرض بيانات الحساب دون اتصال بعد الخروج على جهاز مشترك، والبديل دون اتصال صفحة متصفح خام بلا هوية.",
+      "في التدفقات الأساسية ثلاث ثغرات وظيفية مؤكدة من المصدر: الإرسال الضمني بمفتاح Enter في نموذج الصرف يتخطى المراجعة أو يفشل بصمت، وانتهاء الجلسة أثناء النماذج يُفقد البيانات بلا تفسير (والمفتاح المترجم موجود وغير مستخدم)، وReact 19 يفرّغ حقول نماذج المصادقة بعد كل خطأ.",
+      "أداءً، كل صفحة تشحن القاموس كاملاً (243 KB HTML للهبوط) وأربعة أوزان من الخط العربي بلا تحميل مسبق، ولا هياكل تحميل لأي مسار؛ هذه الثلاثة تفسّر TBT المرتفع على الهاتف أكثر من أي شيء في الكود المرئي.",
+      "رسالة Safari iOS عن ورقة التنسيق ليست عيباً في style-src-attr (مدعوم منذ 15.4 ولا يُبلَّغ عنه أصلاً مع unsafe-inline)؛ المصدر عنصر <style> غير موجود في الشجرة المُصيَّرة ولا في المصدر، فالحسم يحتاج report-uri لا تعديلاً في السياسة.",
+      "صفحة 404 الجذرية للوحة الموظفين ما زالت تشحن سكربتات بلا nonce (الإصلاح RD1 شمل العميل فقط)، والبيان/الأيقونات والتخزين تحت /brand تحتاج ضبطاً صغيراً ليكتمل تثبيت PWA على Android بالهوية الصحيحة."
+    ]
+  }
+]

@@ -1,0 +1,1846 @@
+[
+ {
+  "id": "VAD-001",
+  "severity": "P0",
+  "category": "تقني",
+  "app": "admin",
+  "screen": "orders",
+  "element": "عمود «المنتج» — السطر الثاني (حجم الحساب)",
+  "title": "حجم الحساب يظهر مضروباً بـ 100: «5,000,000 USD» لمنتج 50,000 USD",
+  "detail": "في قائمة الطلبات وقائمة المدفوعات اليدوية يُعرض حجم المنتج كـ «5,000,000 USD» و«1,000,000 USD» بينما المنتج هو تقييم 50,000 / 10,000 دولار. السبب: Money يُستدعى بـ fractionDigits={0} و splitCents يقسم على 10^fractionDigits بدل القسمة الثابتة على 100، فتُعرض السنتات كدولارات. رقم مالي خاطئ أمام المشغّل في شاشة اعتماد المدفوعات.",
+  "evidence": "artifacts/real-device/coverage-20261030/local-chromium-1440/admin-admin-orders.png; admin-admin-payments.png; artifacts/ux-audit-F4/evidence/admin-orders-ar-desktop.png; packages/ui/src/lib/format.ts:53-59; apps/admin/src/app/[locale]/(app)/orders/page.tsx:66; payments/page.tsx:87",
+  "recommendation": "اجعل splitCents يقسم دائماً على 100 ثم يقرّب إلى fractionDigits المطلوبة (أو مرّر cents مع fractionDigits=2 واحذف الكسور عبر خيار trimZeros). أضف اختبار وحدة: formatMoney(5_000_000, {fractionDigits:0}) === «50,000».",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §10 number-formatting; WIG Locale & i18n (Intl.NumberFormat)",
+  "files": [
+   "packages/ui/src/lib/format.ts",
+   "packages/ui/src/components/money.tsx",
+   "apps/admin/src/app/[locale]/(app)/orders/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/payments/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-002",
+  "severity": "P1",
+  "category": "RTL",
+  "app": "admin",
+  "screen": "products",
+  "element": "Radix Tabs (قائمة التبويبات + محتواها)",
+  "title": "التبويبات ومحتواها تُرسم LTR داخل الصفحات العربية (جدول المنتجات معكوس، بطاقات الإعدادات، تبويب «نظرة» في الحساب)",
+  "detail": "Radix Tabs يضبط dir=\"ltr\" على جذر التبويبات عند غياب DirectionProvider أو خاصية dir. النتيجة في كل الشاشات التي تستخدم Tabs: أول تبويب في أقصى اليسار (المنتجات، الإعدادات «عام»، الحساب «نظرة»، البريد «HTML»)، جدول المنتجات يبدأ بعمود «الرمز» من اليسار وزر «تعديل» في اليمين عكس جدول الحسابات، بطاقات الإعدادات بترتيب معكوس، وقيم «المقاييس» في تفاصيل الحساب محاذاة لليسار مع تاريخ مشوّه «( بتوقيت دبي 31،00:00 أكتوبر 2026 / GMT+4)». على الهاتف تظهر بطاقات المنتجات بعناوين على اليسار وقيم على اليمين.",
+  "evidence": "admin-admin-products.png; admin-admin-settings.png; admin-admin-account.png (المقاييس + التاريخ); admin-admin-mail-detail.png; artifacts/ux-after/admin-products-phone-390-ar.png; packages/ui/src/components/tabs.tsx:6 (RadixTabs.Root بلا dir); apps/admin/src/app/[locale]/(app)/products/page.tsx:89; settings/page.tsx:65; accounts/[id]/page.tsx:137; mail/[id]/page.tsx:41",
+  "recommendation": "مرّر dir={locale==='ar'?'rtl':'ltr'} إلى Tabs في مكوّن @fpt/ui (كما يفعل DropdownMenu في AdminShell.tsx:91) أو لفّ التطبيق بـ DirectionProvider من radix-ui. أضف فحص e2e: أول تبويب يجب أن يكون في أقصى اليمين في العربية.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §5 (RTL/layout), design-pro critique «Consistency»; WIG Dark Mode/i18n",
+  "files": [
+   "packages/ui/src/components/tabs.tsx",
+   "apps/admin/src/app/[locale]/layout.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-003",
+  "severity": "P1",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "breach",
+  "element": "منحنى حقوق الحساب ±30 دقيقة (EquityCurve)",
+  "title": "نصوص محور الرسم ضخمة (~34 px) وخط المنحنى سميك — الـ SVG يتمدد مع viewBox",
+  "detail": "EquityCurve يرسم على viewBox 640×220 بخط 11 px ثم يعرض بعرض 100% (~1140 px) وارتفاع تلقائي، فتتضخم تسميات المحور «100.0k / 98.0k» ورقم القيمة الأخيرة «94,032.19» حتى تصبح أكبر من عنوان الصفحة، ويتضاعف سمك الخط. نفس المظهر في Chromium وWebKit وFirefox، فهو خلل تصميم لا متصفح. يعطي انطباعاً غير مهني في صفحة الأدلة التي يُفترض أن تُراجَع وقد تُصدَّر.",
+  "evidence": "admin-admin-breach.png (الثلاثة محركات: local-chromium-1440, local-webkit-1440, local-firefox-1440); apps/admin/src/components/EquityCurve.tsx:26-28,56; brand/components/components.css:328",
+  "recommendation": "احسب W من عرض الحاوية (ResizeObserver) أو ثبّت ارتفاع الرسم بالبكسل مع preserveAspectRatio=\"none\" وأضف vector-effect=non-scaling-stroke، واجعل نصوص المحور HTML خارج الـ SVG أو بحجم 12 px ثابت. قارن بمكوّن EquityChart في @fpt/ui الذي يحدد width/height.",
+  "effort": "M",
+  "skill": "ui-ux-pro-max §10 axis-readability, contrast-data, trend-emphasis",
+  "files": [
+   "apps/admin/src/components/EquityCurve.tsx",
+   "packages/ui/src/components/equity-chart.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-004",
+  "severity": "P1",
+  "category": "نص",
+  "app": "admin",
+  "screen": "overview",
+  "element": "صف «حسابات على بُعد 20 % من حدّ» مقابل «أقرب حدّ» و«الأقرب للحد»",
+  "title": "ثلاث دلالات مختلفة لـ «القرب من الحد» في ثلاث شاشات — 21 حساباً «تحتاج إجراءً» بينما لوحة المخاطر تقول «قريب من الحد 0»",
+  "detail": "النظرة العامة تعدّ الحسابات ذات nearest_limit_bps ≤ 2000 (مسافة ≤ 20 % من الرصيد) فتفلّغ كل حساب جديد لم يتداول (مسافته 5.3 % = حد الخسارة اليومية) = 21 من 23. قائمة الحسابات تعرض «أقرب حدّ 5.3 %» بلون تحذيري لكل حساب جديد. لوحة المخاطر تعرض «الأقرب للحد 0 %» لنفس الحساب (نسبة الاستهلاك من آخر 500 نقطة) وفلتر «قريب من الحد 0». المشغّل يرى تناقضاً صريحاً ويُغرق إشارة الخطر الحقيقية.",
+  "evidence": "admin-admin-overview.png (21); admin-admin-accounts.png (5.3 % لكل صف); admin-admin-risk.png (0 % / قريب من الحد 0); apps/admin/src/app/[locale]/(app)/page.tsx:65; accounts/page.tsx:42; risk/page.tsx:22-30",
+  "recommendation": "وحّد المقياس: مقياس واحد «المسافة إلى أقرب حدّ كنسبة من الرصيد» بعتبة واحدة (مثلاً ≤ 2 %) للعدّ والفلتر واللون، واستثنِ الحسابات بلا تداول (0 صفقات / 0 أيام) من التحذير. اعرض الدلالة نفسها بالاسم نفسه في الشاشات الثلاث.",
+  "effort": "M",
+  "skill": "Nielsen #4 Consistency; ui-ux-pro-max §10 color-guidance",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/accounts/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/risk/page.tsx",
+   "packages/i18n/src/messages/ar.json"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-005",
+  "severity": "P1",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "fraud-detail",
+  "element": "بطاقة «الأدلة»",
+  "title": "بطاقة الأدلة فارغة إلا من سطر مطوي «الأدلة ⌄» وتمتد على كامل ارتفاع العمود",
+  "detail": "العمود الأيسر (ثلثا العرض) بطاقة عنوانها «الأدلة» ومحتواها الوحيد JsonViewer مطوي. الإشارة الاحتيالية مبنية على أدلة؛ المشغّل يفتح الصفحة ليقرر «تعليم كمراجَعة/رفض» ولا يرى شيئاً حتى يفتح JSON خاماً. فراغ أسود بارتفاع ~700 px يبدو كخطأ تحميل.",
+  "evidence": "admin-admin-fraud-detail.png; apps/admin/src/app/[locale]/(app)/fraud/[id]/page.tsx:143",
+  "recommendation": "اعرض الأدلة كقائمة مقروءة (الجهاز/البصمة المشتركة، العملاء المطابقون، التوقيتات) مع JsonViewer «البيانات الخام» تحتها مفتوحاً افتراضياً أو مطوياً لكن بعد ملخص. لا تمدّ البطاقة بارتفاع العمود المجاور.",
+  "effort": "M",
+  "skill": "design-pro critique «Is there a focal point?»; ui-ux-pro-max §8 empty-states",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/fraud/[id]/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-006",
+  "severity": "P1",
+  "category": "هوية",
+  "app": "admin",
+  "screen": "mail-detail",
+  "element": "تذييل البريد داخل إطار HTML",
+  "title": "سطر «Regulatory text: pending decision · النص التنظيمي: بانتظار قرار» ظاهر في بريد العميل",
+  "detail": "قالب البريد يطبع عنصر نائب تنظيمي مرئياً في تذييل كل رسالة (إطار بريد «استلمنا إثبات تحويلك»). في وضع المحاكاة لا يخرج شيء، لكن نفس القالب هو ما سيُرسل حين يتحول وضع البريد إلى live. نص «بانتظار قرار» أمام العميل غير مقبول مهنياً، والقاعدة البرندية تمنع اختراع نص تنظيمي لا حذفه إلى حين القرار.",
+  "evidence": "admin-admin-mail-detail.png (الثلاثة محركات); packages/adapters/src/mail/templates/layout.ts:191-192,292",
+  "recommendation": "أبقِ التعليق HTML للمطورين واحذف السطر المرئي حتى يُعتمد النص (أو أضف بوابة إطلاق: FPT_MAIL_MODE=live يفشل ما دام mail.common.regulatoryPending مستخدماً). أدرج القرار المطلوب في brand/regulatory-matrix.md.",
+  "effort": "S",
+  "skill": "fpt-brand: regulatory-matrix (no invented text); WIG Content & Copy",
+  "files": [
+   "packages/adapters/src/mail/templates/layout.ts",
+   "packages/i18n/src/messages/ar.json",
+   "packages/i18n/src/messages/en.json"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-007",
+  "severity": "P2",
+  "category": "RTL",
+  "app": "admin",
+  "screen": "fraud",
+  "element": "رقائق «الخطورة ≥ 40 / ≥ 70»",
+  "title": "علامة ≥ تنعكس في العربية فتُقرأ «الخطورة ≤ 40» — عكس المعنى",
+  "detail": "المصدر يكتب «≥ 40» لكن U+2265 حرف مرآوي في Bidi، فيظهر في السياق العربي كـ «≤ 40». المشغّل يقرأ «أقل من أو يساوي 40» بينما الفلتر يُرجع 40 فأكثر. تأكد بتكبير اللقطة.",
+  "evidence": "admin-admin-fraud.png (مكبّر: «الخطورة ≤ 40»); apps/admin/src/app/[locale]/(app)/fraud/page.tsx:60",
+  "recommendation": "استخدم صياغة لفظية: «الخطورة 40 فأكثر» / «70 فأكثر»، أو لفّ الرمز والرقم في <bdi dir=\"ltr\">≥ 40</bdi>.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §6 long-token-wrapping/bidi; fpt-brand RTL rules",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/fraud/page.tsx",
+   "packages/i18n/src/messages/ar.json"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-008",
+  "severity": "P2",
+  "category": "RTL",
+  "app": "admin",
+  "screen": "mail",
+  "element": "عمود «الموضوع» للرسائل الإنجليزية",
+  "title": "الموضوع الإنجليزي يتفكك: «5.60 USD :New affiliate commission»",
+  "detail": "الصفحة تعزل المبلغ فقط (<bdi class=fpt-unit>) ويبقى باقي الجملة الإنجليزية في فقرة RTL، فتقفز النقطتان والمبلغ إلى البداية. في عرض الهاتف المكدّس يُعرض الموضوع صحيحاً، أي أن الخلل في خلية الجدول فقط.",
+  "evidence": "admin-admin-mail.png; artifacts/ux-audit-F4/evidence/admin-mail-ar-desktop.png; artifacts/ux-after/admin-mail-phone-390-ar.png (صحيح); apps/admin/src/app/[locale]/(app)/mail/page.tsx:36-40",
+  "recommendation": "لفّ الموضوع كاملاً في <bdi dir=\"auto\"> (أو dir حسب لغة الرسالة r.locale) بدل عزل المبلغ وحده.",
+  "effort": "S",
+  "skill": "WIG Locale & i18n; ui-ux-pro-max §6 long-token-wrapping",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/mail/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-009",
+  "severity": "P2",
+  "category": "RTL",
+  "app": "admin",
+  "screen": "overview",
+  "element": "سهم الصف في «يحتاج إجراءً» وإحالات الشريك",
+  "title": "سهم الانتقال يشير إلى اليمين «>» في الواجهة العربية بدل اليسار",
+  "detail": "الصفوف القابلة للنقر تضع ChevronRight في الطرف الأيسر مع rtl:-scale-x-100، لكن اللقطة المكبّرة تُظهر «>» غير معكوس في النظرة العامة وتفاصيل الشريك والهاتف. اتجاه السهم يعاكس اتجاه القراءة ويوحي بالرجوع.",
+  "evidence": "admin-admin-overview.png (مكبّر 420,410→620,510); admin-admin-affiliate.png (الإحالات); artifacts/ux-after/admin-overview-phone-390-ar.png; packages/ui/src/components/list-row.tsx:43",
+  "recommendation": "تحقق من تفعيل variant «rtl:» في إعداد Tailwind للتطبيق الإداري أو استبدله بـ CSS صريح: [dir=rtl] .ui-chev { transform: scaleX(-1) } (الفئة fpt-icon--dir موجودة أصلاً — اربطها بالقاعدة).",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §9 navigation-direction; fpt-brand RTL mirroring",
+  "files": [
+   "packages/ui/src/components/list-row.tsx",
+   "packages/ui/src/components.css",
+   "apps/admin/tailwind.config.*"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-010",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "payouts",
+  "element": "عمود «الطابور حسب الحالة» (Stepper داخل كل صف)",
+  "title": "متتبع خطوات كامل داخل كل صف يرفع ارتفاع الصف إلى ~95 px ويقطع الجدول على 1280 px",
+  "detail": "خمس خطوات بتسميات ملتفة على سطرين («موافقة / أولى») في كل صف، مع عمود حالة يكرر المعلومة نفسها («معتمد (1 من 2)»). على 1280 px (لابتوب شائع) يُقصّ عمود «وقت الطلب» ويُنزَع للتمرير الأفقي داخل البطاقة بلا مؤشر. الطابور بصفين فقط الآن لكنه الشاشة الأكثر استخداماً عند النمو.",
+  "evidence": "admin-admin-payouts.png; artifacts/ux-audit-F4/evidence/admin-payouts-ar-desktop.png (قصّ العمود الأخير); apps/admin/src/app/[locale]/(app)/payouts/page.tsx:42",
+  "recommendation": "في الجدول اكتفِ بشارة الحالة + شريط تقدم مصغّر (5 نقاط) بلا تسميات، أو اعرض الخطوة التالية فقط «ينتظر: موافقة ثانية». احتفظ بالمتتبع الكامل في صفحة التفاصيل. اجعل .fpt-table-wrap تُظهر ظل تمرير عند الفيض.",
+  "effort": "M",
+  "skill": "design-pro component-patterns Data Tables (row density); ui-ux-pro-max §5 horizontal-scroll",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/payouts/page.tsx",
+   "apps/admin/src/components/PayoutSteps.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-011",
+  "severity": "P2",
+  "category": "تقني",
+  "app": "admin",
+  "screen": "payout",
+  "element": "PayoutSteps — الخطوة الحالية",
+  "title": "المتتبع يضع «موافقة أولى» كخطوة جارية رغم أن الحالة «معتمد (1 من 2)» والاعتماد الأول مسجّل باسم Amir",
+  "detail": "payoutStepIndex('approved_1') يُرجع 2 (= موافقة أولى) فيُرسم الشريط الأحمر تحت الخطوة 3 بينما قسم «الاعتمادات والتنفيذ» يعرض اعتماد Amir منجزاً والزر الأساسي «الاعتماد الثاني». يجب أن تكون الخطوة 4 «موافقة ثانية» هي الجارية. المشغّل يتردد: هل الاعتماد الأول تم أم لا؟",
+  "evidence": "admin-admin-payout.png; admin-admin-payouts.png; apps/admin/src/components/PayoutSteps.tsx:6",
+  "recommendation": "approved_1 → 3 (الخطوة الجارية = الموافقة الثانية)، approved/executing → 4 (الدفع جارٍ)، paid → 5. أضف اختبار وحدة للربط.",
+  "effort": "S",
+  "skill": "Nielsen #1 Visibility of system status",
+  "files": [
+   "apps/admin/src/components/PayoutSteps.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-012",
+  "severity": "P2",
+  "category": "نص",
+  "app": "admin",
+  "screen": "finance",
+  "element": "سطور العدّ في عناوين القوائم والملاحظات",
+  "title": "صيغ الجمع العربية ثابتة: «4 مخالفة معروضة»، «5 تقييماً منتهياً»، «1 سحباً»، «1 جهازاً»، «2 طلباً»",
+  "detail": "النصوص تستخدم تمييز العدد لـ 11+ دائماً ({n} حساباً معروضاً) بلا قواعد one/two/few في ICU. تظهر أخطاء لغوية واضحة في: المخالفات (4)، المالية (1 ناجح من 5 تقييماً، 1 سحباً)، المدفوعات اليدوية (2 طلباً)، روابط العميل (1 جهازاً)، الكوبونات (0 كوبونات). next-intl يدعم {n, plural, one{} two{} few{} many{} other{}}.",
+  "evidence": "admin-admin-breaches.png; admin-admin-finance.png; admin-admin-payments.png; admin-admin-fraud-links.png; packages/i18n/src/messages/ar.json:1941,2191,2254,2494,2518,2533",
+  "recommendation": "حوّل كل سلسلة عدّ إلى ICU plural بالفئات العربية الست، وأضف اختباراً في @fpt/i18n يرفض {n} متبوعة بتمييز منصوب بلا plural.",
+  "effort": "M",
+  "skill": "WIG Content & Copy (numerals); ui-ux-pro-max §10 number-formatting (locale-aware)",
+  "files": [
+   "packages/i18n/src/messages/ar.json",
+   "packages/i18n/src/index.ts"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-013",
+  "severity": "P2",
+  "category": "RTL",
+  "app": "admin",
+  "screen": "payment",
+  "element": "تاريخ «رفع الإثبات» وأعمدة التاريخ في الجداول",
+  "title": "القوس «(» يُفصل عن «GMT+4)» عند الالتفاف: «… بتوقيت دبي (» ثم «GMT+4)»",
+  "detail": "TimePart يطبع «بتوقيت دبي (» كنص ثم <bdi>GMT+4</bdi> ثم «)»، فعند ضيق العرض ينكسر السطر بين القوس والرمز ويظهر قوس يتيم في نهاية السطر الأول وقوس مقلوب في الثاني. يتكرر في صفحة المراجعة اليدوية، جدول البريد على 1280، جدول الحسابات (3 أسطر لكل تاريخ).",
+  "evidence": "admin-admin-payment.png (رفع الإثبات); artifacts/ux-audit-F4/evidence/admin-mail-ar-desktop.png (عمود الإدراج); admin-admin-accounts.png (عمود التسليم); packages/ui/src/components/date-time.tsx:74-80",
+  "recommendation": "اجعل «بتوقيت دبي (GMT+4)» وحدة غير قابلة للكسر: <span class=\"whitespace-nowrap\">بتوقيت دبي (<bdi>GMT+4</bdi>)</span> واسمح بالكسر قبلها فقط. في الجداول استخدم صيغة مختصرة (انظر VAD-020).",
+  "effort": "S",
+  "skill": "WIG Typography (non-breaking spaces); ui-ux-pro-max §6 long-token-wrapping",
+  "files": [
+   "packages/ui/src/components/date-time.tsx",
+   "apps/admin/src/components/AdminTime.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-014",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "me",
+  "element": "أعمدة «كلمة المرور» و«تطبيق المصادقة»",
+  "title": "محتوى العمودين الثاني والثالث مُحاذى إلى الأسفل فيظهر فراغ 150–300 px تحت العناوين",
+  "detail": "في «حسابي» يبدأ نص عمود كلمة المرور عند y≈270 وحقل «الحالية» لتطبيق المصادقة عند y≈545 بينما العناوين عند 165؛ الشبكة توزّع الصفوف بمحاذاة سفلية فتبدو الأعمدة مكسورة. النمط نفسه في «بيانات الطلب» بصفحة المراجعة اليدوية (فراغ 150 px فوق «العميل») وفي «الجلسات النشطة» بتفاصيل الموظف.",
+  "evidence": "admin-admin-me.png; artifacts/ux-audit-F4/evidence/admin-me-ar-desktop.png; admin-admin-payment.png; admin-admin-staff-detail.png",
+  "recommendation": "اضبط align-items:start على شبكة الأقسام (أو احذف items-end/self-end على الحاويات) واجعل كل قسم يبدأ من أعلى عموده؛ في المراجعة اليدوية لا تجعل صفوف KeyValue تمتد لتساوي ارتفاع إطار الإثبات.",
+  "effort": "S",
+  "skill": "design-pro critique «Layout rhythm / negative space doing work»; Layout & Spacing table",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/staff/me/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/payments/[id]/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/staff/[id]/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-015",
+  "severity": "P2",
+  "category": "تقني",
+  "app": "admin",
+  "screen": "me",
+  "element": "حقل «الصلاحيات»",
+  "title": "الصلاحيات تُعرض كجدار رموز خام «overview · read, products · write, …» في منطقة غير موسومة كخام",
+  "detail": "26 صلاحية بصيغة resource.action مُفصولة بفواصل في عمود الملف الشخصي — غير مقروءة ولا مرتبة، ومخالفة لقاعدة حصر التسريبات التقنية في مناطق خام واضحة.",
+  "evidence": "admin-admin-me.png; apps/admin/src/app/[locale]/(app)/staff/me/page.tsx:38",
+  "recommendation": "اعرضها كمجموعة شارات مترجمة مجمّعة حسب المورد (الحسابات: قراءة · كتابة)، أو اكتفِ بالدور مع رابط «عرض الصلاحيات» يفتح قائمة مرتبة.",
+  "effort": "S",
+  "skill": "fpt-brand: technical leaks only in marked raw areas; ui-ux-pro-max §5 compact-label-overflow",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/staff/me/page.tsx",
+   "packages/i18n/src/messages/ar.json"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-016",
+  "severity": "P2",
+  "category": "نص",
+  "app": "admin",
+  "screen": "audit",
+  "element": "عنوان السجل",
+  "title": "إجراءات بلا ترجمة تظهر خاماً: «النظام — order payment started»",
+  "detail": "actionWord يعود إلى اسم الإجراء الخام مع استبدال النقاط بمسافات عندما يغيب المفتاح actions.*. ظهر «order payment started» بين عناوين عربية. سجل التدقيق هو مرجع المراجعة؛ لا يجوز أن تكون عناوينه نصف مترجمة.",
+  "evidence": "admin-admin-audit.png; apps/admin/src/app/[locale]/(app)/audit/page.tsx:43",
+  "recommendation": "أكمل مفاتيح actions.* لكل إجراء مسجّل (اختبار يجمع الإجراءات من الكود ويتحقق من وجود الترجمة) وأبقِ الاسم الخام داخل «التفاصيل التقنية» فقط.",
+  "effort": "S",
+  "skill": "fpt-brand text rules; Nielsen #2 Match the real world",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/audit/page.tsx",
+   "packages/i18n/src/messages/ar.json",
+   "packages/i18n/src/messages/en.json"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-017",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "audit",
+  "element": "قائمة السجلات (Feed)",
+  "title": "سجل التدقيق كتغذية أحداث بارتفاع ~125 px للعنصر — 4 سجلات في الشاشة، أوقات نسبية فقط، لا نطاق تاريخ",
+  "detail": "كل سجل يشغل ثلاثة أسطر (عنوان، «الآن · الهدف: جلسة»، «التفاصيل التقنية») مع فراغ كبير، والزمن «الآن» لكل العناصر بلا طابع دقيق، ولا فلتر تاريخ ولا ترقيم (حد 200). المراجع يحتاج كثافة جدول: الوقت الدقيق | الموظف | الإجراء | الهدف | السبب.",
+  "evidence": "admin-admin-audit.png; artifacts/ux-audit-F4/evidence/admin-audit-ar-desktop.png (9678 px لصفحة واحدة); apps/admin/src/app/[locale]/(app)/audit/page.tsx:39",
+  "recommendation": "استخدم DataTableRows بصفوف 48 px مع عمود وقت مطلق (دبي) وعمود موظف وهدف وسبب، وصفّ قابل للتوسيع للتفاصيل التقنية؛ أضف فلتر «من/إلى» وترقيم خادمي.",
+  "effort": "M",
+  "skill": "design-pro «Precision & Density» direction; component-patterns Data Tables pagination",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/audit/page.tsx",
+   "apps/admin/src/components/Feed.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-018",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "staff",
+  "element": "عمود «إجراءات»",
+  "title": "ثلاثة أزرار كاملة لكل صف (تغيير الدور / تعطيل / إعادة تعيين المصادقة) ترفع الصف إلى 140 px",
+  "detail": "الجدول المكتبي يعرض لكل موظف زر «تعطيل» بلون الخطر وزرين ثانويين ورابط «سجل الدخول»؛ أربعة أزرار خطر مرئية في شاشة واحدة. نسخة الهاتف تستخدم قائمة «⋯» الأنظف. ملاحظة: صفحة تفاصيل الموظف لا تحوي أي إجراء.",
+  "evidence": "admin-admin-staff.png; artifacts/ux-after/admin-staff-phone-390-ar.png; admin-admin-staff-detail.png",
+  "recommendation": "وحّد مع الهاتف: قائمة إجراءات «⋯» في الصف (DropdownMenu)، و«تعطيل» بنبرة خطر داخل القائمة فقط؛ انقل الإجراءات إلى صفحة التفاصيل ضمن شريط أعلى + منطقة خطر أسفل.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §9 overflow-menu, destructive-nav-separation; §8 destructive-emphasis",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/staff/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/staff/StaffClient.tsx",
+   "apps/admin/src/app/[locale]/(app)/staff/[id]/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-019",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "accounts",
+  "element": "صفّا الرقائق (الحالة / المرحلة)",
+  "title": "مجموعتا فلاتر بلا عنوان مرئي وكل منهما تبدأ بـ «الكل» — المشغّل لا يعرف ما الذي تصفّيه الصف الثاني",
+  "detail": "في الحسابات (الحالة ثم المرحلة)، الطلبات (الحالة ثم الطريقة)، المخالفات (القاعدة ثم «نعم/لا» بلا أي سياق)، الاحتيال (ثلاثة صفوف)، البريد (الحالة ثم القالب)، التدقيق (الموظف ثم الهدف). العنوان موجود في aria-label فقط. صف «الكل · لا · نعم» في المخالفات غير مفهوم إطلاقاً.",
+  "evidence": "admin-admin-accounts.png; admin-admin-breaches.png; admin-admin-fraud.png; admin-admin-orders.png; apps/admin/src/components/Filters.tsx:60",
+  "recommendation": "اعرض تسمية المجموعة (text-label) قبل الرقائق أو كأول رقيقة غير قابلة للنقر: «المرحلة:» «الطريقة:» «أُقفلت الصفقات:». التسمية موجودة أصلاً في g.label.",
+  "effort": "S",
+  "skill": "design-pro component-patterns Filtering (chips + labels); ui-ux-pro-max §8 field-grouping",
+  "files": [
+   "apps/admin/src/components/Filters.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-020",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "accounts",
+  "element": "أعمدة التاريخ (التسليم / الإنشاء / موعد المراجعة)",
+  "title": "التاريخ الكامل «29 أكتوبر 2026، 11:49 بتوقيت دبي (GMT+4)» في كل صف يلتف على 3 أسطر ويخفض الكثافة إلى 6 صفوف/شاشة",
+  "detail": "الصيغة البرندية الكاملة مناسبة للتفاصيل، لكن في الجداول تكرر «بتوقيت دبي (GMT+4)» 27 مرة وترفع الصف إلى 86 px. TWO Markets يعرض في الجداول «29 أكت 11:49» والمنطقة مرة واحدة في رأس الجدول أو التذييل.",
+  "evidence": "admin-admin-accounts.png; admin-admin-payouts.png; admin-admin-staff.png; apps/admin/src/components/AdminTime.tsx",
+  "recommendation": "أضف نمطاً «table» لـ AdminTime: يوم + شهر مختصر + ساعة على سطر واحد، والمنطقة الزمنية مرة واحدة في ذيل الجدول («كل الأوقات بتوقيت دبي (GMT+4)») مع التاريخ الكامل في title/tooltip.",
+  "effort": "S",
+  "skill": "design-pro «Precision & Density»; ui-ux-pro-max §6 number-tabular",
+  "files": [
+   "apps/admin/src/components/AdminTime.tsx",
+   "packages/ui/src/components/date-time.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-021",
+  "severity": "P2",
+  "category": "هوية",
+  "app": "admin",
+  "screen": "payouts",
+  "element": "تمرير المؤشر على صفوف الجداول",
+  "title": "تحويم الصف يلوّنه بغسلة الأحمر البرندي (--fpt-brand-red-wash) — إشارة خطر على كل صف",
+  "detail": "brand/components/components.css يضبط tr:hover td بلون brand-red-wash؛ ظهر في لقطة Firefox للسحوبات كصف محمرّ كأنه مرفوض أو محدد للحذف. القاعدة البرندية تحصر الأحمر في الشعار والإجراء الأساسي والحالة النشطة؛ التحويم على بيانات مالية ليس أياً منها.",
+  "evidence": "artifacts/real-device/coverage-20261030/local-firefox-1440/admin-admin-payouts.png (الصف الأول); brand/components/components.css:204",
+  "recommendation": "استخدم غسلة محايدة (color-mix(in srgb, var(--fpt-text-primary) 4%, transparent) كما في .ui-row:hover) واحتفظ بالأحمر للصف المحدد/النشط إن وُجد. يلزم تعديل في حزمة البرند (fpt-brand v1.0.0) — سجّله كمقترح PROPOSED.",
+  "effort": "S",
+  "skill": "fpt-brand red usage rule; design-pro critique «Does color mean something?»",
+  "files": [
+   "brand/components/components.css",
+   "packages/ui/src/components.css"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-022",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "overview",
+  "element": "الشريط الجانبي (SideNav)",
+  "title": "ثماني وجهات مخفية تحت طيّ الشريط الجانبي على 900 px بلا أي مؤشر تمرير",
+  "detail": "على 1440×900 ينتهي الشريط المرئي عند «الشركاء»؛ البريد والاحتيال والتدقيق والموظفون والإعدادات والمحاكي وجاهزية الربط وصحة النظام تتطلب تمرير الشريط نفسه (overflow-y:auto بلا شريط تمرير ظاهر ولا تدرّج). المشغّل الجديد لن يكتشفها. كذلك لا توجد عدادات على عناصر الشريط (سحوبات بانتظار اعتماد، مدفوعات معلقة) رغم أن SideNavItem يدعم badge.",
+  "evidence": "كل لقطات 1440 (مثلاً admin-admin-overview.png); packages/ui/src/components/side-nav.tsx:33; apps/admin/src/components/shell/AdminShell.tsx",
+  "recommendation": "قلّص ارتفاع العناصر إلى 40 px وفاصل المجموعات إلى 12 px، اجعل المجموعات قابلة للطي، وأضف تدرّج تلاشٍ أسفل القائمة عند الفيض؛ مرّر badge لعناصر الطوابير (السحوبات، المدفوعات اليدوية، التحقق من الهوية).",
+  "effort": "M",
+  "skill": "ui-ux-pro-max §9 tab-badge, nav-hierarchy; component-patterns Sidebar",
+  "files": [
+   "packages/ui/src/components/side-nav.tsx",
+   "apps/admin/src/components/shell/AdminShell.tsx",
+   "apps/admin/src/app/[locale]/(app)/layout.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-023",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "settings",
+  "element": "صف التبويبات على الهاتف",
+  "title": "8 تبويبات تُقصّ على 390 px — «كل المفاتيح» و«الشركاء» و«المدفوعات» و«المنصة» غير قابلة للوصول",
+  "detail": "TabsList بالوضع fill يضغط ثمانية تبويبات في عرض الهاتف فتظهر خمسة فقط بلا تمرير أفقي ظاهر ولا زر «المزيد».",
+  "evidence": "artifacts/ux-after/admin-settings-phone-390-ar.png",
+  "recommendation": "على الهاتف: تبويبات قابلة للتمرير أفقياً مع تلاشٍ طرفي (overflow-x:auto; scroll-snap) أو Select للأقسام، وfill={false}.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §5 compact-label-overflow, chip-collection-reflow; component-patterns Tab Systems",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/settings/page.tsx",
+   "packages/ui/src/components/tabs.tsx",
+   "packages/ui/src/components.css"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-024",
+  "severity": "P2",
+  "category": "نص",
+  "app": "admin",
+  "screen": "mail",
+  "element": "رقائق القالب وعمود الموضوع",
+  "title": "اسم القالب «manual proof received» و«manual payment confirmed» بالإنجليزية داخل الواجهة العربية",
+  "detail": "رقيقة الفلتر وسطر «القالب» في التفاصيل يعرضان اسم القالب الخام للقوالب الجديدة بينما «الحساب جاهز» و«عمولة شريك» مترجمان — مفاتيح ناقصة في admin.mail.templates.",
+  "evidence": "admin-admin-mail.png; admin-admin-mail-detail.png; artifacts/ux-audit-F4/evidence/admin-mail-ar-desktop.png",
+  "recommendation": "أضف ترجمة لكل قالب في packages/adapters/src/mail/templates/index.ts إلى ar/en (اختبار يطابق قائمة القوالب بالمفاتيح).",
+  "effort": "S",
+  "skill": "fpt-brand text rules; Nielsen #4 Consistency",
+  "files": [
+   "packages/i18n/src/messages/ar.json",
+   "packages/i18n/src/messages/en.json",
+   "apps/admin/src/app/[locale]/(app)/mail/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-025",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "products",
+  "element": "عمود «مجموعة cTrader»",
+  "title": "زر «فحص المجموعة» + شارة «لم تُفحص» في كل صف — 10 أزرار في جدول 5 صفوف وارتفاع صف 120 px",
+  "detail": "كل منتج يحمل زر فحص وزر تعديل، والاسم يلتف على سطرين في عمود ضيق بينما الجدول يترك فراغاً على اليمين (بسبب VAD-002 الترتيب معكوس أصلاً). الفحص إجراء دفعة واحدة طبيعياً.",
+  "evidence": "admin-admin-products.png",
+  "recommendation": "زر واحد «فحص كل المجموعات» فوق الجدول + حالة آخر فحص كشارة في الصف؛ «تعديل» كأيقونة قلم أو قائمة ⋯؛ وسّع عمود الاسم.",
+  "effort": "S",
+  "skill": "design-pro critique «Every element earns its place»; ui-ux-pro-max §9 overflow-menu",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/products/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/products/ProductsClient.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-026",
+  "severity": "P2",
+  "category": "نص",
+  "app": "admin",
+  "screen": "orders",
+  "element": "عمود «الطريقة»",
+  "title": "تكرار «تحويل يدوي · تحويل يدوي» في عمود الطريقة",
+  "detail": "الخلية تجمع طريقة الدفع واسم المزوّد؛ لطلبات التحويل اليدوي كلاهما «تحويل يدوي» فيُطبع مرتين، بينما «بطاقة · MyFatoorah» صحيح.",
+  "evidence": "admin-admin-orders.png; artifacts/ux-audit-F4/evidence/admin-orders-ar-desktop.png; apps/admin/src/app/[locale]/(app)/orders/page.tsx:56",
+  "recommendation": "احذف التكرار عندما يتساوى الجزءان (new Set) أو اعرض للمدفوعات اليدوية المسار (P2P فايبر / تحويل محلي) بدل اسم المزوّد.",
+  "effort": "S",
+  "skill": "design-pro critique «Aesthetic and minimalist»",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/orders/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-027",
+  "severity": "P2",
+  "category": "نص",
+  "app": "admin",
+  "screen": "overview",
+  "element": "قائمة «صحة المحرّك» وشبكة «صحة المحاكي والمحرّك»",
+  "title": "أسماء الخدمات خام بالإنجليزية (engine, alerts, sim, provisioner…) في النظرة العامة والمحاكي بينما صفحة «صحة النظام» تعرّبها",
+  "detail": "النظرة العامة تعرض 12 خدمة بأسمائها البرمجية، وصفحة صحة النظام تعرض الأسماء العربية (المحرّك، التنبيهات، المحاكي، التزويد…). نفس الكيان باسمين. والقائمة في النظرة العامة طويلة (12 صفاً × 75 px) وتزاحم الطوابير.",
+  "evidence": "admin-admin-overview.png; admin-admin-simulator.png; admin-admin-health.png",
+  "recommendation": "استخدم نفس خريطة الأسماء (health.services.*) في الشاشات الثلاث؛ في النظرة العامة اختصر إلى سطر واحد «12/12 تعمل · آخر نبضة الآن» مع رابط لصحة النظام، وأظهر القائمة فقط عند وجود عطل.",
+  "effort": "S",
+  "skill": "Nielsen #4 Consistency; ui-ux-pro-max §5 content-priority",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/simulator/SimulatorClient.tsx",
+   "packages/i18n/src/messages/ar.json"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-028",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "overview",
+  "element": "ترتيب الأقسام (بطاقات ← يحتاج إجراءً ← الأحداث ← صحة المحرّك)",
+  "title": "طابور «يحتاج إجراءً» ليس أول ما يراه المشغّل، وعلى الهاتف يُدفن تحت تغذية أحداث بطول ~2000 px",
+  "detail": "الصف الأول ست بطاقات معلوماتية، والطابور في الثلث الثاني؛ على الهاتف تأتي 15 حدثاً كاملة قبل صحة المحرّك وتوزيع الحسابات. البوصلة التشغيلية (ما ينتظر قراري) يجب أن تتصدر.",
+  "evidence": "admin-admin-overview.png; artifacts/ux-after/admin-overview-phone-390-ar.png",
+  "recommendation": "انقل «يحتاج إجراءً» فوق البطاقات أو اجعل البطاقات الست نفسها روابط طابور بعدادات تحذيرية؛ حدّد الأحداث بـ 5 مع «عرض الكل»؛ على الهاتف اعرض صحة المحرّك كسطر ملخص.",
+  "effort": "M",
+  "skill": "design-pro critique «Is there a focal point?»; ui-ux-pro-max §5 content-priority",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-029",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "risk",
+  "element": "عمود «الأقرب للحد» وشارات الخطورة",
+  "title": "قيم المخاطر بلا تدرّج لوني: «7 %» من الحد و«0 %» بنفس الأبيض العريض؛ الخطورة 60 و40 بنفس الأصفر",
+  "detail": "لوحة المخاطر تُفترض أن تُبرز الحساب الأقرب للكسر؛ القيم كلها بنفس الوزن واللون، والمقياس aria فقط. في الاحتيال شارات الخطورة 60 و40 بنفس النبرة.",
+  "evidence": "admin-admin-risk.png; admin-admin-fraud.png",
+  "recommendation": "طبّق سلم النبرات: ≥ 80 % استهلاك = خطر (finance-loss) مع كلمة، 50–80 = تحذير (drawdown)، أقل = محايد؛ شريط مصغّر مرئي في الخلية. الخطورة ≥ 70 = danger، 40–69 = warning، أقل = neutral.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §1 color-not-only; §10 color-guidance; fpt-brand finance states (word + sign + colour)",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/risk/page.tsx",
+   "apps/admin/src/components/status.ts"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-030",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "accounts",
+  "element": "رؤوس الجدول القابلة للفرز",
+  "title": "كل رأس يعرض «↕» ولا يُظهر الفرز الفعّال (الأحدث أولاً) رغم ذكره في العنوان الفرعي",
+  "detail": "في الحسابات والطلبات والبريد يظهر الرمز المزدوج على كل الأعمدة بلا عمود نشط؛ في المخاطر والاحتيال والمدفوعات يظهر السهم النشط صحيحاً. الفرز الافتراضي غير مرئي في الرأس (aria-sort غائب).",
+  "evidence": "admin-admin-accounts.png; admin-admin-orders.png; admin-admin-risk.png (نموذج صحيح); packages/ui/src/components/data-table.tsx:97-101",
+  "recommendation": "مرّر sort={{key:'delivered',dir:'desc'}} (أو createdAt) افتراضياً لكل قائمة بحيث يظهر السهم النشط وaria-sort، وأخفِ «↕» من الأعمدة غير النشطة إلى التحويم.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §10 sortable-table; component-patterns Sorting",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/accounts/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/orders/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/mail/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-031",
+  "severity": "P2",
+  "category": "نص",
+  "app": "admin",
+  "screen": "finance",
+  "element": "بطاقة «المبالغ المستردة» والملاحظة أسفل البطاقات",
+  "title": "نص «تعتمد FPT سياسة عدم الاسترداد … تُعرض صراحةً حتى لا يُغفل الرقم» حقيقة منتج تحتاج صياغة من المعجم",
+  "detail": "المعجم يوثّق «رسوم لمرة واحدة · غير قابلة للاسترداد» (OBSERVED) ولا يوثّق «سياسة عدم الاسترداد» كمصطلح؛ الجملة التفسيرية داخلية ومطوّلة في لوحة مالية.",
+  "evidence": "admin-admin-finance.png; brand/glossary.md:50,59; packages/i18n/src/messages/ar.json:294",
+  "recommendation": "استخدم صياغة المعجم «الرسوم غير قابلة للاسترداد» واختصر الملاحظة إلى «المبالغ المستردة 0 بالتصميم» ووسمها PROPOSED إن لم تكن في value-sources.",
+  "effort": "S",
+  "skill": "fpt-brand: product facts verbatim from glossary § 3",
+  "files": [
+   "packages/i18n/src/messages/ar.json",
+   "packages/i18n/src/messages/en.json"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-032",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "order",
+  "element": "صفحة الطلب الفاشل",
+  "title": "طلب بحالة «فاشل» بلا سبب فشل ولا إجراء (إلغاء/تواصل/إعادة محاولة)",
+  "detail": "تفاصيل الطلب تعرض الحقائق فقط؛ بطاقة المدفوعات تقول «فاشلة» مع مرجع المزوّد ولا رمز رفض أو رسالة؛ لا شريط إجراءات. المشغّل الذي يتلقى شكوى العميل لا يجد الجواب ولا الخطوة التالية.",
+  "evidence": "admin-admin-order.png",
+  "recommendation": "اعرض سبب الفشل من payment_events (decline code مترجم + الخام في «البيانات الخام») وشريط إجراءات: إلغاء الطلب، إعادة إرسال رابط الدفع، نسخ المرجع للدعم.",
+  "effort": "M",
+  "skill": "Nielsen #9 recognize/diagnose/recover; ui-ux-pro-max §8 error-recovery",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/orders/[id]/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-033",
+  "severity": "P2",
+  "category": "وصول",
+  "app": "admin",
+  "screen": "signin",
+  "element": "إرسال النموذج فارغاً",
+  "title": "فقاعة التحقق الأصلية «Please fill out this field.» بالإنجليزية على صفحة عربية",
+  "detail": "النموذج يعتمد على required الأصلي بلا noValidate فتظهر رسالة المتصفح بلغة المتصفح لا الصفحة، وتختفي بعد ثوانٍ ولا تُعلن لقارئ الشاشة بشكل متسق.",
+  "evidence": "artifacts/ux-audit-F4/evidence/admin-signin-empty-ar-desktop.png",
+  "recommendation": "noValidate + تحقق عند الإرسال برسالة عربية تحت الحقل (aria-describedby, role=alert) وتركيز أول حقل خاطئ.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §8 error-placement, focus-management; WIG Forms",
+  "files": [
+   "apps/admin/src/app/[locale]/(auth)/signin"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-034",
+  "severity": "P3",
+  "category": "نص",
+  "app": "admin",
+  "screen": "signin",
+  "element": "زر الإرسال",
+  "title": "زر الدخول يحمل تسمية عامة «متابعة» بدل «تسجيل الدخول»",
+  "detail": "الخطوة الأولى (بريد + كلمة مرور) تعرض «متابعة»؛ الإرشادات تطلب تسميات محددة للأزرار. يوجد مفتاح «تسجيل الدخول» في الرسائل.",
+  "evidence": "admin-admin-signin.png; packages/i18n/src/messages/ar.json:313,504",
+  "recommendation": "«تسجيل الدخول» ثم في خطوة الرمز «تأكيد الرمز».",
+  "effort": "S",
+  "skill": "WIG Content & Copy (specific button labels)",
+  "files": [
+   "apps/admin/src/app/[locale]/(auth)/signin",
+   "packages/i18n/src/messages/ar.json"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-035",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "signin",
+  "element": "بطاقة الدخول",
+  "title": "بطاقة الدخول ملتصقة بأعلى الشاشة وتترك ثلثي الارتفاع فارغاً",
+  "detail": "على 900 px تنتهي البطاقة عند y=405 والتذييل عند 850؛ لا مركز بصري.",
+  "evidence": "admin-admin-signin.png",
+  "recommendation": "مركزة عمودية (min-h-dvh grid place-items-center) مع الشعار داخل البطاقة.",
+  "effort": "S",
+  "skill": "design-pro critique «focal point»; Layout & Spacing",
+  "files": [
+   "apps/admin/src/app/[locale]/(auth)/layout.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-036",
+  "severity": "P3",
+  "category": "هوية",
+  "app": "admin",
+  "screen": "accounts",
+  "element": "حلقة التركيز (focus ring)",
+  "title": "حلقة التركيز بالأحمر البرندي (--fpt-action-focus-ring: #F42821 PROPOSED)",
+  "detail": "التركيز بالكيبورد على عنصر الشريط الجانبي يرسم إطاراً أحمر 2 px؛ القيمة موسومة PROPOSED في الرموز. الأحمر محجوز للشعار والإجراء الأساسي والحالة النشطة، فالتركيز يشبه الحالة النشطة ويضلل (في اللقطة: الحسابات نشطة، والتحقق من الهوية مُركّز بالأحمر).",
+  "evidence": "artifacts/ux-audit-F4/evidence/admin-accounts-focus-ar-desktop.png; brand/tokens.css:112",
+  "recommendation": "حلقة تركيز بيضاء/فاتحة (text-primary) بتباين 3:1 مع الأرضية وofset 2 px؛ أبقِ الأحمر للحالة النشطة فقط. قرار برندي — PROPOSED.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §1 focus-appearance; fpt-brand red rule",
+  "files": [
+   "brand/tokens.css"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-037",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "overview",
+  "element": "شريط الرأس العلوي",
+  "title": "عنوان القسم في الشريط العلوي يكرر H1 الصفحة مباشرة تحته (56 px مهدورة)",
+  "detail": "«نظرة عامة» في الشريط و«نظرة عامة» كعنوان الصفحة؛ على المكتب لا يضيف الشريط سوى زر القائمة. في صفحة «لا صلاحية» الشريط فارغ تماماً.",
+  "evidence": "admin-admin-overview.png; admin-admin-forbidden.png; apps/admin/src/components/shell/AdminShell.tsx (center={current.label})",
+  "recommendation": "على lg+: استخدم الشريط لمسار التنقل (breadcrumb) والبحث السريع، أو أخفِ العنوان فيه واكتفِ بـ H1. على الهاتف أبقه.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §9 breadcrumb-web; design-pro «rhythm»",
+  "files": [
+   "apps/admin/src/components/shell/AdminShell.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-038",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "accounts",
+  "element": "عمودا «الحالة» و«المرحلة»",
+  "title": "عمودان يحملان القيمة نفسها «تقييم» في كل الصفوف تقريباً",
+  "detail": "الحالة شارة «تقييم» والمرحلة نص «تقييم»؛ المعلومة الإضافية الوحيدة تظهر للمشترى/الممول.",
+  "evidence": "admin-admin-accounts.png",
+  "recommendation": "ادمجهما: شارة واحدة بالحالة، وأظهر المرحلة فقط حين تختلف (ممول/اجتياز) أو كعلامة فرعية.",
+  "effort": "S",
+  "skill": "design-pro critique «Every element earns its place»",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/accounts/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-039",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "accounts",
+  "element": "حد القائمة",
+  "title": "القوائم محدودة بـ 200/300 سجل خادمياً بلا ترقيم ولا عدّاد إجمالي",
+  "detail": "«27 حساباً معروضاً (حتى 200)»، الطلبات 300، التدقيق 200، البريد 200؛ عند تجاوز الحد لا توجد صفحة تالية ولا يعرف المشغّل ما فاته. DataTableRows يوفر «المزيد» عميلياً فقط.",
+  "evidence": "admin-admin-accounts.png; apps/admin/src/app/[locale]/(app)/accounts/page.tsx:38; orders/page.tsx:44; audit/page.tsx:39; mail/page.tsx:32",
+  "recommendation": "ترقيم خادمي بمؤشر (cursor) + عدّاد إجمالي في العنوان «عرض 1–50 من 1,240».",
+  "effort": "M",
+  "skill": "component-patterns Pagination (>100 rows); WIG Navigation & State (URL reflects state)",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/accounts/page.tsx",
+   "packages/ui/src/components/data-table.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-040",
+  "severity": "P3",
+  "category": "RTL",
+  "app": "admin",
+  "screen": "payouts",
+  "element": "خلية «القناة»",
+  "title": "«عملة رقمية (USDT) (TRC20)» تنكسر على سطرين بأقواس معكوسة «USDT) / (TRC20»",
+  "detail": "الأقواس حول رموز لاتينية داخل نص عربي تنقلب عند الكسر.",
+  "evidence": "admin-admin-payouts.png; local-webkit-1440/admin-admin-payouts.png",
+  "recommendation": "صيغة بلا أقواس: «عملة رقمية · USDT TRC20» مع <bdi> حول الرمز ونفس التسمية في العميل.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §6 long-token-wrapping",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/payouts/page.tsx",
+   "packages/i18n/src/messages/ar.json"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-041",
+  "severity": "P3",
+  "category": "RTL",
+  "app": "admin",
+  "screen": "payment",
+  "element": "بيان ملف الإثبات",
+  "title": "«KB · PNG 74» — ترتيب الحجم والنوع مقلوب",
+  "detail": "السطر يُفترض «PNG · 74 KB»؛ الرقم ينفصل عن وحدته في السياق العربي.",
+  "evidence": "admin-admin-payment.png",
+  "recommendation": "<bdi dir=ltr>74 KB</bdi> · PNG أو «74 كيلوبايت · PNG».",
+  "effort": "S",
+  "skill": "WIG Typography (10&nbsp;MB unbreakable)",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/payments/[id]/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-042",
+  "severity": "P3",
+  "category": "نص",
+  "app": "admin",
+  "screen": "payments",
+  "element": "عمود «المسار»",
+  "title": "نص موجّه للعميل «تحويل P2P من حسابك في فايبر» داخل جدول المشغّل",
+  "detail": "تسمية المسار مأخوذة من واجهة العميل بضمير المخاطب؛ في لوحة الإدارة تقرأ كأن الموظف هو المحوّل.",
+  "evidence": "admin-admin-payments.png; admin-admin-payment.png",
+  "recommendation": "تسمية إدارية: «P2P فايبر» / «تحويل محلي».",
+  "effort": "S",
+  "skill": "WIG Content & Copy (second person, audience)",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/payments/page.tsx",
+   "packages/i18n/src/messages/ar.json"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-043",
+  "severity": "P3",
+  "category": "نص",
+  "app": "admin",
+  "screen": "payout",
+  "element": "ملاحظة الاعتماد الأول",
+  "title": "ملاحظة «Checks reviewed — first approval» بالإنجليزية تحت اسم المعتمد",
+  "detail": "ملاحظة البذر/الموظف تُعرض كما أُدخلت؛ إن كانت نصاً مولّداً من النظام فيلزم ترجمته.",
+  "evidence": "admin-admin-payout.png; artifacts/ux-after/admin-payout-phone-390-ar.png",
+  "recommendation": "إن كانت مولّدة: مفتاح i18n؛ إن كانت حرة: اعرضها داخل <bdi dir=auto> بخط مائل مع تسمية «ملاحظة».",
+  "effort": "S",
+  "skill": "fpt-brand text rules",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/payouts/[id]/page.tsx"
+  ],
+  "confidence": "low"
+ },
+ {
+  "id": "VAD-044",
+  "severity": "P3",
+  "category": "نص",
+  "app": "admin",
+  "screen": "affiliate",
+  "element": "سطر الفئة",
+  "title": "«الفئة 1 · 15 % · 15 %» — النسبة مكررة",
+  "detail": "t('tier.t1') يحوي النسبة ثم تُلحق النسبة مرة ثانية في الصفحة.",
+  "evidence": "admin-admin-affiliate.png; apps/admin/src/app/[locale]/(app)/affiliates/[id]/page.tsx:134; packages/i18n/src/messages/ar.json:2574",
+  "recommendation": "اجعل مفاتيح tier.* اسم الفئة فقط وألحق النسبة برمجياً.",
+  "effort": "S",
+  "skill": "Nielsen #8 minimalist",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/affiliates/[id]/page.tsx",
+   "packages/i18n/src/messages/ar.json"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-045",
+  "severity": "P3",
+  "category": "RTL",
+  "app": "admin",
+  "screen": "affiliates",
+  "element": "العنوان الفرعي",
+  "title": "«محجوزة → مستحقة» و«دفعة أسبوعية من USD 50» — سهم باتجاه خاطئ والرمز قبل الرقم",
+  "detail": "السهم → يشير يميناً في تدفق RTL، والمبلغ يظهر «USD 50» بينما القاعدة في العربية «50 USD» (المصدر يعزله ⁦50 USD⁩ لكن العرض يقلبه داخل الجملة).",
+  "evidence": "admin-admin-affiliates.png; packages/i18n/src/messages/ar.json:2556",
+  "recommendation": "استخدم «ثم» أو ← في النص العربي؛ المبالغ عبر مكوّن Money لا نصاً مضمّناً.",
+  "effort": "S",
+  "skill": "fpt-brand: amounts as unbreakable units, code after digits in Arabic",
+  "files": [
+   "packages/i18n/src/messages/ar.json",
+   "apps/admin/src/app/[locale]/(app)/affiliates/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-046",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "affiliates",
+  "element": "عمود «الفئة»",
+  "title": "«الفئة 1 · 15 %» يلتف على ثلاثة أسطر في عمود ضيق",
+  "detail": "عشرة أعمدة في جدول صفّين؛ عمود الفئة أضيق من محتواه.",
+  "evidence": "admin-admin-affiliates.png",
+  "recommendation": "عرض أدنى للعمود أو شارة «ف1 · 15 %» أو دمج الفئة في سطر فرعي تحت الاسم.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §5 compact-label-overflow",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/affiliates/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-047",
+  "severity": "P3",
+  "category": "تقني",
+  "app": "admin",
+  "screen": "affiliate",
+  "element": "«قناة الدفع»",
+  "title": "رمز القناة الخام «crypto» ورمز الدولة «AE» في مناطق غير خام",
+  "detail": "«TSeedDemo02 · crypto» و«الدولة: AE» في تفاصيل الاحتيال؛ الرموز لا تُترجم.",
+  "evidence": "admin-admin-affiliate.png; admin-admin-fraud-detail.png; apps/admin/src/app/[locale]/(app)/fraud/[id]/page.tsx:90",
+  "recommendation": "ترجمة القنوات (عملة رقمية/تحويل بنكي) وأسماء الدول عبر Intl.DisplayNames(locale,{type:'region'}).",
+  "effort": "S",
+  "skill": "fpt-brand technical leaks rule; WIG Locale & i18n",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/affiliates/[id]/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/fraud/[id]/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-048",
+  "severity": "P3",
+  "category": "نص",
+  "app": "admin",
+  "screen": "fraud-links",
+  "element": "إحصاءات مدة الاحتفاظ",
+  "title": "وحدات إنجليزية «1.0 h» و«240 min» في واجهة عربية",
+  "detail": "fmtDur يطبع h/min/s، والإعدادات تعرض «الفرق عن UTC: 240 min».",
+  "evidence": "admin-admin-fraud-links.png; admin-admin-settings.png; apps/admin/src/app/[locale]/(app)/fraud/links/[userId]/page.tsx:73",
+  "recommendation": "Intl.NumberFormat بوحدة (unit:'hour', unitDisplay:'short') أو مفاتيح عربية «ساعة/دقيقة/ثانية»؛ الفرق عن UTC كـ «+4 ساعات».",
+  "effort": "S",
+  "skill": "WIG Locale & i18n (Intl.NumberFormat)",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/fraud/links/[userId]/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/settings/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-049",
+  "severity": "P3",
+  "category": "نص",
+  "app": "admin",
+  "screen": "simulator",
+  "element": "العنوان الفرعي وملاحظات الإلغاء/الدفعة الأسبوعية",
+  "title": "علامات الاقتباس المائلة لـ Markdown تظهر حرفياً: «أمر `sim_*`»، «`breach_reverse`»، «`affiliates_run_weekly`»",
+  "detail": "نصوص ar.json تحوي backticks لا تُفسَّر.",
+  "evidence": "admin-admin-simulator.png; artifacts/ux-after/admin-breach-phone-390-ar.png; packages/i18n/src/messages/ar.json:3151,2234,2558",
+  "recommendation": "احذف العلامات واعرض الرمز عبر <code class=fpt-unit> بواسطة t.rich أو أعد الصياغة بالعربية.",
+  "effort": "S",
+  "skill": "fpt-brand text rules; WIG Typography",
+  "files": [
+   "packages/i18n/src/messages/ar.json",
+   "packages/i18n/src/messages/en.json"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-050",
+  "severity": "P3",
+  "category": "RTL",
+  "app": "admin",
+  "screen": "settings",
+  "element": "وصف بطاقة «الكيان» وملاحظة «القنوات»",
+  "title": "مسارات ورموز لاتينية داخل جمل عربية تُفكك القراءة: «المكان الوحيد لنصوص الكيان — config/legal.ts يُقرأ من»",
+  "detail": "الجملة المصدرية «يُقرأ من config/legal.ts — المكان الوحيد…» تظهر مقلوبة؛ نفس المشكلة في «FPT_*_MODE» ونص جاهزية الربط «(pnpm --filter … contract:status)».",
+  "evidence": "admin-admin-settings.png; admin-admin-integrations.png",
+  "recommendation": "لفّ كل مسار/أمر في <bdi dir=ltr class=fpt-unit> وضعه في نهاية الجملة أو سطر خاص.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §6 long-token-wrapping; fpt-brand RTL",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/settings/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/integrations/page.tsx",
+   "packages/i18n/src/messages/ar.json"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-051",
+  "severity": "P3",
+  "category": "نص",
+  "app": "admin",
+  "screen": "settings",
+  "element": "بطاقة «الكيان» — العنوان المسجّل",
+  "title": "قيمة نائبة «العنوان المسجّل يُدرج لاحقاً (مسودة، 29 أكتوبر 2026)» في إعدادات الإنتاج",
+  "detail": "صفحة للمالك للقراءة فقط لكنها تعرض مسودة بتاريخ؛ تذكير بأن الكيان غير مكتمل في config/legal.ts (ولا يجوز اختراعه).",
+  "evidence": "admin-admin-settings.png",
+  "recommendation": "اعرض «— (قرار معلّق)» بنبرة تحذير مع رابط إلى regulatory-matrix، لا نصاً حراً بتاريخ.",
+  "effort": "S",
+  "skill": "fpt-brand regulatory-matrix",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/settings/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-052",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "settings",
+  "element": "بريد no-reply في بطاقة الكيان (1280 px)",
+  "title": "«no-reply@fiperprotraders.com» ينكسر عند الواصلة إلى «no-» / «reply@…»",
+  "detail": "القيمة mono مع overflow-wrap:anywhere تنكسر داخل العنوان على عرض 1280.",
+  "evidence": "artifacts/ux-audit-F4/evidence/admin-settings-ar-desktop.png",
+  "recommendation": "<bdi class=\"fpt-unit\" style=\"word-break:keep-all\"> أو اسمح بالكسر بعد @ فقط؛ قلّل حجم الخط في الخلية الضيقة.",
+  "effort": "S",
+  "skill": "WIG Content Handling (long content)",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/settings/page.tsx",
+   "packages/ui/src/components.css"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-053",
+  "severity": "P3",
+  "category": "نص",
+  "app": "admin",
+  "screen": "products",
+  "element": "ملاحظة أسفل الجدول",
+  "title": "رمز «catalog_version» خام داخل جملة عربية",
+  "detail": "«التعديل يُدرج catalog_version جديدة للرمز نفسه» — مصطلح قاعدة بيانات في نص تفسيري.",
+  "evidence": "admin-admin-products.png",
+  "recommendation": "«يُدرج نسخة كتالوج جديدة…».",
+  "effort": "S",
+  "skill": "fpt-brand technical leaks rule",
+  "files": [
+   "packages/i18n/src/messages/ar.json"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-054",
+  "severity": "P3",
+  "category": "نص",
+  "app": "admin",
+  "screen": "order",
+  "element": "حقائق الطلب",
+  "title": "معرّفات خام في قيم عادية: «(fpt-50k v1)»، «fpt-rules-v1»، «terms-2026-10-29»",
+  "detail": "مقبولة إدارياً لكنها خارج منطقة خام موسومة؛ النص «تقييم FPT — 50,000 دولار» يستخدم كلمة «دولار» بدل الرمز USD بخلاف بقية المبالغ.",
+  "evidence": "admin-admin-order.png; admin-admin-payment.png",
+  "recommendation": "وسم الأكواد بـ <code class=fpt-unit> مع تسمية «المعرّف»؛ وحّد اسم المنتج على «تقييم FPT — 50,000 USD».",
+  "effort": "S",
+  "skill": "fpt-brand: amounts carry currency code; technical leaks in marked areas",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/orders/[id]/page.tsx",
+   "packages/db (product names seed)"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-055",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "breaches",
+  "element": "شارة «الإقفال»",
+  "title": "شارة «تم» بأيقونة X بلون الخطر لعملية إقفال ناجحة — تناقض دلالي",
+  "detail": "في قائمة المخالفات «تم» + دائرة X، وفي التفاصيل «أُقفلت الصفقات» بنفس النبرة الحمراء-البرتقالية. الإقفال المنجز حالة مكتملة لا خطر.",
+  "evidence": "admin-admin-breaches.png; admin-admin-breach.png",
+  "recommendation": "نبرة محايدة/نجاح مع أيقونة قفل أو ✓ وكلمة «أُقفلت»؛ احتفظ بالخطر لـ «لم تُقفل».",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §6 color-not-decorative-only; Nielsen #4",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/breaches/page.tsx",
+   "apps/admin/src/components/StatusPills.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-056",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "breaches",
+  "element": "عمود «الحدّ USD»",
+  "title": "«0.00» كحدّ لمخالفات انتهاء المدة وعدم النشاط",
+  "detail": "مخالفات غير مالية تعرض حداً صفرياً بدل «—».",
+  "evidence": "admin-admin-breaches.png",
+  "recommendation": "اعرض «—» عندما لا ينطبق الحد المالي.",
+  "effort": "S",
+  "skill": "WIG Content Handling (empty states per cell)",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/breaches/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-057",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "breach",
+  "element": "عنوان الصفحة",
+  "title": "H1 طويل يضم التاريخ الكامل والمنطقة الزمنية",
+  "detail": "«أُوقف الحساب لتجاوز حدّ الخسارة اليومية — 29 أكتوبر 2026، 08:06 بتوقيت دبي (GMT+4)» كعنوان رئيسي؛ على الهاتف 3 أسطر.",
+  "evidence": "admin-admin-breach.png; artifacts/ux-after/admin-breach-phone-390-ar.png",
+  "recommendation": "H1 = «مخالفة الخسارة اليومية · FPT-100K-VFBUE»، والتاريخ في سطر التعريف.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §6 heading-line-balance",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/breaches/[id]/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-058",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "finance",
+  "element": "بطاقة «إيراد هذا الشهر»",
+  "title": "خط اتجاه بنقطتين (خط مستقيم) لا يحمل معلومة",
+  "detail": "الشرارة ترسم شهرين فقط؛ تبدو كخطأ رسم.",
+  "evidence": "admin-admin-finance.png",
+  "recommendation": "أخفِ الشرارة حتى تتوفر ≥ 4 نقاط، أو اعرض الفرق عن الشهر السابق كنص «+8,430 USD».",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §10 empty-data-state, direct-labeling",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/finance/page.tsx",
+   "apps/admin/src/components/Finance.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-059",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "overview",
+  "element": "شرارات بطاقات KPI",
+  "title": "شرارات بلا مدى زمني معلن (الحسابات النشطة، مخالفات اليوم)",
+  "detail": "القاعدة البرندية للرسوم: العنوان والفترة مُعلنان؛ الشرارة في «مخالفات اليوم 0» تُظهر قفزة لا يفسرها الرقم 0.",
+  "evidence": "admin-admin-overview.png",
+  "recommendation": "أضف «آخر 14 يوماً» كتسمية صغيرة أو title على الشرارة، واجعل مؤشر النهاية بنفس لون الخط إن لم يكن «القيمة الحالية».",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §10 time-scale-clarity, legend-visible",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/page.tsx",
+   "packages/ui/src/components/stat-tile.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-060",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "health",
+  "element": "عدّاد الأقسام («الخدمات 12»، «آخر التنبيهات 0»، «الجلسات 15»)",
+  "title": "عدّاد القسم في الطرف المقابل من العنوان (1,100 px بعيداً) فيفقد ارتباطه",
+  "detail": "نمط SectionHeader يضع العدد في نهاية الصف؛ في الأعمدة العريضة يصبح رقماً معزولاً.",
+  "evidence": "admin-admin-health.png; admin-admin-me.png; admin-admin-simulator.png",
+  "recommendation": "ألصق العدّاد بالعنوان كشارة «الخدمات · 12».",
+  "effort": "S",
+  "skill": "design-pro critique «grouping / proximity»",
+  "files": [
+   "packages/ui/src/components/page-header.tsx",
+   "apps/admin/src/app/[locale]/(app)/health/HealthClient.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-061",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "health",
+  "element": "الزر الأساسي",
+  "title": "«إرسال تنبيه تجريبي» هو الإجراء الأساسي الأحمر الوحيد في صفحة مراقبة",
+  "detail": "إجراء اختباري نادر يحمل أعلى وزن بصري في الصفحة.",
+  "evidence": "admin-admin-health.png",
+  "recommendation": "زر ثانوي بجانب قسم «آخر التنبيهات»؛ احجز الأحمر لإجراء تشغيلي (مثلاً إيقاف الطابور) أو لا شيء.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §4 primary-action",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/health/HealthClient.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-062",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "coupons",
+  "element": "حالة الفراغ",
+  "title": "حالة فارغة تحيل إلى «الزر أعلاه» بدل أن تضم الإجراء",
+  "detail": "«أنشئ أول كوبون بالزر أعلاه» والزر في الزاوية المقابلة.",
+  "evidence": "admin-admin-coupons.png",
+  "recommendation": "ضع زر «كوبون جديد» داخل حالة الفراغ (ثانوي) وأبقِ الأساسي أعلى.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §8 empty-states; component-patterns Empty States",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/coupons/CouponsClient.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-063",
+  "severity": "P3",
+  "category": "نص",
+  "app": "admin",
+  "screen": "grant",
+  "element": "حقل «المنتج»",
+  "title": "قائمة المنتج فارغة بلا نص إرشادي «اختر منتجاً…»",
+  "detail": "Select بلا placeholder؛ المشغّل لا يعرف أن الحقل فارغ أم معطّل.",
+  "evidence": "admin-admin-grant.png; local-firefox-1440/admin-admin-grant.png",
+  "recommendation": "placeholder «اختر منتجاً…» واعرض الحجم والسعر في كل خيار.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §8 input-helper-text; WIG Forms placeholders",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/orders/grant/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-064",
+  "severity": "P3",
+  "category": "نص",
+  "app": "admin",
+  "screen": "account",
+  "element": "شريط الإجراءات",
+  "title": "تسميات إجراء غامضة: «إعادة حساب التعيين»، «تعيين صلاحيات الوصول»",
+  "detail": "ثلاثة أزرار ثانوية بلا تمييز، ومصطلح «التعيين» يُستخدم لإعادة الضبط اليومية ولصلاحيات التداول معاً.",
+  "evidence": "admin-admin-account.png; artifacts/ux-after/admin-account-phone-390-ar.png",
+  "recommendation": "«إعادة احتساب إعادة الضبط اليومية» → «إعادة حساب يوم التداول»؛ «صلاحيات الوصول» → «وضع التداول (تداول/قراءة فقط)». أضف وصفاً قصيراً في حوار التأكيد.",
+  "effort": "S",
+  "skill": "WIG Content & Copy (specific labels); Nielsen #2",
+  "files": [
+   "packages/i18n/src/messages/ar.json",
+   "apps/admin/src/app/[locale]/(app)/accounts/[id]/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-065",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "account",
+  "element": "سطر التعريف",
+  "title": "كلمة «تقييم» مكررة: شارة «تقييم» ثم نص «تقييم Khalid Al-Mansoori»",
+  "detail": "المرحلة تظهر كشارة وكنص.",
+  "evidence": "admin-admin-account.png",
+  "recommendation": "الشارة للحالة، والنص للعميل فقط.",
+  "effort": "S",
+  "skill": "Nielsen #8",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/accounts/[id]/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-066",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "me",
+  "element": "قائمة الجلسات",
+  "title": "15 جلسة بزر «إلغاء» في الطرف المقابل لكل صف ولا «إلغاء كل الجلسات الأخرى»",
+  "detail": "زر الإلغاء على بعد ~900 px من اسم الجلسة؛ إنهاء 14 جلسة يتطلب 14 نقرة.",
+  "evidence": "artifacts/ux-audit-F4/evidence/admin-me-ar-desktop.png",
+  "recommendation": "زر «إنهاء كل الجلسات الأخرى» أعلى القائمة + زر الإلغاء ملاصق للمحتوى (ListRow end).",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §8 undo-support/bulk; design-pro proximity",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/staff/me/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-067",
+  "severity": "P3",
+  "category": "وصول",
+  "app": "admin",
+  "screen": "404",
+  "element": "صفحة غير موجودة",
+  "title": "404 ثنائية اللغة «الصفحة غير موجودة / Page not found» وزر «نظرة عامة · Overview»",
+  "detail": "مقبول لمسار بلا لغة، لكن 404 داخل /ar/ تعرف اللغة؛ التصميم بلا شريط جانبي ولا بحث.",
+  "evidence": "artifacts/ux-audit-F4/evidence/admin-404-ar-desktop.png",
+  "recommendation": "404 داخل مسار اللغة بلغة واحدة ومع الإطار (الشريط الجانبي) إن كان المستخدم مسجّلاً.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §9 persistent-nav",
+  "files": [
+   "apps/admin/src/app/not-found.tsx",
+   "apps/admin/src/app/[locale]/(app)/layout.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-068",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "integrations",
+  "element": "خطوات الربط",
+  "title": "جدار نص تشغيلي بلا ترقيم ولا أزرار نسخ لأسماء المتغيرات",
+  "detail": "ثلاث فقرات طويلة لكل مزوّد مع رموز متداخلة ثنائية الاتجاه؛ الصفحة runbook لكنها غير قابلة للمسح.",
+  "evidence": "admin-admin-integrations.png",
+  "recommendation": "قائمة مرقمة، كل اسم متغير في <code> مع زر نسخ (CopyBadge موجود)، و«نقطة التراجع» كصندوق منفصل.",
+  "effort": "S",
+  "skill": "design-pro «Utility & Function»; Nielsen #10",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/integrations/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-069",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "risk",
+  "element": "عمود «العميل»",
+  "title": "أسماء العملاء تلتف على سطرين بينما أعمدة الأرقام تملك فراغاً",
+  "detail": "«Khalid Al-Mansoori» على سطرين في لوحة المخاطر؛ توزيع الأعمدة تلقائي.",
+  "evidence": "admin-admin-risk.png",
+  "recommendation": "width على أعمدة الأرقام (ch) وwhitespace-nowrap للاسم مع truncate + title.",
+  "effort": "S",
+  "skill": "component-patterns Data Tables (nowrap headers, widths)",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/risk/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-070",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "fraud-links",
+  "element": "معرّف الجهاز المشترك",
+  "title": "معرّف مبتور «seed-device-shar» بلا علامة حذف",
+  "detail": "القيمة تُقص بعرض ثابت.",
+  "evidence": "admin-admin-fraud-links.png",
+  "recommendation": "text-overflow:ellipsis + title، أو اعرض آخر 8 خانات مع زر نسخ.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §6 truncation-strategy",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/fraud/links/[userId]/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-071",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "payouts",
+  "element": "الفلتر الافتراضي",
+  "title": "الطابور يفتح على «كل الطلبات» بما فيها المدفوعة بدل «ينتظر اعتمادي»",
+  "detail": "الشاشة طابور مراجعة؛ الافتراضي يجب أن يكون ما ينتظر القرار (معتمد 1 من 2 / بانتظار الفحوصات)، وفرز أقدم أولاً.",
+  "evidence": "admin-admin-payouts.png",
+  "recommendation": "افتراضي: الحالات المفتوحة مرتبة بموعد المراجعة تصاعدياً، مع رقيقة «الكل» للأرشيف.",
+  "effort": "S",
+  "skill": "Nielsen #7 Flexibility and efficiency; design-pro «Utility & Function»",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/payouts/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-072",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "mail-detail",
+  "element": "إطار HTML في Firefox",
+  "title": "اختلاف متصفحي: Firefox يعرض المبلغ داخل البريد بخط mono احتياطي أرفع وحالة «قيد المعالجة» بلون كهرماني بدل البني الداكن",
+  "detail": "إطار البريد لا يحمّل IBM Plex Mono (طبيعي للبريد)، لكن لون الحالة يختلف بين Chromium/WebKit (بني داكن) وFirefox (كهرماني) — على الأرجح دالة لون غير مدعومة أو light-dark() في القالب. الإطار نفسه له حدّ أوضح في Firefox.",
+  "evidence": "local-firefox-1440/admin-admin-mail-detail.png مقابل local-chromium-1440 وlocal-webkit-1440",
+  "recommendation": "استخدم hex صريحاً في القالب (لا color-mix/light-dark) وcolor-scheme محدداً داخل الإطار؛ وثّق الاختلاف في brand/templates/email/TEST-MATRIX.md.",
+  "effort": "S",
+  "skill": "Light/Dark Mode Contrast table (token-driven theming); WIG Dark Mode",
+  "files": [
+   "packages/adapters/src/mail/templates/layout.ts"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-073",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "forbidden",
+  "element": "الشريط العلوي",
+  "title": "شريط علوي فارغ بلا عنوان في صفحة «لا صلاحية»",
+  "detail": "current غير محدد لمسار /forbidden فيُترك مركز الشريط فارغاً.",
+  "evidence": "admin-admin-forbidden.png",
+  "recommendation": "عنوان «لا صلاحية» في الشريط أو إخفاء الشريط على المكتب (VAD-037).",
+  "effort": "S",
+  "skill": "Nielsen #1",
+  "files": [
+   "apps/admin/src/components/shell/AdminShell.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-074",
+  "severity": "P3",
+  "category": "نص",
+  "app": "admin",
+  "screen": "breaches",
+  "element": "عنوان الصفحة مقابل التنقل",
+  "title": "عناوين الصفحات تخالف أسماء الشريط الجانبي: «المخالفات والأدلة» / «المخالفات»، «الطلبات والمدفوعات» / «الطلبات»، «مدفوعات بانتظار الاعتماد» / «المدفوعات اليدوية»، «التحكم بالمحاكي» / «المحاكي»",
+  "detail": "الشريط العلوي يعرض اسم التنقل والـ H1 اسماً آخر في الصفحة نفسها.",
+  "evidence": "admin-admin-breaches.png; admin-admin-orders.png; admin-admin-payments.png; admin-admin-simulator.png",
+  "recommendation": "اسم واحد لكل وجهة في nav/H1/document.title.",
+  "effort": "S",
+  "skill": "Nielsen #4 Consistency; ui-ux-pro-max §9 navigation-consistency",
+  "files": [
+   "packages/i18n/src/messages/ar.json",
+   "apps/admin/src/app/[locale]/(app)/layout.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-075",
+  "severity": "P3",
+  "category": "وصول",
+  "app": "admin",
+  "screen": "staff",
+  "element": "بطاقة المحتوى على الهاتف",
+  "title": "صفحة الحساب على الهاتف: ثلاثة أزرار إجراء مكدسة قبل الأرقام ثم تبويبات LTR",
+  "detail": "الأزرار الثانوية الثلاثة تسبق الحقائق في أعلى الشاشة؛ ترتيب القراءة: مرجع ← أزرار ← أرقام.",
+  "evidence": "artifacts/ux-after/admin-account-phone-390-ar.png",
+  "recommendation": "على الهاتف: الحقائق أولاً، الإجراءات في قائمة ⋯ بجانب العنوان، ومنطقة الخطر في الأسفل كما هي.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §9 overflow-menu; detail page facts → actions → history",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/accounts/[id]/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-076",
+  "severity": "P3",
+  "category": "تقني",
+  "app": "admin",
+  "screen": "accounts",
+  "element": "أدلة التدقيق F4 — لقطات «phone»",
+  "title": "لقطات ux-audit-F4 الموسومة phone مأخوذة على 1280×720 بمقياس 2 لا على 390 px — لا تثبت تخطيط الهاتف",
+  "detail": "كل ملفات admin-*-phone.png بأبعاد 2560×1440 أو أطول وتعرض الشريط الجانبي المكتبي. لقطة admin-accounts-filter-empty لا تُظهر حالة فارغة (26 صفاً). حُكم الهاتف في هذا التقرير يستند إلى artifacts/ux-after (F1، قد تكون قديمة).",
+  "evidence": "artifacts/ux-audit-F4/evidence/admin-accounts-ar-phone.png (2560×1718); admin-accounts-filter-empty-ar-desktop.png",
+  "recommendation": "أعد التقاط الأدلة بـ viewport 390×844 وdeviceScaleFactor 3، ومرّر فلتراً يُرجع صفراً فعلياً (q=zzz) لتوثيق EmptyState.",
+  "effort": "S",
+  "skill": "process (evidence quality)",
+  "files": [
+   "scripts/ux-audit-capture.mjs"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-077",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "kyc",
+  "element": "الفلاتر",
+  "title": "طابور التحقق بلا رقيقة «موافَق عليها» ولا نطاق زمني — لا يمكن مراجعة قرار سابق",
+  "detail": "الرقائق: الكل / قيد التحقق / مرفوضة فقط؛ الحالات المعتمدة لا تُعرض في أي مكان من الطابور.",
+  "evidence": "admin-admin-kyc.png",
+  "recommendation": "أضف «موثّقة» كرقيقة أرشيف مع فرز بتاريخ القرار والمراجع.",
+  "effort": "S",
+  "skill": "Nielsen #6 Recognition over recall",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/kyc/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-078",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "overview",
+  "element": "بطاقة «إيراد هذا الشهر» (en)",
+  "title": "الإنجليزية: «USD 8,970.00» يلتصق الرمز بالرقم بحجمين مختلفين داخل بطاقة ضيقة فيلتف العنوان على سطرين",
+  "detail": "في النسخة الإنجليزية عناوين البطاقات تلتف («Revenue this month», «Commands in flight») بينما العربية سطر واحد؛ شبكة 6 أعمدة ضيقة على 1440.",
+  "evidence": "admin-admin-overview-en.png",
+  "recommendation": "5 بطاقات أو شبكة auto-fit بعرض أدنى 200 px؛ text-wrap:balance للعناوين.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §6 heading-line-balance; Layout & Spacing",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-079",
+  "severity": "P3",
+  "category": "هوية",
+  "app": "admin",
+  "screen": "overview",
+  "element": "تذييل الشريط الجانبي (en)",
+  "title": "«PART OF FIPER GLOBAL» بأحرف كبيرة وتباعد أحرف في الإنجليزية بينما العربية «جزء من Fiper Global» عادية",
+  "detail": "EndorsementLine يختلف أسلوباً بين اللغتين؛ قاعدة البرند تحدد شكل سطر الانتماء — تحقق من مطابقته لـ brand/README (الوزن والتباعد).",
+  "evidence": "admin-admin-overview-en.png مقابل admin-admin-overview.png",
+  "recommendation": "نفس الوزن والحالة في اللغتين وفق brand/references/composition-rules.md.",
+  "effort": "S",
+  "skill": "fpt-brand endorsement line",
+  "files": [
+   "packages/ui/src/components/endorsement-line.tsx"
+  ],
+  "confidence": "low"
+ },
+ {
+  "id": "VAD-080",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "staff-detail",
+  "element": "سجل الدخول",
+  "title": "سجل الدخول يعرض «بصمة IP cb87cdde» بسطرين وUTC لكل عنصر — 6 عناصر تملأ الشاشة ولا تعرض المتصفح/الجهاز",
+  "detail": "كل عنصر 95 px: شارة + تاريخ دبي + UTC + بصمة؛ المعلومة الأهم للأمن (الجهاز/المتصفح/الموقع التقريبي) غائبة، بينما «الجلسات النشطة» تعرض Edge · Windows.",
+  "evidence": "admin-admin-staff-detail.png",
+  "recommendation": "جدول مضغوط: الوقت | النتيجة | الجهاز | البصمة (آخر 8) مع UTC في tooltip.",
+  "effort": "S",
+  "skill": "design-pro «Precision & Density»",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/staff/[id]/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-081",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "deletions",
+  "element": "الفلاتر",
+  "title": "رقيقة «الكل» وحيدة في صفحة طلبات الحذف — فلتر بلا خيارات",
+  "detail": "صف فلاتر بعنصر واحد غير قابل للتغيير.",
+  "evidence": "admin-admin-deletions.png",
+  "recommendation": "أخفِ المجموعة عندما تكون الخيارات أقل من اثنين، أو أضف «معلّقة/منفّذة/مرفوضة».",
+  "effort": "S",
+  "skill": "Nielsen #8",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/deletions/page.tsx",
+   "apps/admin/src/components/Filters.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-082",
+  "severity": "P3",
+  "category": "نص",
+  "app": "admin",
+  "screen": "health",
+  "element": "قسم «ساعة المحاكي»",
+  "title": "«السرعة: الزمن الحقيقي ×1» و«وقت المحاكي» في صفحة صحة الإنتاج بلا تمييز أنها محاكاة",
+  "detail": "عناصر المحاكي تظهر في صحة النظام بنفس وزن الخدمات الحقيقية؛ عند التحول إلى cTrader الحي يجب أن تختفي أو تُوسم.",
+  "evidence": "admin-admin-health.png",
+  "recommendation": "اعرض القسم فقط عندما FPT_PLATFORM_MODE=sim مع شارة «محاكاة»، وإلا «ساعة المنصة».",
+  "effort": "S",
+  "skill": "Nielsen #1 visibility of system status",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/health/HealthClient.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-083",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "payout",
+  "element": "قسم «الاعتمادات والتنفيذ»",
+  "title": "حقول «التنفيذ —» و«مرجع التنفيذ —» و«الشهادة —» تُعرض فارغة قبل أوانها",
+  "detail": "سلسلة شرطات لحقول لا تنطبق على حالة «معتمد (1 من 2)»؛ ضجيج بصري في صفحة قرار.",
+  "evidence": "admin-admin-payout.png; artifacts/ux-after/admin-payout-phone-390-ar.png",
+  "recommendation": "أخفِ حقول التنفيذ حتى تصبح الحالة executing/paid، واعرض بدلها «الخطوة التالية: الاعتماد الثاني».",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §8 progressive-disclosure",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/payouts/[id]/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VAD-084",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "grant",
+  "element": "زر الإرسال",
+  "title": "زر «منح الحساب» الأساسي في الزاوية السفلية اليسرى بينما تبدأ البطاقة من اليمين وتُقرأ منه",
+  "detail": "الزر الأساسي في نهاية الاتجاه (يسار) أسفل حقل إعادة التحقق؛ مقبول إن كان النمط ثابتاً لكن صفحة الكوبونات/الطلبات تضع الأساسي أعلى اليسار وصفحات التفاصيل تضعه أعلى. ثلاثة مواضع للإجراء الأساسي.",
+  "evidence": "admin-admin-grant.png; admin-admin-orders.png; admin-admin-payout.png",
+  "recommendation": "قاعدة واحدة: نماذج → الزر أسفل البداية (يمين في العربية) أو شريط ثابت؛ قوائم/تفاصيل → أعلى نهاية الاتجاه.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §9 navigation-consistency; §4 primary-action",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/orders/grant/page.tsx",
+   "apps/admin/src/components/ActionForm.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-085",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "mail-detail",
+  "element": "تبويبا «HTML / نص»",
+  "title": "التبويبان قصيران جداً (HTML · نص) ويبدآن من يسار العمود بسبب VAD-002، والتفاصيل في العمود الأيسر بترتيب LTR",
+  "detail": "التبويبات بعرض المحتوى (fill=false) لكن في موضع البداية الخاطئ.",
+  "evidence": "admin-admin-mail-detail.png; artifacts/ux-audit-F4/evidence/admin-mail-detail-ar-desktop.png",
+  "recommendation": "يُحل مع VAD-002؛ أضف تبويب «المتغيرات» بدل المطوي أسفل العمود.",
+  "effort": "S",
+  "skill": "component-patterns Tab Systems",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/mail/[id]/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-086",
+  "severity": "P3",
+  "category": "وصول",
+  "app": "admin",
+  "screen": "accounts",
+  "element": "المرجع في الصف",
+  "title": "الصف بأكمله ليس رابطاً؛ الرابط على المرجع فقط (نص mono عريض بلا تسطير حتى التحويم)",
+  "detail": "DataTableRows يجعل الخلية الأولى رابطاً؛ لا إشارة بصرية لقابلية النقر، والنقر على اسم العميل أو المبلغ لا يفتح الحساب.",
+  "evidence": "admin-admin-accounts.png; packages/ui/src/components/data-table.tsx:119-121",
+  "recommendation": "اجعل الصف قابلاً للنقر (رابط ممتد ::after inset-0 على الخلية الأولى) مع cursor:pointer وحالة تحويم محايدة؛ أبقِ الرابط الدلالي على المرجع.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §2 cursor-pointer; WIG Hover & Interactive States",
+  "files": [
+   "packages/ui/src/components/data-table.tsx",
+   "packages/ui/src/components.css"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VAD-SUMMARY",
+  "app": "admin",
+  "scope": "المراجعة البصرية / تجربة المشغّل للوحة الإدارة — 36 شاشة Chromium 1440 (إنتاج)، 8 شاشات WebKit + Firefox، أدلة F4 المحلية (دخول/404/ممنوع/قوائم/تركيز/إعدادات/حسابي/بريد)، 10 لقطات هاتف 390 من artifacts/ux-after (F1، قد تكون قديمة)، ومراجعة مصدر @fpt/ui وصفحات apps/admin",
+  "counts": {
+   "total": 86,
+   "P0": 1,
+   "P1": 5,
+   "P2": 27,
+   "P3": 53,
+   "by_category": {
+    "تقني": 5,
+    "RTL": 9,
+    "بصري": 44,
+    "نص": 20,
+    "هوية": 4,
+    "وصول": 4
+   }
+  },
+  "per_screen_verdict": [
+   {
+    "screen": "signin",
+    "verdict": "جيد مع ملاحظات",
+    "notes": "رسائل الخطأ والحد من المحاولات واضحة؛ فقاعة تحقق إنجليزية، زر «متابعة»، بطاقة غير ممركزة (VAD-033/034/035)"
+   },
+   {
+    "screen": "overview",
+    "verdict": "مقبول",
+    "notes": "بطاقات وطابور وأحداث وصحة؛ الطابور ليس أولاً، أسماء خدمات خام، أسهم غير معكوسة، 21 حساباً إنذاراً كاذباً (VAD-004/009/027/028)"
+   },
+   {
+    "screen": "accounts",
+    "verdict": "مقبول",
+    "notes": "جدول RTL سليم ومبالغ mono؛ كثافة منخفضة بسبب التواريخ، فلاتر بلا عناوين، لا فرز ظاهر، لا ترقيم (VAD-019/020/030/039)"
+   },
+   {
+    "screen": "account",
+    "verdict": "ضعيف",
+    "notes": "محتوى تبويب «نظرة» LTR وتاريخ مشوّه (VAD-002)؛ المقاييس والمخالفات ومنطقة الخطر بنية صحيحة"
+   },
+   {
+    "screen": "kyc",
+    "verdict": "جيد",
+    "notes": "حالة فراغ واضحة؛ تنقصه رقيقة الأرشيف (VAD-077)"
+   },
+   {
+    "screen": "risk",
+    "verdict": "مقبول",
+    "notes": "فرز نشط ظاهر، تحديث 5 ثوانٍ؛ بلا تدرّج لوني للخطر وتناقض مع النظرة العامة (VAD-004/029)"
+   },
+   {
+    "screen": "breaches",
+    "verdict": "مقبول",
+    "notes": "فلتر «نعم/لا» غامض، شارة «تم» بأيقونة X، حد 0.00 (VAD-019/055/056)"
+   },
+   {
+    "screen": "breach",
+    "verdict": "ضعيف",
+    "notes": "الرسم بنصوص ضخمة في المحركات الثلاثة (VAD-003)؛ بقية الصفحة (التقرير، الصفقات، تسلسل الإقفال، الإلغاء باعتمادين) ممتازة"
+   },
+   {
+    "screen": "payouts",
+    "verdict": "مقبول",
+    "notes": "متتبع في كل صف يقصّ الجدول على 1280 ويخطئ الخطوة (VAD-010/011)؛ الافتراضي ليس «ينتظر اعتمادي»"
+   },
+   {
+    "screen": "payout",
+    "verdict": "جيد",
+    "notes": "أفضل صفحة تفاصيل: إجراء أساسي واحد، تنبيه الاعتماد الثاني، الفحوصات الآلية، منطقة الخطر؛ ملاحظة إنجليزية وحقول تنفيذ فارغة (VAD-043/083)"
+   },
+   {
+    "screen": "orders",
+    "verdict": "ضعيف",
+    "notes": "حجم المنتج ×100 (VAD-001)، طريقة مكررة، فلاتر بلا عناوين"
+   },
+   {
+    "screen": "order",
+    "verdict": "مقبول",
+    "notes": "ثلاث بطاقات واضحة؛ لا سبب فشل ولا إجراء (VAD-032)"
+   },
+   {
+    "screen": "payments",
+    "verdict": "ضعيف",
+    "notes": "نفس خطأ ×100 (VAD-001)، فرز أقدم أولاً صحيح"
+   },
+   {
+    "screen": "payment",
+    "verdict": "جيد",
+    "notes": "إثبات ومبلغ واعتماد بوضوح؛ فراغ فوق بيانات الطلب، قوس مكسور، «KB · PNG 74» (VAD-013/014/041)"
+   },
+   {
+    "screen": "grant",
+    "verdict": "جيد",
+    "notes": "نموذج نظيف بإعادة تحقق؛ قائمة منتج بلا placeholder (VAD-063)"
+   },
+   {
+    "screen": "products",
+    "verdict": "ضعيف",
+    "notes": "الجدول LTR بالكامل (VAD-002) و10 أزرار في 5 صفوف (VAD-025)"
+   },
+   {
+    "screen": "finance",
+    "verdict": "جيد",
+    "notes": "بطاقات + جداول CSV؛ جموع خاطئة وشرارة بنقطتين وصياغة سياسة الاسترداد (VAD-012/031/058)"
+   },
+   {
+    "screen": "coupons",
+    "verdict": "جيد",
+    "notes": "حالة فراغ سليمة (VAD-062)"
+   },
+   {
+    "screen": "affiliates",
+    "verdict": "مقبول",
+    "notes": "عمود الفئة يلتف 3 أسطر، سهم وترتيب مبلغ (VAD-045/046)"
+   },
+   {
+    "screen": "affiliate",
+    "verdict": "مقبول",
+    "notes": "نسبة مكررة، قناة خام، أسهم غير معكوسة (VAD-009/044/047)"
+   },
+   {
+    "screen": "mail",
+    "verdict": "مقبول",
+    "notes": "موضوع إنجليزي مفكك، قوالب بلا ترجمة (VAD-008/024)"
+   },
+   {
+    "screen": "mail-detail",
+    "verdict": "مقبول",
+    "notes": "إطار + نص + تفاصيل جيدة؛ سطر تنظيمي نائب مرئي للعميل (VAD-006)، تبويبات LTR"
+   },
+   {
+    "screen": "fraud",
+    "verdict": "مقبول",
+    "notes": "≥ تُقرأ ≤ (VAD-007)، ثلاثة صفوف فلاتر بلا عناوين، خطورة بلا تدرّج"
+   },
+   {
+    "screen": "fraud-detail",
+    "verdict": "ضعيف",
+    "notes": "بطاقة أدلة فارغة (VAD-005)، دولة AE خام"
+   },
+   {
+    "screen": "fraud-links",
+    "verdict": "جيد",
+    "notes": "بطاقات واضحة؛ وحدات h/min ومعرّف مبتور (VAD-048/070)"
+   },
+   {
+    "screen": "audit",
+    "verdict": "ضعيف",
+    "notes": "تغذية بدل جدول، إجراءات غير مترجمة، لا نطاق تاريخ (VAD-016/017)"
+   },
+   {
+    "screen": "staff",
+    "verdict": "مقبول",
+    "notes": "ثلاثة أزرار لكل صف (VAD-018)؛ الهاتف أفضل من المكتب"
+   },
+   {
+    "screen": "staff-detail",
+    "verdict": "مقبول",
+    "notes": "جلسات محاذاة للأسفل، سجل دخول منخفض الكثافة، بلا إجراءات (VAD-014/080)"
+   },
+   {
+    "screen": "settings",
+    "verdict": "مقبول",
+    "notes": "ترتيب LTR للبطاقات والتبويبات (VAD-002)، تقصّ التبويبات على الهاتف (VAD-023)، نصوص ثنائية الاتجاه مفككة"
+   },
+   {
+    "screen": "deletions",
+    "verdict": "جيد",
+    "notes": "حالة فراغ سليمة؛ فلتر بعنصر واحد (VAD-081)"
+   },
+   {
+    "screen": "simulator",
+    "verdict": "مقبول",
+    "notes": "تحذير وضع المحاكاة ممتاز؛ backticks وأسماء خام (VAD-027/049)"
+   },
+   {
+    "screen": "integrations",
+    "verdict": "مقبول",
+    "notes": "runbook غني لكنه جدار نص ثنائي الاتجاه (VAD-050/068)"
+   },
+   {
+    "screen": "health",
+    "verdict": "جيد",
+    "notes": "أسماء معرّبة وشبكة واضحة؛ زر أساسي غير مستحق وعدّاد معزول (VAD-060/061/082)"
+   },
+   {
+    "screen": "me",
+    "verdict": "ضعيف",
+    "notes": "أعمدة محاذاة للأسفل، صلاحيات خام، 15 جلسة بلا إجراء جماعي (VAD-014/015/066)"
+   },
+   {
+    "screen": "forbidden",
+    "verdict": "جيد",
+    "notes": "رسالة ومخرج واضحان؛ شريط فارغ (VAD-073)"
+   },
+   {
+    "screen": "404",
+    "verdict": "مقبول",
+    "notes": "ثنائي اللغة بلا إطار (VAD-067)"
+   }
+  ],
+  "cross_browser": [
+   "Chromium / WebKit / Firefox 1440: التخطيط والخطوط والشارات والحقول والقوائم المنسدلة (select مخصص) متطابقة في الشاشات الثماني المقارنة (overview, accounts, payouts, payment, settings, mail-detail, integrations, health) وكذلك breach وgrant — لا فروق في المقاييس أو الالتفاف.",
+   "Firefox payouts: الصف الأول ملوّن بغسلة الأحمر البرندي — هذه حالة التحويم (مؤشر WebDriver مستقر فوق الصف) وليست فرقاً في التصيير؛ كشفت أن تحويم الجداول أحمر في كل المتصفحات (VAD-021).",
+   "Firefox mail-detail: داخل إطار البريد يختلف خط المبلغ (mono احتياطي أرفع) ولون حالة «قيد المعالجة» (كهرماني مقابل بني داكن في Chromium/WebKit) وحدّ الإطار أوضح (VAD-072).",
+   "رسم المخالفة بنصوص ضخمة متطابق في الثلاثة — خلل تصميم لا متصفح (VAD-003).",
+   "الأزمنة النسبية تختلف بين اللقطات («الآن» / «قبل دقيقتين» / «قبل 3 دقائق») لاختلاف وقت الالتقاط فقط."
+  ],
+  "strongest_10": [
+   "صفحة تفاصيل السحب: إجراء أساسي واحد، تنبيه «بانتظار اعتماد ثانٍ»، فحوصات آلية بشارات، سجل الاعتمادات، منطقة خطر منفصلة للرفض — نموذج يجب تعميمه.",
+   "حالات الفراغ (التحقق من الهوية، الكوبونات، طلبات الحذف، التنبيهات) بأيقونة وعنوان ووصف متسقة.",
+   "صفحة المراجعة اليدوية: المبلغ البطل + الإثبات بحجمه + بيانات الطلب في شاشة واحدة، وزر اعتماد واحد.",
+   "الفلاتر روابط GET تحفظ الحالة في URL (قابلة للمشاركة، بلا JavaScript) — متوافق مع WIG «URL reflects state».",
+   "الجداول: المبالغ mono tabular بنهاية موحدة والرمز USD في رأس العمود، والفرز النشط ظاهر حيث يُمرَّر (المخاطر، الاحتيال، المدفوعات).",
+   "صفحة المخالفة: التقرير بالأرقام، الصفقات لحظة المخالفة، تسلسل الإقفال، إلغاء باعتمادين — سرد كامل للحادثة.",
+   "الشريط الجانبي: مجموعات، حالة نشطة بشريط أحمر وأيقونة، تذييل بالاسم والدور واللغة وملاحظة المحاكاة؛ شريط هاتف من 5 عناصر مع ورقة «المزيد».",
+   "ظلال وعمق: إستراتيجية واحدة (حدود hairline على أرضية الألواح) بلا ظلال مختلطة — متسقة في كل الشاشات.",
+   "صفحة صحة النظام: أسماء معرّبة، نبضات، طابور الأوامر، ساعة المحاكي — واضحة لمشغّل غير تقني.",
+   "إشارات المحاكاة («بيئة محاكاة — لا أموال حقيقية»، «وضع المحاكاة» في المحاكي، شارات mock/sim في الإعدادات) ثابتة ومتسقة."
+  ],
+  "weakest_10": [
+   "حجم المنتج ×100 في الطلبات والمدفوعات اليدوية (5,000,000 USD) — خطأ مالي ظاهر (VAD-001).",
+   "Radix Tabs بلا اتجاه: جداول ومحتوى وبطاقات LTR داخل العربية في أربع شاشات (VAD-002).",
+   "رسم المخالفة بنصوص ضخمة وخط سميك (VAD-003).",
+   "ثلاث دلالات لـ«القرب من الحد» وإنذار كاذب لـ 21 حساباً (VAD-004).",
+   "بطاقة أدلة الاحتيال فارغة ومطوية (VAD-005).",
+   "سطر «النص التنظيمي: بانتظار قرار» في بريد العميل (VAD-006).",
+   "≥ تُقرأ ≤ في فلاتر الخطورة، والموضوع الإنجليزي مفكك في البريد، وأسهم غير معكوسة (VAD-007/008/009).",
+   "صيغ الجمع العربية الثابتة في كل سطور العدّ (VAD-012).",
+   "كثافة الجداول: تواريخ من 3 أسطر، متتبع في كل صف، 3 أزرار في كل صف موظف، سجل تدقيق كتغذية (VAD-010/017/018/020).",
+   "أعمدة محاذاة للأسفل في حسابي/المراجعة/تفاصيل الموظف وصلاحيات خام (VAD-014/015)."
+  ],
+  "operator_experience": "لوحة الإدارة مبنية على أساس صحيح: هيكل شاشة ثابت (عنوان، لِيد، فلاتر، جدول/بطاقات)، مكوّنات F1 الموحدة، أمانة في عرض الأرقام بالخط الأحادي ورمز العملة، وإشارات محاكاة لا تُنسى. صفحات القرار (السحب، المراجعة اليدوية، المخالفة) هي أنضج ما فيها وتجيب على سؤال المشغّل الأول: ما الذي ينتظرني وماذا أفعل. لكن الطبقة الأفقية (التبويبات، التواريخ، الجموع، الاتجاه) تحمل أخطاء منهجية تتكرر في شاشات عديدة، وأخطرها خطأ عرض مالي واحد يكفي ليُفقد الثقة في الأرقام كلها. كثافة المعلومات أقل مما يليق بأداة مشغّل يومية — الجداول تعرض 6 صفوف في الشاشة بسبب تواريخ ثلاثية الأسطر ومتتبعات وأزرار داخل الصفوف، بينما نسخة الهاتف اختارت قوائم ⋯ وبطاقات أنظف من المكتب. الإشارات التشغيلية غير متسقة: النظرة العامة تُنذر بـ 21 حساباً ولوحة المخاطر تقول صفراً، والطوابير لا تظهر كعدادات في الشريط الجانبي. النصوص بحاجة إلى تمشيط لغوي واحد (الجموع، القوالب غير المترجمة، الرموز الخام، علامات Markdown، الاتجاه داخل الجمل). مقارنةً بـ TWO Markets، ينقص هذه اللوحة التكثيف وترقيم الخادم وتدرّج الخطر اللوني وشريط علوي يعمل كمسار تنقل بدل تكرار العنوان. أكثر ما يُقلق قبل الإطلاق: إصلاح VAD-001 وVAD-002 وVAD-006 وVAD-003 (أربعة تعديلات صغيرة إلى متوسطة) يرفع الانطباع العام من «نموذج أولي متقدم» إلى «أداة إنتاج»، ثم مرحلة كثافة وجموع وأسماء موحدة."
+ }
+]

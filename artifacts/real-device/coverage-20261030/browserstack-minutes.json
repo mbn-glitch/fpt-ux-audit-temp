@@ -1,0 +1,36 @@
+{
+ "builds": [
+  {
+   "name": "Selenium fpt-rd1-coverage-20261030",
+   "hashed_id": "8d494be96034775593fe57375f7d189940759ce9",
+   "sessions": 43,
+   "minutes": 48.6,
+   "byDevice": {
+    "Windows 11 chrome": 16.4,
+    "Samsung Galaxy S23": 23.2,
+    "OS X Sequoia safari": 9.1
+   }
+  },
+  {
+   "name": "fpt-rd1-coverage-20261030",
+   "hashed_id": "ab3abe525a0da71d53b96cfcc4b1a283c6202494",
+   "sessions": 32,
+   "minutes": 57.2,
+   "byDevice": {
+    "iPad Pro 13 2024": 15.3,
+    "iPhone 15 Pro Max": 41.9
+   }
+  },
+  {
+   "name": "fpt-rd1-probe",
+   "hashed_id": "d628f7b1edb8b95348f376035f84ca05cc0ea321",
+   "sessions": 1,
+   "minutes": 0.1,
+   "byDevice": {
+    "Windows 11 chrome": 0.1
+   }
+  }
+ ],
+ "totalMinutes": 105.9,
+ "computedAt": "2026-10-30"
+}

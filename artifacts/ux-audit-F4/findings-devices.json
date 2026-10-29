@@ -1,0 +1,54 @@
+[
+  {
+    "id": "DEV-001",
+    "severity": "P1",
+    "category": "تقني",
+    "app": "admin",
+    "screen": "admin-audit",
+    "element": "صفحة سجل التدقيق /ar/audit — EventFeed بالأزمنة النسبية",
+    "title": "خطأ ترطيب React #418 على كروم ويندوز الحقيقي في سجل التدقيق",
+    "detail": "على Windows 11 + Chrome الحقيقي (BrowserStack) تسجّل صفحة سجل التدقيق بالعربية خطأ console «Minified React error #418» (نص الخادم لا يطابق نص العميل عند الترطيب). لم يظهر على Chromium المحلي ولا على macOS Safari ولا على الآيباد؛ الصفحة تمرّر now={Date.now()} إلى EventFeed وتُنسّق أزمنة نسبية بالعربية، والاختلاف بين ICU في Node وICU في كروم ويندوز هو السبب الأرجح (يحتاج إثباتاً).",
+    "evidence": "artifacts/real-device/coverage-20261030/windows-11-chrome/coverage-receipt.json → screens['admin/admin-audit@ar'].detail.consoleErrors؛ apps/admin/src/app/[locale]/(app)/audit/page.tsx:73",
+    "recommendation": "إما تثبيت نص الزمن النسبي من الخادم (تمرير النص المنسّق لا now)، أو جعل الجزء النسبي client-only مع suppressHydrationWarning على العنصر النصي فقط، ثم إعادة الفحص على كروم ويندوز الحقيقي.",
+    "effort": "S",
+    "skill": "web-interface-guidelines § Hydration Safety · security-audit (guidance) · RD1 real-device coverage",
+    "files": ["apps/admin/src/app/[locale]/(app)/audit/page.tsx", "packages/ui/src/components/event-feed.tsx"],
+    "confidence": "medium"
+  },
+  {
+    "id": "DEV-002",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "client",
+    "screen": "home",
+    "element": "الاستطلاع الحيّ /api/accounts/<id>/live عند مغادرة الصفحة",
+    "title": "رفض وعد غير معالج «Load failed» عند التنقّل السريع على سفاري iOS",
+    "detail": "على الآيفون الحقيقي يُسجَّل في console «{message: Load failed}» عند الانتقال من الرئيسية (الإنجليزية) إلى شاشة أخرى بينما طلب الاستطلاع الحيّ قيد الإرسال؛ وعلى Chromium بعد تسجيل الخروج يستمر الاستطلاع ويتلقى 401. لا أثر وظيفياً، لكنه ضجيج في console ويدل على أن الاستطلاع لا يُلغى عند الخروج/الإلغاء.",
+    "evidence": "artifacts/real-device/coverage-20261030/iphone-15-pro-max/coverage-receipt.json → screens['client/home@en'].detail.consoleErrors؛ artifacts/real-device/coverage-20261030/local-chromium-390/coverage-receipt.json → failedRequests 401 على /api/accounts/*/live بعد تبديل المستخدم",
+    "recommendation": "إلغاء الاستطلاع بـ AbortController في تنظيف useEffect وتجاهل AbortError، وإيقافه عند 401 بدل اعتباره «غير متصل» إلى الأبد (انظر TEC-042).",
+    "effort": "S",
+    "skill": "ui-ux-pro-max §3 debounce-throttle / network-fallback · web-interface-guidelines § Performance",
+    "files": ["apps/client/src/components/account-overview.tsx"],
+    "confidence": "medium"
+  },
+  {
+    "id": "DEV-003",
+    "severity": "P3",
+    "category": "تقني",
+    "app": "admin",
+    "screen": "admin-signin",
+    "element": "حدّ محاولات الدخول لكل حساب موظف",
+    "title": "حدّ «محاولات كثيرة» يُفعَّل بدخول متوازٍ لحساب واحد من أجهزة مختلفة",
+    "detail": "عند تشغيل ثلاثة أجهزة بالتوازي بحساب الفحص نفسه ظهرت رسالة «محاولات كثيرة. انتظر دقيقة ثم أعد المحاولة.» على ماك/سفاري والآيباد رغم أن كل محاولة صحيحة. سلوك أمني صحيح (ليس عيباً)، لكنه يعني أن أي أتمتة متوازية أو فريقاً يتشارك حساباً سيُحجب؛ يُوثَّق هنا وفي docs/real-device-gate.md.",
+    "evidence": "artifacts/real-device/coverage-20261030/macos-safari/coverage-receipt.json → sessions[].error «Too many attempts…»؛ apps/admin/src/lib/session.ts (ADMIN_LIMITS)",
+    "recommendation": "لا تغيير في المنتج؛ في الأتمتة: دخول واحد لكل حساب في الدقيقة، أو حساب فحص لكل مسار. اختيارياً: رسالة الحدّ تذكر المدة المتبقية.",
+    "effort": "S",
+    "skill": "security-audit (guidance) · RD1 real-device coverage",
+    "files": ["docs/real-device-gate.md"],
+    "confidence": "high"
+  },
+  {
+    "id": "DEV-SUMMARY",
+    "note": "عيوب قيست على الأجهزة الحقيقية في RD1 ولم تُصلح في هذه الجولة (ما أُصلح موجود في قسم «الإصلاحات» من التقرير): 1 × P1، 2 × P3."
+  }
+]

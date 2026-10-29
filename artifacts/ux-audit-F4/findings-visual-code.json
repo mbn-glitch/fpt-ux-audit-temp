@@ -1,0 +1,2167 @@
+[
+ {
+  "id": "VIS-001",
+  "severity": "P0",
+  "category": "RTL",
+  "app": "both",
+  "screen": "/accounts/[id] (client) · /settings · /accounts/[id] · /products · /mail/[id] (admin)",
+  "element": "Tabs (Radix Tabs.Root) / Select (Radix Select)",
+  "title": "تبويبات Radix تطبع dir=\"ltr\" داخل الصفحات العربية فتنقلب شاشة الحساب كاملة إلى اتجاه LTR",
+  "detail": "`Tabs` يُصدَّر مباشرة من Radix (`RadixTabs.Root`) بلا `dir` ولا `DirectionProvider` في أيٍّ من التطبيقين؛ Radix يستدعي `useDirection(dir)` التي تعيد «ltr» افتراضياً وتكتبها كسمة `dir` على جذر التبويبات. النتيجة في العربية: شريط التبويبات ومحتواه (البطل، العدّادات الثلاثة، الرسم، الصفقات، القواعد، البيانات) يُرسم LTR داخل صفحة RTL — ترتيب التبويبات معكوس («نظرة» في أقصى اليسار بدل اليمين)، الهدف/اليومية/الإجمالية معكوسة، البطل محاذى يساراً. لقطة الجهاز الحقيقي account-iphone-15-pro-max.png تُظهر ذلك حرفياً. الأمر نفسه يصيب `Select` (27 من 29 استعمالاً بلا `dir`) و`Tabs` الإدارة الأربع.",
+  "evidence": "packages/ui/src/components/tabs.tsx:6 `export const Tabs = RadixTabs.Root;` · apps/client/src/app/[locale]/(app)/accounts/[id]/page.tsx:109 `<Tabs defaultValue={tab}>` · packages/ui/src/components/select.tsx:36 `<RadixSelect.Root dir={dir} …>` (dir اختياري بلا افتراضي) · node_modules @radix-ui/react-direction useDirection: `return localDir || globalDir || Direction.LTR` · react-tabs: `Primitive.div { dir: direction }` · apps/admin settings/page.tsx:65, accounts/[id]/page.tsx:137, products/page.tsx:89, mail/[id]/page.tsx:41 · artifacts/real-device/ios/account-iphone-15-pro-max.png",
+  "recommendation": "لفّ شجرة التطبيق في `[locale]/layout.tsx` (العميل والإدارة) بـ `<DirectionProvider dir={dirOf(locale)}>` من `radix-ui`، أو اجعل `Tabs`/`Select`/`DropdownMenu` في @fpt/ui تقرأ الاتجاه من `document.dir`/سياق محلي وتمرّره. أضف اختباراً في ux-gates يفشل عند وجود `[dir=ltr]` داخل صفحة عربية.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §5 mobile-first / fpt-brand rule «RTL: logical properties only» · design-system § 5.8",
+  "files": [
+   "packages/ui/src/components/tabs.tsx",
+   "packages/ui/src/components/select.tsx",
+   "apps/client/src/app/[locale]/layout.tsx",
+   "apps/admin/src/app/[locale]/layout.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-002",
+  "severity": "P1",
+  "category": "RTL",
+  "app": "client",
+  "screen": "/payouts/new (خطوة المبلغ) · كل Input mono مع end في العربية",
+  "element": "Input end adornment + .fpt-input--num",
+  "title": "لاصقة «USD» تغطي الأرقام المكتوبة في حقل المبلغ بالعربية",
+  "detail": "الحقل الرقمي `.fpt-input--num` يُجبر على `direction:ltr` وفي RTL يُعطى `text-align:start` (= يسار). لاصقة النهاية `end` تُوضع `absolute end-0` داخل غلاف RTL أي على اليسار أيضاً، بينما `.fpt-input.ui-has-end` يضيف `padding-inline-end:44px` الذي يُحسب على اتجاه الحقل (LTR) فيقع على اليمين. فالأرقام تبدأ من اليسار تحت كلمة USD مباشرة — لقطة الجهاز الحقيقي payout-amount-iphone-15-pro-max.png تُظهر «500» مطبوعة فوق «USD».",
+  "evidence": "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx:191 `<Input … mono … end={<span className=\"pe-3 …\">USD</span>} />` · packages/ui/src/components/input.tsx:35 `absolute inset-y-0 end-0` · packages/ui/src/components.css:186 `.fpt-input.ui-has-end { padding-inline-end: 44px; }` · brand/components/components.css:89–90 `.fpt-input--num{…direction:ltr;text-align:end}` / `[dir=\"rtl\"] .fpt-input--num{text-align:start}` · artifacts/real-device/ios/payout-amount-iphone-15-pro-max.png",
+  "recommendation": "اجعل غلاف الحقل الرقمي نفسه `dir=\"ltr\"` (كما يفعل `.fpt-input-wrap` في الحزمة) فتصبح اللاصقة على اليمين والحشو على اليمين، أو بدّل `ui-has-end` إلى `padding-right` عند `.fpt-input--num`. أزل `[dir=rtl] .fpt-input--num{text-align:start}` ليبقى المبلغ محاذى للنهاية في اللغتين.",
+  "effort": "S",
+  "skill": "web-interface-guidelines §Content Handling / fpt-brand «amounts as unbreakable units»",
+  "files": [
+   "packages/ui/src/components/input.tsx",
+   "packages/ui/src/components.css",
+   "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-003",
+  "severity": "P1",
+  "category": "تقني",
+  "app": "both",
+  "screen": "كل مسارات [locale] (لا يوجد loading.tsx)",
+  "element": "Next.js loading.tsx / Skeleton",
+  "title": "لا توجد حالة تحميل لأي مسار: كل تنقّل بين التبويبات يترك الشاشة السابقة جامدة حتى يصل الـ RSC",
+  "detail": "لا يوجد ملف `loading.tsx` واحد في التطبيقين، و`Skeleton` يُستعمل مرة واحدة فقط (داخل account-overview عند غياب الحالة). الصفحات كلها server components تقرأ قاعدة البيانات (`force-dynamic`)، فعند الضغط على تبويب الشريط السفلي لا يظهر هيكل ولا مؤشر؛ المستخدم يرى الصفحة القديمة ثم قفزة كاملة. design-system § 5.6 يلزم «كل تحميل غير فوري له Skeleton».",
+  "evidence": "`find apps/*/src/app -name loading.tsx` → لا شيء · packages/ui/src/components/skeleton.tsx (مُعرَّف) · apps/client/src/components/account-overview.tsx:237–241 (الاستعمال الوحيد) · apps/client/src/app/[locale]/layout.tsx:32 `export const dynamic = 'force-dynamic'`",
+  "recommendation": "أضف `loading.tsx` لمجموعة `(app)` في العميل (هيكل: `ui-skel-hero` + 3 صفوف `ui-skel-row`) وللإدارة (عنوان + جدول هيكلي)، ومسارات مخصصة للرئيسية/الحساب/الدفعات. اربطه بـ `role=\"status\"` + label من الترجمة.",
+  "effort": "M",
+  "skill": "ui-ux-pro-max §7 loading-states · §3 progressive-loading · ui-ux-design-pro component-patterns «Skeleton Screens»",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/layout.tsx",
+   "apps/admin/src/app/[locale]/(app)/layout.tsx",
+   "packages/ui/src/components/skeleton.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-004",
+  "severity": "P1",
+  "category": "بصري",
+  "app": "ui",
+  "screen": "كل تنبيه Alert (العميل: تحذير السحب 80/90 %، الحساب المخالف، أخطاء الدفع، الملف؛ الإدارة: نتائج الإجراءات)",
+  "element": "Alert body",
+  "title": "نص التنبيه جملة كاملة بحجم 14px تحت أرضية الجسم 15px",
+  "detail": "غلاف نص `Alert` يحمل `text-sm` (14px) ويضع الأبناء النصيين داخل `<div>` فلا يلتقطه بوّاب `smallBody` (الذي يفحص p/li/dd… فقط). كل جملة تحذير على الشاشات الأساسية («تجاوزت 80 % من الحد اليومي»، «فشل الدفع»، رسائل الإجراءات في الإدارة) تُقرأ بـ 14px.",
+  "evidence": "packages/ui/src/components/alert.tsx:44 `<div className=\"min-w-0 flex-1 text-sm\">` و:46 `<div className={cn('text-ink-2', title && 'mt-1')}>{children}</div>` · e2e/ux-audit.ts:71 BODY_TAGS لا تضم DIV",
+  "recommendation": "بدّل `text-sm` إلى `text-body-2` (15px) في alert.tsx:44، وأضف DIV ذات النص المباشر إلى فحص البوّابة أو اجعل الأبناء `<p>`.",
+  "effort": "S",
+  "skill": "design-system § 2 (جسم ≥ 15) · ui-ux-pro-max §5 readable-font-size",
+  "files": [
+   "packages/ui/src/components/alert.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-005",
+  "severity": "P1",
+  "category": "بصري",
+  "app": "ui",
+  "screen": "كل ActionDialog في الإدارة (اعتماد الدفعة، الرفض، الدعوة…) · ورقة تفاصيل القاعدة في العميل",
+  "element": "DialogDescription / SheetHeader > p",
+  "title": "وصف الحوارات والأوراق 14px — ويُلغي حتى override العميل",
+  "detail": "`DialogDescription` يرسم `<p className=\"text-sm text-muted\">` (14px) في كل حوار إجراء بالإدارة. `SheetHeader` يفرض `[&>p]:text-sm` بمحدِّد أعلى تخصيصاً (`.x > p`) من `.text-body-2` التي يمرّرها العميل في ورقة القاعدة، فتبقى 14px رغم المحاولة. الحوارات لا تُفتح في بوّابة ux-gates فلا تُقاس.",
+  "evidence": "packages/ui/src/components/dialog.tsx:54 `className={cn('text-sm text-muted', className)}` · packages/ui/src/components/sheet.tsx:52 `[&>h2]:text-xl … [&>p]:text-sm [&>p]:text-muted` · apps/client/src/components/account-overview.tsx:383 `<SheetDescription className=\"text-body-2 text-muted\">` (مُلغى بالمحدِّد الأقوى)",
+  "recommendation": "`text-body-2` في DialogDescription وSheetHeader، وإزالة `[&>p]` لصالح أصناف على العنصر نفسه. أضف حوار اعتماد الدفعة إلى مسار البوّابة.",
+  "effort": "S",
+  "skill": "design-system § 2 · ui-ux-pro-max §6 font-scale",
+  "files": [
+   "packages/ui/src/components/dialog.tsx",
+   "packages/ui/src/components/sheet.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-006",
+  "severity": "P1",
+  "category": "وصول",
+  "app": "client",
+  "screen": "/accounts · /accounts/[id] · /payouts · /more · /orders · /profile · /notifications · /certificates · /partners · /payouts/[id] · /orders/[id] · /shop/[productCode]",
+  "element": "AppHeaderBar center / ClientHeader screen-title",
+  "title": "شاشات العميل الجذرية بلا <h1>: عنوان الشاشة في الرأس مجرد <span> والأقسام تبدأ بـ h2",
+  "detail": "عنوان الشاشة الوحيد يُرسم داخل `<div class=\"…truncate text-center\">` ثم `<span data-testid=\"screen-title\">`؛ ليس عنواناً دلالياً. الصفحات نفسها لا تحوي h1 (12 صفحة بعدّ `grep`)، فتبدأ الشجرة بـ h2 (`Section`) أو h3 (`EmptyState`). قارئ الشاشة لا يجد عنوان الصفحة، ويُخرق تسلسل العناوين. axe يعدّها best-practice فلا تُفشل البوّابة.",
+  "evidence": "packages/ui/src/components/app-shell.tsx:65 `<div className=\"min-w-0 flex-1 truncate text-center text-base font-semibold\">{… center}</div>` · apps/client/src/components/client-header.tsx:104 `center={<span data-testid=\"screen-title\">…` · apps/client/src/app/[locale]/(app)/accounts/page.tsx (لا h1) · empty-state.tsx:22 `<h3 className=\"fpt-empty__title\">`",
+  "recommendation": "اجعل `center` في AppHeaderBar يُرسم كـ `<h1 className=\"text-base font-semibold m-0\">` (الحجم البصري يبقى 16px)، أو أضف `<h1 class=\"sr-only\">` في كل صفحة جذرية. اجعل EmptyState يقبل `headingLevel`.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §1 heading-hierarchy · web-interface-guidelines §Accessibility «Headings hierarchical»",
+  "files": [
+   "packages/ui/src/components/app-shell.tsx",
+   "apps/client/src/components/client-header.tsx",
+   "packages/ui/src/components/empty-state.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-007",
+  "severity": "P1",
+  "category": "هوية",
+  "app": "admin",
+  "screen": "/kyc · /deletions",
+  "element": "KycDecision / DeletionActions trigger buttons",
+  "title": "زر أحمر أساسي في كل صف من الجدول — عشرات الإجراءات الأساسية على شاشة واحدة",
+  "detail": "كل صف في قائمة الهوية يحمل `ActionDialog triggerVariant=\"primary\"` («اعتماد»)، وكل طلب حذف مفتوح كذلك. مع 20 صفاً تظهر 20 بلاطة متدرّجة حمراء، فتضيع قاعدة «إجراء أساسي واحد لكل شاشة» (brand § C red roles، design-system § 5.3) ويصبح الأحمر لوناً عادياً.",
+  "evidence": "apps/admin/src/app/[locale]/(app)/kyc/KycActions.tsx:350 `<ActionDialog action={approveKyc} … triggerVariant=\"primary\"` (داخل كل صف kyc/page.tsx:276) · apps/admin/src/app/[locale]/(app)/deletions/DeletionActions.tsx:573 `triggerVariant=\"primary\"` (deletions/page.tsx:459)",
+  "recommendation": "في الصفوف استعمل `secondary` للاعتماد و`ghost` للرفض، واجعل الإجراء الأساسي داخل الحوار فقط (submit primary) أو على صفحة تفاصيل الحالة.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §4 primary-action · fpt-brand «red: tile · one primary action · active state»",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/kyc/KycActions.tsx",
+   "apps/admin/src/app/[locale]/(app)/deletions/DeletionActions.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-008",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "client",
+  "screen": "/accounts (الرئيسية) لحساب تقييم حيّ",
+  "element": "primary slot + ghost «فتح الحساب»",
+  "title": "زرّان بالتسمية نفسها «فتح الحساب» على الرئيسية لحساب التقييم",
+  "detail": "عندما لا يكون الحساب منتهياً ولا ممولاً مؤهلاً يُمرَّر زر ثانوي «فتح الحساب» إلى البطل (السطر 68–70) ثم يُرسم زر ghost آخر بالتسمية نفسها تحت البطل (السطر 89–93). إجراء مكرر يبدد التركيز.",
+  "evidence": "apps/client/src/app/[locale]/(app)/accounts/page.tsx:67–71 `<Button asChild variant=\"secondary\" size=\"lg\" block><Link …>{th('open')}` و :89–93 `{ended || !LIVE.includes(…) ? null : <Button asChild variant=\"ghost\" …>{th('open')}`",
+  "recommendation": "احذف أحد الزرّين (أبقِ زر البطل) أو اجعل الثاني رابطاً نصياً إلى تبويب مختلف (الصفقات).",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §4 primary-action · ui-ux-design-pro critique «Is there a focal point?»",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/accounts/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-009",
+  "severity": "P1",
+  "category": "هوية",
+  "app": "client",
+  "screen": "/accounts/[id] (الصفقات المفتوحة، الصفقات، حسب الرمز) · /accounts/[id]/breach",
+  "element": "Money tone=auto sign=always codePosition=none",
+  "title": "أرباح/خسائر الصفقات بلون وإشارة فقط — بلا كلمة وبلا رمز العملة",
+  "detail": "صفوف المراكز والصفقات تُظهر `+120.50`/`−80.00` ملوّنة (gain/loss) دون كلمة «ربح/خسارة» ودون `USD`. القاعدة الملزمة: «الحالات المالية كلمة + إشارة + لون» و«المبالغ تحمل رمز عملتها». مكوّن `Delta` الذي يضيف الكلمة موجود في الإدارة لكنه غير مستعمل.",
+  "evidence": "apps/client/src/components/account-overview.tsx:340 `<Money cents={p.floatingPnlCents} … sign=\"always\" tone=\"auto\" codePosition=\"none\" />` · apps/client/src/components/trades-panel.tsx:231 و:260 · apps/client/src/app/[locale]/(app)/accounts/[id]/breach/page.tsx:140 · apps/client/src/app/[locale]/(app)/accounts/page.tsx:110 (حقوق الحساب في الصفوف بلا رمز) · packages/ui/src/components/money.tsx:16–17 «`auto` … should come with `word`» · apps/admin/src/components/Finance.tsx:11 `Delta` (غير مستعمل)",
+  "recommendation": "مرّر `word={tw(n<0?'loss':'profit')}` في كل Money ذات tone=auto، وأبقِ رمز العملة (أو ضع «USD» مرة واحدة في رأس القسم كما تفعل جداول الإدارة). انقل `Delta` إلى @fpt/ui واستعمله في المكانين.",
+  "effort": "S",
+  "skill": "fpt-brand finance semantics (word + sign + colour) · ui-ux-pro-max §6 color-not-decorative-only",
+  "files": [
+   "apps/client/src/components/account-overview.tsx",
+   "apps/client/src/components/trades-panel.tsx",
+   "apps/client/src/app/[locale]/(app)/accounts/[id]/breach/page.tsx",
+   "apps/admin/src/components/Finance.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-010",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "client",
+  "screen": "/shop",
+  "element": "ChallengeCard (role=radio) + ChallengePicker",
+  "title": "بطاقة الحجم تعلن أنها خيار (radio) لكنها تُرسل النموذج عند اللمس",
+  "detail": "`ChallengeCard` يرسم `<button type=\"button\" role=\"radio\" aria-checked>` ثم ينشر `{...props}` بعده، والـ picker يمرّر `type=\"submit\" name=\"productCode\"` فيصبح الزر إرسالاً: لمس أي حجم يذهب فوراً إلى الدفع ولا يرى المستخدم القواعد المختصرة ولا زر الشراء الأساسي الذي صُمّمت الشاشة حوله. الحالة «المختار» وحلقة الراديو زينة فعلياً.",
+  "evidence": "apps/client/src/app/[locale]/(app)/shop/challenge-picker.tsx:181–183 `<ChallengeCard key={p.code} type=\"submit\" name=\"productCode\" value={p.code}` · packages/ui/src/components/challenge-card.tsx:37–47 `type=\"button\" role=\"radio\" … {...props}` · challenge-picker.tsx:166 التعليق «A tap on a card selects it; the CTA submits»",
+  "recommendation": "اجعل البطاقات اختياراً فقط (`type=\"button\"`) واحتفظ بالإرسال لزر الشراء؛ للاختبار الذهبي أبقِ `data-testid` على زر الشراء بدل البطاقة.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §2 hover-vs-tap · §8 error-prevention · ui-ux-design-pro Nielsen #5",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/shop/challenge-picker.tsx",
+   "packages/ui/src/components/challenge-card.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-011",
+  "severity": "P1",
+  "category": "بصري",
+  "app": "client",
+  "screen": "/signup · /signup/password · /2fa",
+  "element": "<p className=\"text-xs\">",
+  "title": "جمل كاملة بحجم 12px في تذييل شاشات التسجيل والتحقق",
+  "detail": "تذييل AuthCard يضع جملة الشروط، جملة الإحالة، شرح المصادقة الثنائية وجملة «فقدت الجهاز؟» في `<p className=\"text-xs\">` (12px). هذه جمل لا تعليقات؛ أرضية الجسم 15px. البوّابة تستثني `.text-xs` صراحةً فلم تُلتقط.",
+  "evidence": "apps/client/src/app/[locale]/(auth)/signup/page.tsx:29–30 `<p className=\"text-xs\">{t('terms')}</p>` · apps/client/src/app/[locale]/(auth)/signup/password/page.tsx:72 · apps/client/src/app/[locale]/(auth)/2fa/page.tsx:31 · e2e/ux-audit.ts:75 (استثناء `.text-xs`)",
+  "recommendation": "`text-body-2 text-muted` لهذه الفقرات؛ قصر `.text-xs` على التعليقات القصيرة (تاريخ، عدّاد). أزل `.text-xs` من قائمة الاستثناء عندما يكون العنصر `<p>`.",
+  "effort": "S",
+  "skill": "design-system § 2 · ui-ux-pro-max §5 readable-font-size",
+  "files": [
+   "apps/client/src/app/[locale]/(auth)/signup/page.tsx",
+   "apps/client/src/app/[locale]/(auth)/signup/password/page.tsx",
+   "apps/client/src/app/[locale]/(auth)/2fa/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-012",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "client",
+  "screen": "/ (الهبوط) «كيف يعمل»",
+  "element": "Stepper description (.fpt-phase__s)",
+  "title": "وصف المرحلتين على صفحة الهبوط جملة بحجم 12px",
+  "detail": "`Stepper` يرسم `description` في `.fpt-phase__s` المحدَّد بـ 12px (`--text-xs`). الهبوط يمرّر جملتين كاملتين (`phase1Body`/`phase2Body`) فتُقرأ 12px — البوّابة تستثني `.fpt-phase__s`.",
+  "evidence": "packages/ui/src/components.css:324 `.fpt-phase__s { font-size: var(--text-xs); }` · apps/client/src/app/[locale]/(public)/page.tsx:82 `<Stepper steps={[{ label: t('phase1'), description: t('phase1Body') } …` · e2e/ux-audit.ts:75",
+  "recommendation": "ارفع `.fpt-phase__s` إلى `--text-sm` (14) للتعليقات، وفي الهبوط اعرض الوصف كفقرة `text-body-2` تحت المرحلة.",
+  "effort": "S",
+  "skill": "design-system § 2 · ui-ux-pro-max §6 font-scale",
+  "files": [
+   "packages/ui/src/components.css",
+   "apps/client/src/app/[locale]/(public)/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-013",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "both",
+  "screen": "/profile (تفعيل المصادقة) · /enrol (الإدارة)",
+  "element": "QR SVG",
+  "title": "رمز QR معكوس الألوان (وحدات بيضاء على أسود) — كثير من تطبيقات المصادقة لا تقرأه",
+  "detail": "العميل يولّد QR بـ `dark:'#FFFFFF', light:'#0A0A0A'`؛ الإدارة تضع الـ SVG في `.fpt-paper` لكنها تلغيه بـ `style={{background: panel, color: text-primary}}` فتصير الوحدات بيضاء على #141414. معيار QR يفترض وحدات داكنة على فاتح؛ الكاميرات تفشل كثيراً مع العكس.",
+  "evidence": "apps/client/src/app/[locale]/(app)/profile/forms.tsx:220 `color: { dark: '#FFFFFF', light: '#0A0A0A' }` (وهكس خام في الكود) · apps/admin/src/app/[locale]/(auth)/enrol/page.tsx:181–182 `className=\"fpt-paper …\" style={{ background: 'var(--fpt-ground-panel)', color: 'var(--fpt-text-primary)' }}`",
+  "recommendation": "ارسم الـ QR على أرضية الورق (`--fpt-paper-panel`) بوحدات `--fpt-paper-text`؛ في الإدارة احذف الـ style الذي يلغي `.fpt-paper`؛ في العميل مرّر لوني الورق من الرموز لا هكس.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §1 color-contrast · fpt-brand «paper ground for documents»",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/profile/forms.tsx",
+   "apps/admin/src/app/[locale]/(auth)/enrol/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VIS-014",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "/signin · /2fa · /enrol (الإدارة)",
+  "element": "(auth)/layout header",
+  "title": "رأس شاشات دخول الإدارة بارتفاع ثابت 56px مع pt-safe على العنصر نفسه — يُسحق على الهواتف ذات النوتش",
+  "detail": "`<header className=\"h-14 … pt-safe\">`: مع box-sizing:border-box يبقى الارتفاع 56px ويُضاف حشو علوي يصل 47px فيتبقى 9px للبلاطة 32px ومبدّل اللغة. AppShell يفعلها صحيحاً (pt-safe على الغلاف، h-14 على الصف الداخلي).",
+  "evidence": "apps/admin/src/app/[locale]/(auth)/layout.tsx:16 `<header className=\"mx-auto flex h-14 w-full max-w-md items-center justify-between gap-3 px-gutter pt-safe\">` · قارن packages/ui/src/components/app-shell.tsx:34 (`header … pt-safe`) و:63 (`AppHeaderBar h-14`)",
+  "recommendation": "انقل `pt-safe` إلى غلاف خارجي أو استبدل `h-14` بـ `min-h-14`.",
+  "effort": "S",
+  "skill": "web-interface-guidelines §Safe Areas · ui-ux-pro-max §2 safe-area-awareness",
+  "files": [
+   "apps/admin/src/app/[locale]/(auth)/layout.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VIS-015",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "client",
+  "screen": "/payouts/new · /checkout/[orderId] · /checkout/[orderId]/transfer · /profile · /partners",
+  "element": "BottomNav (position:fixed) فوق لوحة المفاتيح",
+  "title": "الشريط السفلي الثابت يبقى فوق لوحة المفاتيح في نماذج الإدخال ويأكل 56px من المساحة الظاهرة",
+  "detail": "الشريط `position:fixed; inset-block-end:0` يُرسم على كل شاشة موقّعة بما فيها النماذج متعددة الخطوات. على Android Chrome (الافتراضي resizes-content) يرتفع الشريط فوق لوحة المفاتيح ويغطي الحقل المركّز أو زر «التالي»؛ لا يوجد `interactive-widget` في viewport ولا إخفاء للشريط عند التركيز.",
+  "evidence": "brand/components/components.css:280 `.fpt-tabbar{position:fixed;inset-inline:0;inset-block-end:0…}` · apps/client/src/components/shell.tsx:62 `bottomNav={signedIn ? <ClientBottomNav …/> : undefined}` (بلا استثناء للنماذج) · apps/client/src/app/[locale]/layout.tsx:31 viewport بلا `interactiveWidget`",
+  "recommendation": "أضف `interactiveWidget: 'resizes-visual'` إلى viewport (Next 15 يدعمه) أو أخفِ الشريط على مسارات النماذج (payouts/new، checkout، transfer) كما تخفي الصفحات الداخلية البلاطة.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §5 fixed-element-offset · web-interface-guidelines §Touch & Interaction",
+  "files": [
+   "apps/client/src/components/shell.tsx",
+   "apps/client/src/app/[locale]/layout.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VIS-016",
+  "severity": "P2",
+  "category": "RTL",
+  "app": "ui",
+  "screen": "كل ListRow بشيفرون (المزيد، الطلبات، قوائم الإدارة على الهاتف)",
+  "element": "ListRow chevron",
+  "title": "الشيفرون يحمل آليتي انعكاس معاً (.fpt-icon--dir transform + rtl:-scale-x-100 scale) — خطر انعكاس مزدوج",
+  "detail": "`.fpt-icon--dir` يطبّق `transform: scaleX(-1)` تحت `[dir=rtl]`، وTailwind v4 يطبّق `rtl:-scale-x-100` عبر خاصية `scale` المستقلة. الخاصيتان تتراكبان فيُقلب السهم مرتين ويعود إلى اتجاه LTR. لقطة الإنتاج (29 أكتوبر 13:29) تسبق الالتزام الذي أضاف `rtl:-scale-x-100` فلا تثبت الحالة الحالية. ArrowLeft في رأس العميل يستعمل Tailwind فقط وBackLink يستعمل `.fpt-icon--dir` فقط — ثلاث طرق لشيء واحد.",
+  "evidence": "packages/ui/src/components/list-row.tsx:43 `<ChevronRight … className=\"ui-chev fpt-icon--dir rtl:-scale-x-100\" />` · brand/components/components.css:37 `[dir=\"rtl\"] .fpt-icon--dir{transform:scaleX(-1)}` · tailwindcss dist: `o(\"scale\",\"var(--tw-scale-x) var(--tw-scale-y)\")` · apps/client/src/components/client-header.tsx:95 `rtl:-scale-x-100` · packages/ui/src/components/back-link.tsx:28 `fpt-icon--dir`",
+  "recommendation": "آلية واحدة: `.fpt-icon--dir` فقط (أزل `rtl:-scale-x-100` من ListRow وClientHeader). أضف اختبار Playwright يقيس `getComputedStyle(chevron).transform/scale` في RTL.",
+  "effort": "S",
+  "skill": "design-system § 5.8 «الشيفرون والسهم ينعكسان» · ui-ux-pro-max §4 icon-style-consistent",
+  "files": [
+   "packages/ui/src/components/list-row.tsx",
+   "apps/client/src/components/client-header.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VIS-017",
+  "severity": "P2",
+  "category": "وصول",
+  "app": "client",
+  "screen": "/profile (الأجهزة)",
+  "element": "revokeSessionAction SubmitButton",
+  "title": "إنهاء جلسة / إنهاء كل الجلسات / تسجيل الخروج من الجهاز الحالي بلا تأكيد",
+  "detail": "صفوف الأجهزة تُرسل `revokeSessionAction` مباشرة من زر داخل الصف (بما فيه «خروج» للجهاز الحالي بزر destructive) و«إنهاء الكل» في جانب القسم؛ لا حوار ولا نافذة تراجع. ضغطة خاطئة على هاتف تُخرج المستخدم.",
+  "evidence": "apps/client/src/app/[locale]/(app)/profile/page.tsx:75–80 (revokeAll) و:102–107 `<form action={revokeSessionAction}>…<SubmitButton variant={… 'destructive' : 'secondary'} size=\"sm\">`",
+  "recommendation": "حوار تأكيد (Dialog من @fpt/ui) للجهاز الحالي و«إنهاء الكل»، أو toast بتراجع للجلسات الأخرى.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §8 confirmation-dialogs · web-interface-guidelines §Navigation & State «Destructive actions need confirmation»",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/profile/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-018",
+  "severity": "P2",
+  "category": "تقني",
+  "app": "admin",
+  "screen": "/accounts · /orders · /payouts · /audit · /coupons · /deletions · /mail · /kyc · /breaches · /payments",
+  "element": "DataTableRows + استعلامات limit()",
+  "title": "القوائم تقطع صامتةً عند 200–500 سجل بلا ترقيم خادمي ولا إشارة «يوجد المزيد»",
+  "detail": "كل قائمة إدارة تقرأ `.limit(200|300|400|500)` ثم تعرض 100 صف وزر «المزيد» client-side؛ لا توجد صفحة تالية ولا عدّاد إجمالي ولا رسالة أن النتائج مقطوعة. مع نمو الحسابات يختفي الأقدم إلا عبر الفلاتر.",
+  "evidence": "apps/admin/src/app/[locale]/(app)/accounts/page.tsx:183 `.limit(200)` · orders/page.tsx:44 `.limit(300)` · payouts/page.tsx:36 · audit/page.tsx:361 · coupons/page.tsx:37 `.limit(500)` · deletions/page.tsx:437 · mail/page.tsx:243 · packages/ui/src/components/data-table.tsx:71 `pageSize = 100` و:150–153 زر «المزيد»",
+  "recommendation": "ترقيم عبر `?page=`/cursor في الاستعلام مع عدّاد إجمالي في وصف الصفحة، أو على الأقل سطر «تُعرض أحدث 200 — ضيّق البحث» عندما يصل العدد للحد.",
+  "effort": "M",
+  "skill": "ui-ux-pro-max §3 virtualize-lists · ui-ux-design-pro component-patterns «Pagination: show current range + total»",
+  "files": [
+   "packages/ui/src/components/data-table.tsx",
+   "apps/admin/src/app/[locale]/(app)/accounts/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/orders/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-019",
+  "severity": "P2",
+  "category": "تقني",
+  "app": "both",
+  "screen": "/accounts/[id] (العميل) · /settings · /accounts/[id] · /products · /mail/[id] (الإدارة)",
+  "element": "Tabs defaultValue",
+  "title": "التبويب المختار لا ينعكس في العنوان: التحديث والرجوع والمشاركة تعيد التبويب الأول",
+  "detail": "صفحة الحساب تقرأ `?tab=` لكن Radix Tabs غير مضبوط (`defaultValue` فقط، لا `onValueChange` يحدّث الـ URL)؛ تبويبات الإدارة الأربع لا تقرأ ولا تكتب أي معامل. التحديث التلقائي/`router.refresh` بعد الإجراءات يبقي الحالة لكن الرجوع والروابط العميقة لا.",
+  "evidence": "apps/client/src/app/[locale]/(app)/accounts/[id]/page.tsx:47 و:109 `<Tabs defaultValue={tab}>` · apps/admin/src/app/[locale]/(app)/settings/page.tsx:65 `<Tabs defaultValue=\"general\">` · accounts/[id]/page.tsx:137 · products/page.tsx:89",
+  "recommendation": "مكوّن `UrlTabs` صغير في كل تطبيق: `value` من `useSearchParams`، `onValueChange` → `router.replace({query:{tab}})` بلا scroll.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §9 state-preservation / deep-linking · web-interface-guidelines §Navigation & State «URL reflects state»",
+  "files": [
+   "packages/ui/src/components/tabs.tsx",
+   "apps/client/src/app/[locale]/(app)/accounts/[id]/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/settings/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-020",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "client",
+  "screen": "/more · /profile · /partners (الإحالات) · قسم البريد",
+  "element": "<bdi className=\"fpt-unit ui-fit\">{email}</bdi>",
+  "title": "البريد الإلكتروني داخل .fpt-unit (nowrap) يتجاوز عرض الهاتف ويُقص عند العناوين الطويلة",
+  "detail": "`.fpt-unit` تفرض `white-space:nowrap` و`ui-fit` علامة فارغة (لا تأثير). بريد من 35+ حرفاً بخط mono 15px ≈ 320px يتجاوز عرض المحتوى على 360px؛ `html{overflow-x:clip}` يخفي الفائض فيُقطع العنوان بلا قصاصة ولا التفاف. في صفوف الإحالات يقع داخل `.ui-row__t` ذات `overflow:hidden`.",
+  "evidence": "apps/client/src/app/[locale]/(app)/more/page.tsx:54 · profile/page.tsx:52 · profile/email-section.tsx:299 · partners/page.tsx:312 `title={<bdi dir=\"ltr\" className=\"fpt-unit\">{r.email}</bdi>}` · packages/ui/src/components.css:281 التعليق «`.ui-fit` is kept as a no-op marker» · :408 `.ui-wrap { white-space: normal; overflow-wrap: anywhere; word-break: break-all }` (الحل موجود وغير مستعمل هنا)",
+  "recommendation": "استبدل `ui-fit` بـ `ui-wrap` على كل بريد/رابط/معرّف طويل خارج الجداول، أو اجعل `.fpt-unit` تلتف افتراضياً عند `dir=\"ltr\"` نصوص غير مبالغ.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §6 long-token-wrapping · web-interface-guidelines §Content Handling",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/more/page.tsx",
+   "apps/client/src/app/[locale]/(app)/profile/page.tsx",
+   "apps/client/src/app/[locale]/(app)/profile/email-section.tsx",
+   "apps/client/src/app/[locale]/(app)/partners/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-021",
+  "severity": "P2",
+  "category": "وصول",
+  "app": "admin",
+  "screen": "/staff (صفوف الهاتف) · أي ui-inline-link داخل عنوان ListRow",
+  "element": ".ui-inline-link داخل .ui-row__t",
+  "title": "الرابط المضمّن يمدّد منطقة لمسه إلى 44px بهوامش سالبة لكن عنوان الصف يقصّها (overflow:hidden)",
+  "detail": "`.ui-inline-link` يحقق 44px بـ `min-height:44px; margin-block:-12px`؛ عندما يوضع داخل `.ui-row__t` (`overflow:hidden`) تُقص المنطقة الممدَّدة فلا تستقبل النقر، فتعود منطقة اللمس الفعلية إلى ارتفاع السطر ≈ 25px. البوّابة تقيس `getBoundingClientRect` فلا تكتشف القص.",
+  "evidence": "packages/ui/src/components.css:398 `.ui-row__t { … overflow: hidden; text-overflow: ellipsis; }` · :465 `.ui-inline-link { … min-height: 44px; margin-block: -12px; …}` · apps/admin/src/app/[locale]/(app)/staff/page.tsx:56 `title: <span><Link … className=\"ui-inline-link\">{r.name}</Link>…`",
+  "recommendation": "أزل `overflow:hidden` من `.ui-row__t` (الالتفاف كافٍ) أو اجعل الصف كله رابطاً عبر `href` بدل رابط مضمّن.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §2 touch-target-size · §1 web-target-size",
+  "files": [
+   "packages/ui/src/components.css",
+   "apps/admin/src/app/[locale]/(app)/staff/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VIS-022",
+  "severity": "P2",
+  "category": "وصول",
+  "app": "admin",
+  "screen": "/accounts · /risk · /accounts/[id] · /payments · /health",
+  "element": "nearestCell / pctCell / age / queue counters",
+  "title": "المعنى باللون وحده: نسبة «أقرب حد» كهرمانية/حمراء بلا كلمة ولا أيقونة، والمكوّن الصحيح موجود وغير مستعمل",
+  "detail": "الجداول تلوّن الرقم `text-drawdown`/`text-danger` فقط. `NearestLimit` في Finance.tsx يضيف `triangle-alert` + «تحذير السحب» / `circle-x` + «تجاوز الحد» كما تقتضي الدلالات المالية، لكنه غير مستورد في أي صفحة. كذلك عمر الطلب `text-warning` وعدّادات الفشل `text-danger`.",
+  "evidence": "apps/admin/src/app/[locale]/(app)/accounts/page.tsx:187–191 `const tone = bps <= 0 ? 'text-danger' : bps < 1000 ? 'text-drawdown' : 'text-ink'` · risk/page.tsx:421–424 · accounts/[id]/page.tsx:382 · payments/page.tsx:413 `text-warning` · health/page.tsx:446 `'num-ui text-danger'` · apps/admin/src/components/Finance.tsx:21 `NearestLimit` (0 استعمال)",
+  "recommendation": "استبدل الخلايا بـ `<NearestLimit bps=…/>`، وأضف أيقونة Clock للعمر المتأخر وكلمة «فشل» بجانب العدّاد.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §1 color-not-only · fpt-brand finance semantics",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/accounts/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/risk/page.tsx",
+   "apps/admin/src/components/Finance.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-023",
+  "severity": "P2",
+  "category": "تقني",
+  "app": "admin",
+  "screen": "/orders/[id] · /products (المحاكي) · /settings · /fraud/links/[userId] · CommandProgress",
+  "element": "Badge mono / نصوص خام",
+  "title": "رموز تقنية خام في طبقة العرض خارج «التفاصيل التقنية»",
+  "detail": "design-system § 5.5: في الإدارة تُعرَّب التعدادات في طبقة العرض والحمولة الخام تحت التفاصيل. لكن: نوع الأمر `c.type`، حالة الحساب الخام `a.status`، نوع حدث الدفع `e.kind.replaceAll('_',' ')`، مصدر الخبر `r.source`، وضع المحوّل `v` (live/mock)، ملخص `k=v`، ونص `lastError` تظهر كلها كنص مرئي.",
+  "evidence": "apps/admin/src/app/[locale]/(app)/orders/[id]/page.tsx:303–305 `<Badge tone=\"muted\" mono>{c.type}</Badge>` و:284 `{e.kind.replaceAll('_', ' ')}` · products/ProductsClient.tsx:571 `<Badge tone=\"muted\">{a.status}</Badge>` · settings/page.tsx:55 `{r.source}` و:122 `{v}` · fraud/links/[userId]/page.tsx:167 و:188–194 `summary()` · components/CommandProgress.tsx:51 `{view.lastError}`",
+  "recommendation": "مرّر الكلمات عبر `labels.ts` (command types، adapter modes، statuses)، وانقل `lastError` و`summary` تحت `JsonViewer`.",
+  "effort": "S",
+  "skill": "design-system § 5.5 · ui-ux-design-pro Nielsen #2 match the real world",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/orders/[id]/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/products/ProductsClient.tsx",
+   "apps/admin/src/app/[locale]/(app)/settings/page.tsx",
+   "apps/admin/src/components/CommandProgress.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-024",
+  "severity": "P2",
+  "category": "هوية",
+  "app": "ui",
+  "screen": "كل جدول إدارة على المكتب (hover) · .fpt-listrow · شرائح /help",
+  "element": "brand/components .fpt-table tr:hover · .fpt-listrow:hover · .fpt-chip[aria-pressed]",
+  "title": "الأحمر يُستعمل كلون تحويم (hover) على صفوف الجداول — دور رابع خارج الأدوار الثلاثة",
+  "detail": "حزمة الهوية تحدد للأحمر ثلاثة أدوار: البلاطة، الإجراء الأساسي، الحالة النشطة. لكن CSS الحزمة تلوّن صف الجدول عند التحويم بـ `--fpt-brand-red-wash` (وصف القائمة كذلك)، فيومض الأحمر على كل حركة للفأرة فوق 100 صف في الإدارة. @fpt/ui أصلح `.ui-row` (4 % من لون النص) لكنه ترك جداول DataTable على قاعدة الحزمة.",
+  "evidence": "brand/components/components.css:204 `@media (hover:hover){.fpt-table tbody tr:hover td{background:var(--fpt-brand-red-wash)}}` · :303 `.fpt-listrow:hover{background:var(--fpt-brand-red-wash)}` · packages/ui/src/components.css:391 `.ui-row:where(a, button):hover { background: color-mix(in srgb, var(--fpt-text-primary) 4%, transparent); }` (النهج الصحيح)",
+  "recommendation": "تجاوز في components.css غير المطبّق بطبقة: `.fpt-table.ui-data tbody tr:hover td { background: color-mix(in srgb, var(--fpt-text-primary) 4%, transparent) }`؛ وارفع ملاحظة للحزمة (PROPOSED) لتصحيح قاعدة الحزمة.",
+  "effort": "S",
+  "skill": "fpt-brand «red has three roles — nothing else» · ui-ux-design-pro critique «One accent?»",
+  "files": [
+   "packages/ui/src/components.css",
+   "brand/components/components.css"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-025",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "both",
+  "screen": "/help (العميل) مقابل قوائم الإدارة (Filters)",
+  "element": ".fpt-chip مقابل .ui-chip · Filters.tsx مقابل FilterChips",
+  "title": "شريحتان مختلفتان للفلتر المختار (أحمر مغسول في المساعدة، أبيض ممتلئ في الإدارة) ونسختان من كود الشرائح",
+  "detail": "صفحة المساعدة تستعمل `.fpt-chip` (المختار: غسل أحمر + حدّ أحمر) وتمرّر أصناف الحزمة مباشرة، بينما الإدارة تستعمل `.ui-chip` (المختار: تعبئة بلون النص). كما أن `Filters.tsx` في الإدارة يعيد كتابة علامات `ui-chips/ui-chip` بدل استعمال `FilterChips hrefFor` الموجود في @fpt/ui؛ أي تعديل على الشريحة يجب أن يُكرَّر في مكانين.",
+  "evidence": "apps/client/src/app/[locale]/(public)/help/help-search.tsx:171 `className=\"fpt-chip min-h-touch shrink-0\"` · brand/components/components.css:234 `.fpt-chip[aria-pressed=\"true\"]{background:var(--fpt-brand-red-wash);border-color:var(--fpt-brand-red)…}` · apps/admin/src/components/Filters.tsx:58–64 (يعيد بناء ui-chip) مقابل packages/ui/src/components/filter-bar.tsx:29–56 `FilterChips`",
+  "recommendation": "في المساعدة استعمل `FilterChips onChange`؛ في الإدارة استعمل `FilterChips hrefFor linkComponent={Link}` وأبقِ Filters.tsx غلافاً رقيقاً للبحث.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §4 consistency · design-system § 4 FilterBar/FilterChips",
+  "files": [
+   "apps/client/src/app/[locale]/(public)/help/help-search.tsx",
+   "apps/admin/src/components/Filters.tsx",
+   "packages/ui/src/components/filter-bar.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-026",
+  "severity": "P2",
+  "category": "هوية",
+  "app": "both",
+  "screen": "كل h1 (ScreenTitle/PageTitle) مقابل الهبوط/المساعدة/القانوني ودخول الإدارة",
+  "element": ".ui-title مقابل .fpt-h",
+  "title": "صوتان لعنوان الشاشة: .ui-title بخط الواجهة (Inter) و PageHeader/CardTitle بالصوت العرضي Barlow Condensed",
+  "detail": "design-system § 2 يحدد عنوان الشاشة «Barlow Condensed (لاتيني) / IBM Plex Sans Arabic 700». `.ui-title` لا يضبط `font-family` فيرث Inter في الإنجليزية، بينما `PageHeader` (الهبوط، المساعدة، القانوني) وبطاقات دخول الإدارة تضيف `fpt-h` (Barlow uppercase). النتيجة عنوانان بهويتين مختلفتين داخل التطبيق نفسه على 1440.",
+  "evidence": "packages/ui/src/components.css:483 `.ui-title { font-size: var(--text-xl); line-height: 1.25; font-weight: 700; margin: 0; }` (لا font-family) · packages/ui/src/components/page-header.tsx:26 `className={cn('fpt-h text-balance', Tag === 'h1' ? 'ui-title' : …)}` · apps/admin/src/app/[locale]/(auth)/signin/page.tsx:45 `<CardTitle as=\"h2\" className=\"fpt-h text-xl\">` · docs/design-system.md § 2 صف «عنوان الشاشة»",
+  "recommendation": "قرار واحد: إمّا `.ui-title { font-family: var(--fpt-font-family-display) }` للاتيني (مع `[lang=ar]` Plex Arabic 700) في كل مكان، أو إزالة `fpt-h` من PageHeader وبطاقات الدخول. وثّقه في design-system.",
+  "effort": "S",
+  "skill": "fpt-brand typography · ui-ux-design-pro critique «Swap test / typeface doing its job»",
+  "files": [
+   "packages/ui/src/components.css",
+   "packages/ui/src/components/page-header.tsx",
+   "apps/admin/src/app/[locale]/(auth)/signin/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-027",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "both",
+  "screen": "/accounts/[id] و/accounts على 640+ · /breaches/[id] (الإدارة 1440)",
+  "element": "EquityChart <svg viewBox=358×200 width=100%>",
+  "title": "نص الرسم ومحاوره يتضخمان مع عرض الحاوية (SVG يتمدد): محاور 12px تصبح ≈ 24–30px على المكتب",
+  "detail": "الرسم يُرسم بـ viewBox ثابت 358×200 و`width=\"100%\"`؛ كل شيء داخله (نص المحاور 12، القيمة النهائية mono 15، سمك الخط 2، النقطة الحمراء r=4) يتضخم خطياً. في عمود العميل 720px يصبح النص ≈ 24px والخط 4px؛ في صفحة المخالفة بالإدارة أكبر. الرسم «يبدو مكبّراً» ويخالف المقياس الطباعي.",
+  "evidence": "packages/ui/src/components/equity-chart.tsx:69 `width = 358, height = 200` · :122 `<svg viewBox={`0 0 ${width} ${height}`} width=\"100%\" … style={{ … fontSize: 12 …}}>` · :158 `fontSize: 15` · apps/admin/src/app/[locale]/(app)/breaches/[id]/page.tsx:570 `<EquityChart … />` داخل عمود 1440",
+  "recommendation": "قِس عرض الحاوية (ResizeObserver أو `useContainerWidth`) ومرّره كـ `width` فتبقى النصوص 12/15px فعلية، أو ارسم النصوص خارج الـ SVG بـ HTML فوق الرسم.",
+  "effort": "M",
+  "skill": "ui-ux-pro-max §5 breakpoint-consistency · §6 font-scale · dataviz (نص المحاور بحجم ثابت)",
+  "files": [
+   "packages/ui/src/components/equity-chart.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-028",
+  "severity": "P2",
+  "category": "وصول",
+  "app": "client",
+  "screen": "/accounts/[id]?tab=trades (تقويم الربح والخسارة)",
+  "element": "PnlHeatmap",
+  "title": "حروف أيام الأسبوع 10px وقيم الخلايا متاحة بالتحويم فقط (<title>)",
+  "detail": "الخريطة الحرارية ترسم أحرف الأيام `fontSize={10}` (تحت أرضية 12px؛ البوّابة تتجاهل SVG) وتضع قيمة كل يوم في `<title>` لا تظهر إلا بالتحويم بالفأرة — لا لمس ولا لوحة مفاتيح. كذلك ارتفاع الـ SVG ثابت محسوب لعرض 358 ومقيّد بـ 150px فيبدو صغيراً على المكتب.",
+  "evidence": "apps/client/src/components/charts.tsx:209 `<text … fontSize={10} …>` · :198–200 `<rect …><title>{text}</title></rect>` · :207 `height={Math.round((height / width) * 358)} … style={{ maxHeight: 150 …}}`",
+  "recommendation": "حرف اليوم 12px بخط الواجهة؛ عند اللمس/التركيز اعرض اليوم وقيمته في سطر تحت الخريطة (`aria-live=polite`)، واجعل الخلايا `tabIndex=0` أو ادعم قائمة `<ol>` مكافئة مخفية.",
+  "effort": "M",
+  "skill": "ui-ux-pro-max §1 keyboard-nav · §2 hover-vs-tap · design-system § 2 (لا نص < 12)",
+  "files": [
+   "apps/client/src/components/charts.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-029",
+  "severity": "P2",
+  "category": "هوية",
+  "app": "admin",
+  "screen": "/settings (تبويب الدفعات)",
+  "element": "PayoutChannelsForm submit + ManualRouteDialog trigger",
+  "title": "زرّان أساسيان متجاوران في تبويب واحد: «حفظ قنوات الصرف» و«إضافة مسار»",
+  "detail": "تبويب «الدفعات» يعرض بطاقة قنوات الصرف بزر إرسال `primary` وتحتها لوحة المسارات اليدوية بزر «إضافة» `primary`. شاشة واحدة، إجراءان أساسيان.",
+  "evidence": "apps/admin/src/app/[locale]/(app)/settings/page.tsx:198–213 · settings/LaunchSettingsForms.tsx:585 `submitVariant=\"primary\"` · settings/ManualRoutesClient.tsx:488 `triggerVariant={edit ? 'ghost' : 'primary'}`",
+  "recommendation": "زر «إضافة مسار» ثانوي (الإجراء الأساسي داخل حواره)، وأبقِ الحفظ أساسياً.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §4 primary-action",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/settings/ManualRoutesClient.tsx",
+   "apps/admin/src/app/[locale]/(app)/settings/LaunchSettingsForms.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-030",
+  "severity": "P2",
+  "category": "تقني",
+  "app": "both",
+  "screen": "/payouts · /payouts/new · /payouts/[id] · /orders/[id] · /shop/[productCode] · /partners · /checkout/[orderId]/transfer · /accounts/[id]/breach · /checkout (العميل) · /payouts/[id] · /payments/[id] · /breaches/[id] · /affiliates/[id] (الإدارة)",
+  "element": "الرقم المهيمن .ui-hero المكتوب يدوياً",
+  "title": "13 نسخة يدوية من بطاقة الرقم المهيمن بدل مكوّن واحد — رمز العملة ثابت «USD» وdata-caption مفقودة والإدارة بعلامات مختلفة",
+  "detail": "`AccountHeroCard` يُستعمل في مكان واحد؛ بقية الشاشات تعيد كتابة `.ui-hero / .ui-hero__label / .ui-hero__value` يدوياً: العميل يضع `<i>USD</i>` حرفياً (9 مواضع، بلا `data-caption` التي يضعها المكوّن الأصلي، ويتجاهل `order.currency` إلا في الطلب)، والإدارة تضع `<Money size=\"2xl\" quietCode>` فيُرسم رمز العملة بأسلوب آخر (0.55em داخل mono). أي تغيير في هوية الرقم المهيمن لن ينتشر.",
+  "evidence": "apps/client/src/app/[locale]/(app)/payouts/page.tsx:42–50 `<span className=\"ui-hero__value\"><bdi className=\"fpt-unit\">…</bdi><i>USD</i></span>` · payouts/new/payout-form.tsx:193–200 و:278–284 · payouts/[id]/page.tsx:367–379 · shop/[productCode]/page.tsx:248–255 · partners/page.tsx:249–259 · checkout/[orderId]/transfer/page.tsx:233–239 · accounts/[id]/breach/page.tsx:79–89 · checkout-form.tsx:130–136 · packages/ui/src/components/account-hero.tsx:40–43 (`<i data-caption=\"true\">{currency}</i>`) · apps/admin payouts/[id]/page.tsx:196–204 `<Money … size=\"2xl\" quietCode />`",
+  "recommendation": "استخرج `HeroFigure {label, cents, currency, badge, children}` إلى @fpt/ui (يعيد استعمال CSS `.ui-hero`) واستبدل النسخ الـ 13؛ مرّر العملة من البيانات.",
+  "effort": "M",
+  "skill": "ui-ux-design-pro critique «Consistency» · design-system § 4 AccountHeroCard",
+  "files": [
+   "packages/ui/src/components/account-hero.tsx",
+   "apps/client/src/app/[locale]/(app)/payouts/page.tsx",
+   "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx",
+   "apps/admin/src/app/[locale]/(app)/payouts/[id]/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-031",
+  "severity": "P2",
+  "category": "وصول",
+  "app": "admin",
+  "screen": "/settings · /orders/[id] · /fraud/[id] · /fraud/links/[userId] · /integrations · /products (الإصدارات) · /orders/grant",
+  "element": "CardTitle (h3 افتراضياً) تحت h1 مباشرة",
+  "title": "قفز مستوى العناوين في الإدارة: h1 ثم h3 (CardTitle) بلا h2",
+  "detail": "`CardTitle` يرسم `h3` افتراضياً وتُستعمل البطاقات مباشرة تحت `PageTitle` (h1) في سبع صفحات، فيُفقد مستوى h2. في /integrations تُستعمل h4 داخل البطاقة (h1→h3→h4). قارئ الشاشة يفقد بنية الصفحة.",
+  "evidence": "packages/ui/src/components/card.tsx:40 `as: Tag = 'h3'` · apps/admin/src/app/[locale]/(app)/settings/page.tsx:82 `<CardTitle>{t('reset.title')}</CardTitle>` (تحت PageTitle :64) · orders/[id]/page.tsx:192 · fraud/[id]/page.tsx:750 · fraud/links/[userId]/page.tsx:101 · integrations/page.tsx:442 و:469 `<h4 …>`",
+  "recommendation": "`<CardTitle as=\"h2\">` عندما تكون البطاقة قسماً من الصفحة، أو لفّ البطاقات في `Section` (h2).",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §1 heading-hierarchy",
+  "files": [
+   "packages/ui/src/components/card.tsx",
+   "apps/admin/src/app/[locale]/(app)/settings/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/orders/[id]/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-032",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "ui",
+  "screen": "كل ListRow رابط/زر · RuleMeter التفاعلي · ChallengeCard · صفوف الراديو",
+  "element": "ui-row:active · ui-meter[data-interactive]:active · .fpt-challenge:active",
+  "title": "لا استجابة ضغط على الصفوف والعدّادات والبطاقات: التحويم فقط خلف @media(hover)",
+  "detail": "عنصر التنقل الأساسي على الهاتف هو الصف (`ListRow`) والعدّاد (`RuleMeter onOpen`) وبطاقة الحجم؛ كلها بلا `:active` ولا `press`. الأزرار وحدها تملك `transform:scale(.98)`. على اللمس لا يحدث أي تغيير بصري بين اللمس والانتقال (بخاصة مع غياب حالة التحميل VIS-003).",
+  "evidence": "packages/ui/src/components.css:388–391 `.ui-row …` (hover فقط تحت `@media (hover: hover)`) · :343–344 `.ui-meter[data-interactive='true']` (cursor + focus فقط) · brand/components/components.css:175–178 `.fpt-challenge` (hover فقط) · :48 `.fpt-btn:active{transform:scale(var(--fpt-motion-press-scale))}` (الأزرار فقط)",
+  "recommendation": "أضف `.ui-row:where(a,button):active, .ui-meter[data-interactive]:active, .fpt-challenge:active { background: color-mix(in srgb, var(--fpt-text-primary) 6%, transparent) }` بمدة `--fpt-motion-duration-press`.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §2 press-feedback · §3 tap-feedback-speed · §7 scale-feedback",
+  "files": [
+   "packages/ui/src/components.css"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-033",
+  "severity": "P2",
+  "category": "تقني",
+  "app": "client",
+  "screen": "/checkout/[orderId] · /payouts/new · /checkout/[orderId]/transfer",
+  "element": "صفوف الراديو اليدوية (peer sr-only + span)",
+  "title": "خمس نسخ من زر راديو مرسوم يدوياً (border-[1.5px] + peer-checked) بدل مكوّن واحد أو راديو الحزمة",
+  "detail": "طريقة الدفع، المسار، القناة وRoutePicker تكرر 15 سطراً من العلامات والأصناف نفسها (`inline-grid size-5 … rounded-full border-[1.5px] border-line-input peer-checked:border-brand …`) في أربعة ملفات. الحزمة تملك `.fpt-check input[type=radio]` و@fpt/ui تملك Checkbox لكن لا `RadioRow`. قيمة `border-[1.5px]` عشوائية خارج المقياس.",
+  "evidence": "apps/client/src/app/[locale]/(app)/checkout/[orderId]/checkout-form.tsx:110–112 و:131–133 · payouts/new/payout-form.tsx:213–215 · checkout/[orderId]/transfer/transfer-form.tsx:115–117 و:456–458 · brand/components/components.css:108–112 `.fpt-check input[type=\"radio\"]`",
+  "recommendation": "مكوّن `RadioRow {icon,label,hint,checked,onChange}` في @fpt/ui (56px، شيفرة واحدة)، يُستعمل في المواضع الخمسة.",
+  "effort": "S",
+  "skill": "ui-ux-design-pro critique «Consistency» · ui-ux-pro-max §5 spacing-scale",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/checkout/[orderId]/checkout-form.tsx",
+   "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx",
+   "apps/client/src/app/[locale]/(app)/checkout/[orderId]/transfer/transfer-form.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-034",
+  "severity": "P2",
+  "category": "RTL",
+  "app": "both",
+  "screen": "كل Select (27 من 29 استعمالاً)",
+  "element": "Select (Radix) بلا dir",
+  "title": "محفّز Select ومحتواه يحملان dir=\"ltr\" في العربية: النص والقائمة محاذاة يساراً وسهم الاتجاه معكوس",
+  "detail": "امتداد لـ VIS-001 على مستوى الحقول: Radix Select يكتب `dir` على المحفّز (combobox) والمحتوى؛ بلا `dir` يصبح «ltr». في نماذج العميل (الملف: اللغة، المنطقة الزمنية؛ الشركاء) ونماذج الإدارة (الحقوق، حالة الحساب، الرمز…) تُقرأ الخيارات العربية في صندوق LTR.",
+  "evidence": "packages/ui/src/components/select.tsx:36 `<RadixSelect.Root dir={dir} …>` · `grep -rn \"<Select \" apps | grep -c dir=` → 2 من 29 · node_modules @radix-ui/react-select: `dir: context.dir` على Trigger وContent · apps/client/src/app/[locale]/(app)/profile/forms.tsx:170 `<Select value={lang} …>` بلا dir",
+  "recommendation": "نفس حل VIS-001 (`DirectionProvider`)، أو افتراضي `dir` في Select من `document.documentElement.dir` عبر hook.",
+  "effort": "S",
+  "skill": "fpt-brand RTL · ui-ux-pro-max §4 system-controls",
+  "files": [
+   "packages/ui/src/components/select.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-035",
+  "severity": "P2",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "/breaches/[id] · /accounts/[id] (تبويب البيانات) · /payouts/[id] · /products (المحاكي)",
+  "element": "<p className=\"text-sm\"> · <label className=\"text-sm\">",
+  "title": "جمل وتسميات بحجم 14px في مسارات مشروطة/تبويبات لا تقيسها البوّابة",
+  "detail": "أربع فقرات إرشادية و`label` في المحاكي تُرسم 14px على `<p>/<label>` — تحت أرضية 15. كلها تظهر شرطياً (`mine && …`) أو داخل تبويب غير نشط (Radix يفكّ المحتوى) فلم تلتقطها بوّابة smallBody.",
+  "evidence": "apps/admin/src/app/[locale]/(app)/breaches/[id]/page.tsx:199 `<p className=\"m-0 text-sm text-muted\">{t('youApproved')}</p>` · accounts/[id]/page.tsx:256 `<p className=\"m-0 text-sm text-muted\">{t('prov.passwordNote')}</p>` · payouts/[id]/page.tsx:131 · products/ProductsClient.tsx:142 `<label … className=\"flex min-h-10 items-center gap-2 text-sm\">`",
+  "recommendation": "`text-body-2` بدل `text-sm` على هذه الأربعة؛ وسّع مسار البوّابة ليفتح التبويبات ويتجاوز الشروط (حساب مشروط في بيانات الاختبار).",
+  "effort": "S",
+  "skill": "design-system § 2",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/breaches/[id]/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/accounts/[id]/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/payouts/[id]/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/products/ProductsClient.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-036",
+  "severity": "P3",
+  "category": "هوية",
+  "app": "both",
+  "screen": "المكوّنات المشتركة",
+  "element": "Lucide",
+  "title": "أيقونات Lucide موحّدة عبر @fpt/ui/icons (70 ملفاً) — مع ثلاثة شوارد: استيراد مباشر، سبينر بسمك 2.5، وانحراف إصدار عن الحزمة",
+  "detail": "الهوية تثبّت Lucide v0.468؛ الحزمة تستعمل `lucide-react ^1.63.0` (إصدار كبير أحدث بأشكال معدّلة لبعض الأيقونات). `print-button.tsx` يستورد `Printer` من `lucide-react` مباشرة متجاوزاً المجموعة المنتقاة. `Spinner` SVG يدوي بسمك 2.5 بينما عائلة الأيقونات 1.75/2.",
+  "evidence": "packages/ui/package.json `\"lucide-react\": \"^1.63.0\"` · brand/README.md § I «Lucide v0.468.0 only» · apps/client/src/components/print-button.tsx:2 `import { Printer } from 'lucide-react';` · packages/ui/src/components/spinner.tsx:23–24 `strokeWidth=\"2.5\"`",
+  "recommendation": "أضف `Printer` إلى icons.ts، ثبّت إصدار lucide-react الموثّق في الهوية (أو وثّق الانحراف كـ PROPOSED)، واجعل سمك السبينر 2.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §4 icon-style-consistent · fpt-brand § I",
+  "files": [
+   "packages/ui/src/icons.ts",
+   "apps/client/src/components/print-button.tsx",
+   "packages/ui/src/components/spinner.tsx",
+   "packages/ui/package.json"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-037",
+  "severity": "P3",
+  "category": "هوية",
+  "app": "both",
+  "screen": "/accounts/[id] (المراكز، الصفقات) · /accounts/[id]/breach · /products (المحاكي)",
+  "element": "حروف نصية كأيقونات: → * ×",
+  "title": "سهم نصي «→» بين سعر الفتح والسوق، و«*» للنتيجة الجزئية بتلميح hover فقط",
+  "detail": "الهوية تمنع رموز Unicode كأيقونات (verify-identity يبلّغ عنها). «→» يظهر في ثلاث شاشات داخل `num-ui`؛ «*» في المحاكي يحمل المعنى عبر `title` فقط (لا لمس).",
+  "evidence": "apps/client/src/components/trades-panel.tsx:86 `${d.openPrice} → ${d.price}` · apps/client/src/components/account-overview.tsx:337 · accounts/[id]/breach/page.tsx:140 · apps/admin/src/app/[locale]/(app)/products/ProductsClient.tsx:594–596 `<span … title={t('partial')}>*</span>`",
+  "recommendation": "`<ArrowRight className=\"fpt-icon--sm fpt-icon--dir\" aria-hidden>` أو كلمة «إلى»؛ للجزئي شارة `StatusPill` بكلمة «جزئي».",
+  "effort": "S",
+  "skill": "fpt-brand «no Unicode symbols as icons» · ui-ux-pro-max §4 no-emoji-icons",
+  "files": [
+   "apps/client/src/components/trades-panel.tsx",
+   "apps/client/src/components/account-overview.tsx",
+   "apps/admin/src/app/[locale]/(app)/products/ProductsClient.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-038",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "ui",
+  "screen": "كل StatusBadge size=sm (صفوف القوائم في التطبيقين)",
+  "element": ".fpt-badge.ui-badge-sm",
+  "title": "كلمة الحالة في الشارة الصغيرة 12px — تحت أرضية التسمية 13px",
+  "detail": "design-system § 2: 12px للتعليقات فقط، التسمية ≥ 13. كلمة الحالة («قيد المراجعة»، «ممول») معلومة أساسية تُعرض 12px في كل صف قائمة. البوّابة تستثني `.fpt-badge`.",
+  "evidence": "packages/ui/src/components.css:288 `.fpt-badge.ui-badge-sm { height: 22px; padding: 0 8px; font-size: var(--text-xs); }` · استعمال `size=\"sm\"` في accounts/page.tsx:110، payouts/page.tsx:90، وعشرات صفوف الإدارة",
+  "recommendation": "`--text-label` (13) مع ارتفاع 24؛ أو احذف المقاس sm وأبقِ 13px فقط.",
+  "effort": "S",
+  "skill": "design-system § 2",
+  "files": [
+   "packages/ui/src/components.css"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-039",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "ui",
+  "screen": "بطاقات الإدارة (settings, orders/[id], fraud, integrations)",
+  "element": "CardContent",
+  "title": "CardContent يفرض 14px افتراضياً على محتوى البطاقة",
+  "detail": "`CardContent` = `text-sm text-ink-2`؛ أي نص مباشر أو عنصر بلا حجم صريح داخل البطاقة ينزل إلى 14px (مثل `<span className=\"fpt-unit text-muted\">{c.attempts}×</span>` و`<ol … text-sm>` في enrol). الصفحات تعوّض بـ `text-body-2` يدوياً في معظم المواضع — فخّ افتراضي.",
+  "evidence": "packages/ui/src/components/card.tsx:49 `<div className={cn('text-sm text-ink-2', className)} …/>` · apps/admin/src/app/[locale]/(auth)/enrol/page.tsx:175 `<ol className=\"list-decimal space-y-2 ps-5 text-sm text-ink-2\">`",
+  "recommendation": "الافتراضي `text-body-2`.",
+  "effort": "S",
+  "skill": "design-system § 2",
+  "files": [
+   "packages/ui/src/components/card.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-040",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "/ (نظرة عامة) · /finance — بلاطات الأرقام على الهاتف",
+  "element": "Money quietCode (text-[0.55em])",
+  "title": "رمز العملة في البلاطات يُحسب 0.55em فيهبط إلى ≈ 12.1px على الهاتف (تحت التسمية 13)",
+  "detail": "`quietCode` يرسم الرمز بـ `text-[0.55em]`؛ في `StatTile size=lg` قيمة الهاتف 22px → 12.1px، وأي استعمال بـ `size=\"md\"` خارج البلاطة يعطي 8.8px (لا يوجد حالياً لكن الـ API يسمح). قيمة em عشوائية بدل درجة المقياس.",
+  "evidence": "packages/ui/src/components/money.tsx:60 و:62 `className=\"… font-body text-[0.55em] font-semibold text-muted\"` · stat-tile.tsx:41 `size === 'lg' ? 'text-xl sm:text-2xl'` · apps/admin/src/app/[locale]/(app)/page.tsx:95 `<Money … quietCode />`",
+  "recommendation": "`text-label` (13px) أو `max(13px, .55em)` للرمز الهادئ.",
+  "effort": "S",
+  "skill": "design-system § 2 · ui-ux-pro-max §6 font-scale",
+  "files": [
+   "packages/ui/src/components/money.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-041",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "both",
+  "screen": "عام",
+  "element": "قيم المسافات",
+  "title": "قيم خارج مقياس 4pt وقيم عشوائية [..] متناثرة (6/10/14px، 1.5px، 22px، 26px)",
+  "detail": "المقياس الملزم 4·8·12·16·20·24·32·48. المستعمل: `gap-1.5` ×15 (6px)، `gap-2.5` ×4 (10)، `gap-0.5` ×7 (2)، `p-3.5` (14)، `py-1.5` ×3؛ وفي CSS `.ui-hero gap:6px`، `.ui-kv gap:3px`، `.ui-row gap:14px`، `.ui-meter padding:14px 0`؛ قيم عشوائية: `border-[1.5px]` ×4، `size-[22px]`، `rounded-[6px]`، `h-[26px]`، `p-[3px]`، `translate-x-[3px]/[21px]`، `w-[236px]`، `h-[720px]`، `min-h-[480px]`، `min-h-[320px]`. (حزمة الهوية نفسها تستعمل 6/10/14 كثيراً — فالانحراف موروث جزئياً.)",
+  "evidence": "grep عدّ: gap-1.5 ×15، gap-2.5 ×4، p-3.5 ×1 · packages/ui/src/components.css:373 `.ui-hero { gap: 6px }`، :388 `.ui-row { gap: 14px }` · checkbox.tsx:32 `size-[22px] rounded-[6px] border-[1.5px]` · switch.tsx:20,27 · lang-switch.tsx:22 `p-[3px]` · enrol/page.tsx:181 `w-[236px]` · mail/[id]/page.tsx:367 `h-[720px]`",
+  "recommendation": "طبّع إلى 4/8/12/16 حيث لا يفرض مقاس عنصر (22px صندوق الخانة مقبول)، وعرّف `--spacing-*` للقيم المتبقية في tokens.css بدل القيم المعقوفة.",
+  "effort": "M",
+  "skill": "ui-ux-pro-max §5 spacing-scale · ui-ux-design-pro critique «Does it follow the scale?»",
+  "files": [
+   "packages/ui/src/components.css",
+   "packages/ui/src/components/checkbox.tsx",
+   "packages/ui/src/components/switch.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-042",
+  "severity": "P3",
+  "category": "هوية",
+  "app": "both",
+  "screen": "عام",
+  "element": "نصف القطر",
+  "title": "rounded-sm / rounded-md / rounded-[6px] غير مربوطة برموز الهوية (4px/6px خارج المقياس 8·12·14·16·18)",
+  "detail": "tokens.css يربط `lg→8`, `xl→12`, `2xl→16` فقط؛ `rounded-sm` (Tailwind 4px) و`rounded-md` (6px) و`rounded-[6px]` تستعمل قيم Tailwind الافتراضية خارج مقياس الهوية.",
+  "evidence": "packages/ui/src/tokens.css:124–133 (الربط) · apps/client/src/components/charts.tsx:216–218 `rounded-sm` · checkout/[orderId]/transfer/transfer-form.tsx:409 `file:rounded-md` · packages/ui/src/components/checkbox.tsx:32 `rounded-[6px]` · brand/components/components.css:108 `.fpt-check input{… border-radius:6px}`",
+  "recommendation": "اربط `--radius-sm/md` بـ `--fpt-radius-sm` (8) أو عرّف `--fpt-radius-check: 6px` في الحزمة واستعمله.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §4 effects-match-style · design-system § 3",
+  "files": [
+   "packages/ui/src/tokens.css",
+   "packages/ui/src/components/checkbox.tsx",
+   "apps/client/src/components/charts.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-043",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "both",
+  "screen": "/payouts (لا حساب ممول) · /notifications (مضمّن) · /partners (إحالات/عمولات) · الإدارة: /staff · overview · accounts/[id] · risk · settings",
+  "element": "EmptyState مقابل <p> رمادي",
+  "title": "حالة الفراغ غير موحّدة: EmptyState في بعض القوائم وفقرة رمادية في أخرى، وجدول الموظفين بلا حالة فراغ أصلاً",
+  "detail": "design-system § 5.6: «كل قائمة لها EmptyState بجملة وإجراء». 20+ قائمة فرعية تستعمل `<p className=\"m-0 text-body-2 text-muted\">` بلا أيقونة ولا إجراء، وقائمة الموظفين تمرّر DataTableRows بلا `empty` فتُرسم فراغاً.",
+  "evidence": "apps/client/src/app/[locale]/(app)/payouts/page.tsx:37 · apps/client/src/components/notifications-list.tsx:20 · partners/page.tsx:304,326 · apps/admin/src/app/[locale]/(app)/page.tsx:105,122,131 · accounts/[id]/page.tsx:394,433 · risk/page.tsx:495,510,522 · settings/page.tsx:158,255 · staff/page.tsx:70–84 (لا empty) · packages/ui/src/components/data-table.tsx:82 `if (rows.length === 0) return <>{empty ?? null}</>`",
+  "recommendation": "`EmptyState size=\"md\"` مع أيقونة القسم في كل قائمة، و`empty` إلزامي في DataTableRows (نوعياً).",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §8 empty-states · design-system § 5.6",
+  "files": [
+   "packages/ui/src/components/data-table.tsx",
+   "apps/admin/src/app/[locale]/(app)/staff/page.tsx",
+   "apps/client/src/app/[locale]/(app)/payouts/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-044",
+  "severity": "P3",
+  "category": "تقني",
+  "app": "both",
+  "screen": "المكوّنات المشتركة",
+  "element": "مكوّنات ميتة ومكررة",
+  "title": "مكوّنات مكررة أو غير مستعملة تبقى في الحزمة والتطبيقين (رسم بياني ثانٍ بمحاور 9.5px mono، FilterBar، AccountGauges، EquityCurve، Finance، useToast لا يُستدعى أبداً)",
+  "detail": "`apps/client/src/components/charts.tsx` يحوي EquityChart ثانٍ (غير مستعمل) بمحاور mono 9.5px — لو استُعمل لخرق أرضيتين. في الإدارة: FilterBar.tsx، AccountGauges.tsx (Gauge القديم)، EquityCurve.tsx (محاور mono 11px)، Finance.tsx كلها بلا استعمال. @fpt/ui يصدّر ResponsiveTable/Gauge/RingGauge/Progress/Switch/Tooltip/DataList ولا يستعملها التطبيقان (DataList في المحاكاة فقط). `ToastProvider` مركّب لكن `useToast` لا يُستدعى في أي شاشة — تغذية النجاح تعتمد على تنبيهات مضمّنة فقط.",
+  "evidence": "apps/client/src/components/charts.tsx:31–164 (`fontSize: 9.5` :114) · grep «from '@/components/charts'» → trades-panel فقط (PnlHeatmap) · apps/admin/src/components/{FilterBar,AccountGauges,EquityCurve,Finance}.tsx → 0 استيراد · grep useToast → 0 · packages/ui/src/index.ts",
+  "recommendation": "احذف المكررات أو انقلها إلى @fpt/ui كمكوّنات مستعملة فعلاً (Delta/NearestLimit)؛ استعمل toast للنجاح بعد الإجراءات القصيرة (نسخ، حفظ).",
+  "effort": "S",
+  "skill": "ui-ux-design-pro critique «Consistency» · ui-ux-pro-max §8 success-feedback",
+  "files": [
+   "apps/client/src/components/charts.tsx",
+   "apps/admin/src/components/FilterBar.tsx",
+   "apps/admin/src/components/AccountGauges.tsx",
+   "apps/admin/src/components/EquityCurve.tsx",
+   "apps/admin/src/components/Finance.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-045",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "/deletions · /coupons · /staff · /settings · /fraud · /products · ManualRoutes",
+  "element": "StatusPill بخرائط نغمة محلية",
+  "title": "سبع خرائط نغمة محلية لـ StatusPill بدل خريطة StatusBadge الواحدة — الكلمة نفسها بألوان مختلفة بين الصفحات",
+  "detail": "design-system § 4 ينص على خريطة واحدة (`StatusBadge`) لكل حالات المنصة. الإدارة تبني `tone` يدوياً في كل صفحة: `TONE` في الحذف، `active ? success : neutral` في الكوبونات والموظفين والمسارات، `severityTone` للاحتيال، `impact` للأخبار — بلا أيقونة في معظمها (الكلمة واللون فقط).",
+  "evidence": "apps/admin/src/app/[locale]/(app)/deletions/page.tsx:415 `const TONE: Record<ReqStatus, StatusTone> = {…}` · coupons/page.tsx:71 · staff/page.tsx:25–26 · settings/page.tsx:41,52 · fraud/page.tsx:629,632 · products/page.tsx:241,247 · settings/ManualRoutes.tsx:408",
+  "recommendation": "وسّع `StatusKind` في status-badge.tsx (deletion, coupon, staff, legal, news, fraudSeverity, route) وأزل الخرائط المحلية.",
+  "effort": "S",
+  "skill": "design-system § 4 StatusBadge · ui-ux-pro-max §4 consistency",
+  "files": [
+   "packages/ui/src/components/status-badge.tsx",
+   "apps/admin/src/app/[locale]/(app)/deletions/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/coupons/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-046",
+  "severity": "P3",
+  "category": "تقني",
+  "app": "both",
+  "screen": "/orders/[id] · /payments · /kyc · /settings · /products · /fraud (الإدارة) · /help · /legal (العميل)",
+  "element": "PageTitle eyebrow (ميت) · PageHeader eyebrow (حي)",
+  "title": "خاصية eyebrow تُمرَّر في 8 صفحات إدارة ويُهملها PageTitle، بينما PageHeader العام ما زال يرسمها فوق العناوين",
+  "detail": "F1 أسقط السطر العلوي؛ `PageTitle` يتجاهل `eyebrow` لكن الصفحات تمرّر الترجمات (عمل ميت). `PageHeader` في @fpt/ui يرسم `.fpt-eyebrow` uppercase على المساعدة والقانوني، فتختلف رؤوس الصفحات العامة عن التطبيق.",
+  "evidence": "apps/admin/src/components/PageTitle.tsx:4–15 (`eyebrow` «Kept for API compatibility») · orders/[id]/page.tsx:184 `eyebrow={t('eyebrow')}` · payments/page.tsx:429 · kyc/page.tsx:310 · settings/page.tsx:64 · products/page.tsx:287 · fraud/[id]/page.tsx:711 · packages/ui/src/components/page-header.tsx:25 `{eyebrow ? <p className=\"fpt-eyebrow mb-1!\">…` · apps/client/src/app/[locale]/(public)/help/page.tsx:126",
+  "recommendation": "احذف `eyebrow` من الاستدعاءات ومن PageTitle؛ وحّد PageHeader على ScreenTitle (بلا eyebrow).",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §4 consistency",
+  "files": [
+   "apps/admin/src/components/PageTitle.tsx",
+   "packages/ui/src/components/page-header.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-047",
+  "severity": "P3",
+  "category": "تقني",
+  "app": "both",
+  "screen": "/checkout/[orderId]/transfer · /payments/[id] (الإدارة)",
+  "element": "className=\"text-body-1\"",
+  "title": "صنف text-body-1 غير معرّف في المقياس (لا يطبّق أي حجم)",
+  "detail": "المقياس يعرّف `text-body`/`text-body-2` فقط؛ `text-body-1` لا يولّد CSS، فالتعليمات ونص ملاحظة العميل يرثان 16px مصادفةً. دلالة خاطئة تُربك الصيانة.",
+  "evidence": "apps/client/src/app/[locale]/(app)/checkout/[orderId]/transfer/page.tsx:325 `<p className=\"m-0 text-body-1\" …>` · apps/admin/src/app/[locale]/(app)/payments/[id]/page.tsx:587 · packages/ui/src/tokens.css:96–122 (لا `--text-body-1`)",
+  "recommendation": "`text-base`.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §6 text-styles-system",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/checkout/[orderId]/transfer/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/payments/[id]/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-048",
+  "severity": "P3",
+  "category": "تقني",
+  "app": "ui",
+  "screen": "كل DataTableRows (الإدارة)",
+  "element": "<a href> خام في الخلية الأولى + زر «المزيد» بأصناف خام",
+  "title": "روابط الجدول <a> عادية (بلا Link/prefetch، إعادة تحميل كاملة) وزر «المزيد» يتجاوز مكوّن Button",
+  "detail": "`DataTableRows` يرسم `<a href={r.href}>` على المكتب و`ListRow` بـ `linkComponent` افتراضي `'a'`، والتعليق يقرّ أن `linkComponent` «kept for API compatibility». كل نقرة صف في الإدارة = إعادة تحميل كاملة بلا جلب مسبق ولا حالة تحميل. زر «المزيد» يُبنى من أصناف `fpt-btn fpt-btn--ghost` بدل `<Button>`.",
+  "evidence": "packages/ui/src/components/data-table.tsx:121 `<a href={r.href} className=\"inline-flex min-h-11 …\">` · :138 `<ListRow … href={r.href} …/>` (بلا linkComponent) · :169 التعليق · :151 `<button type=\"button\" className=\"fpt-btn fpt-btn--ghost self-center\"`",
+  "recommendation": "مرّر `linkComponent` فعلياً إلى الصفوف والخلية الأولى، واستعمل `<Button variant=\"ghost\">`.",
+  "effort": "S",
+  "skill": "web-interface-guidelines §Navigation & State «Links use <Link>» · ui-ux-pro-max §3 lazy-loading",
+  "files": [
+   "packages/ui/src/components/data-table.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-049",
+  "severity": "P3",
+  "category": "وصول",
+  "app": "client",
+  "screen": "/accounts/[id]/trades (ترقيم الصفحات)",
+  "element": "Button asChild disabled + Link",
+  "title": "رابط الصفحة السابقة «المعطّل» يبقى قابلاً للتركيز والتفعيل بلوحة المفاتيح",
+  "detail": "`pointer-events-none opacity-50` + `aria-disabled` على `<Link>` يمنع الفأرة فقط؛ Tab + Enter ينقل إلى `page=0`. `Button asChild` لا يحقن `disabled` على الروابط.",
+  "evidence": "apps/client/src/components/trades-panel.tsx:266–269 `<Button asChild variant=\"ghost\" size=\"sm\" disabled={page <= 1}><Link … aria-disabled={page <= 1} className={page <= 1 ? 'pointer-events-none opacity-50' : ''}>` · packages/ui/src/components/button.tsx:61–62",
+  "recommendation": "ارسم `<span>` بدل الرابط عند التعطيل، أو أضف `tabIndex={-1}` و`onClick preventDefault`.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §8 disabled-states · §1 keyboard-nav",
+  "files": [
+   "apps/client/src/components/trades-panel.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-050",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "ui",
+  "screen": "أزرار block الطويلة (ادفع {amount}، تشغيل على FPT-…، اطلب دفعة)",
+  "element": ".fpt-btn white-space:nowrap + ui-btn-truncate",
+  "title": "تسميات الأزرار لا تلتف وتُقص بقصاصة على 360px — قد يختفي المبلغ من زر الدفع",
+  "detail": "الحزمة تفرض `white-space:nowrap` على الزر و@fpt/ui يضيف `ui-btn-truncate` (ellipsis). تسمية مثل «ادفع 1,070.00 USD» أو «تشغيل على FPT-100K-5L78C» على 320px مع حشو 36px تُقص فيختفي الجزء المهم.",
+  "evidence": "brand/components/components.css:46 `white-space:nowrap` · packages/ui/src/components/button.tsx:60 `'ui-btn-truncate'` · packages/ui/src/components.css:211 `.fpt-btn.ui-btn-truncate > .ui-btn-label { overflow: hidden; text-overflow: ellipsis; }` · checkout-form.tsx:251 `t.rich('pay', { amount … })`",
+  "recommendation": "لأزرار `block`: `white-space:normal; line-height:1.3; padding-block:10px` بدل القص.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §5 compact-label-overflow · §6 truncation-strategy",
+  "files": [
+   "packages/ui/src/components.css",
+   "packages/ui/src/components/button.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VIS-051",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "client",
+  "screen": "/accounts/[id] على 360px مع تبويب «تداول من المتصفح»",
+  "element": ".fpt-tabs overflow-x:auto scrollbar-width:none",
+  "title": "خمسة تبويبات بعرض 360px تتمرّر أفقياً بشريط مخفي بلا أي إشارة إلى وجود المزيد",
+  "detail": "عند تفعيل `platform.ctraderWidgets` تصبح التبويبات خمسة؛ `.fpt-tabs` يمرّر أفقياً ويخفي شريط التمرير، فالتبويب الأخير خارج الشاشة بلا تدرّج ولا سهم.",
+  "evidence": "brand/components/components.css:209 `.fpt-tabs{display:flex;gap:4px;…overflow-x:auto;scrollbar-width:none}` · apps/client/src/app/[locale]/(app)/accounts/[id]/page.tsx:110–128 (4–5 TabsTrigger)",
+  "recommendation": "عند 5 تبويبات: تسميات أقصر أو تدرّج حافة (`mask-image`) أو نقل «التداول» إلى زر داخل تبويب البيانات.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §5 chip-collection-reflow · §9 bottom-nav-limit",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/accounts/[id]/page.tsx",
+   "packages/ui/src/components.css"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VIS-052",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "client",
+  "screen": "/shop · /checkout",
+  "element": "ClientBottomNav active logic",
+  "title": "تبويب «الحساب» يُضاء وأنت في المتجر وصفحة الدفع",
+  "detail": "منطق النشاط يضيء تبويب الحساب على `/shop` و`/checkout` (لأن رابطه يذهب للمتجر قبل أول شراء)، فيقرأ المستخدم «الحساب» وهو يختار حجم تحدٍّ.",
+  "evidence": "apps/client/src/components/bottom-nav.tsx:22 `active: onAccount || is('/shop') || is('/checkout')`",
+  "recommendation": "أضئ «الحساب» على `/accounts/*` فقط؛ المتجر والدفع بلا تبويب نشط (أو ضمن «المزيد» حيث يقع رابط «ابدأ تحدياً»).",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §9 nav-state-active",
+  "files": [
+   "apps/client/src/components/bottom-nav.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-053",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "client",
+  "screen": "/notifications · /certificates · /profile · /help · /legal",
+  "element": "ClientHeader backHref",
+  "title": "سهم الرجوع ثابت إلى /more مهما كان المصدر (الجرس في الرئيسية ← الإشعارات ← رجوع إلى «المزيد»)",
+  "detail": "خريطة الرجوع ثابتة بالمسار؛ من الرئيسية عبر الجرس يصل المستخدم إلى الإشعارات ثم يعود بالسهم إلى «المزيد» لا إلى الرئيسية. المتصفح الخلفي صحيح، السهم لا.",
+  "evidence": "apps/client/src/components/client-header.tsx:88 `const backHref = … : '/more';` · :108 رابط الجرس من الرئيسية",
+  "recommendation": "`router.back()` عند وجود سجل داخلي (`history.length > 1` + مرجع من النطاق) وإلا الخريطة الثابتة.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §9 back-behavior",
+  "files": [
+   "apps/client/src/components/client-header.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-054",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "ui",
+  "screen": "الرأس على 360px",
+  "element": "AppHeaderBar center truncate",
+  "title": "عنوان الشاشة في الرأس يُقص بقصاصة صامتة على الهواتف الضيقة",
+  "detail": "`truncate` مع عنوان مثل «لماذا توقّف حسابي» أو عناوين الإدارة الطويلة؛ لا tooltip ولا التفاف.",
+  "evidence": "packages/ui/src/components/app-shell.tsx:65 `<div className=\"min-w-0 flex-1 truncate text-center text-base font-semibold\">`",
+  "recommendation": "اسمح بسطرين (`line-clamp-2` بخط 15) أو قصّر مفاتيح `client.screen`.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §6 truncation-strategy",
+  "files": [
+   "packages/ui/src/components/app-shell.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VIS-055",
+  "severity": "P3",
+  "category": "وصول",
+  "app": "ui",
+  "screen": "DangerZone",
+  "element": "id=\"ui-danger-h\" ثابت",
+  "title": "عنوان منطقة الخطر بمعرّف ثابت — تكرار المعرّف إن ظهرت منطقتان في صفحة",
+  "detail": "`aria-labelledby=\"ui-danger-h\"` مع `id` ثابت؛ أي صفحة بمنطقتي خطر تنتج معرّفين مكررين (axe duplicate-id).",
+  "evidence": "packages/ui/src/components/danger-zone.tsx:19–20 `aria-labelledby=\"ui-danger-h\"` / `<h2 id=\"ui-danger-h\"`",
+  "recommendation": "`React.useId()`.",
+  "effort": "S",
+  "skill": "web-interface-guidelines §Accessibility",
+  "files": [
+   "packages/ui/src/components/danger-zone.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-056",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "ui",
+  "screen": "ToastProvider",
+  "element": "حد الكومة",
+  "title": "كومة التنبيهات تسمح بأربع رسائل مرئية (الحد الموصى به 3) والطارئة تبقى بلا حد زمني",
+  "detail": "`xs.slice(-3)` يحتفظ بثلاث ثم يضيف الرابعة. التنبيهات danger دائمة بلا زمن وبلا تجميع.",
+  "evidence": "packages/ui/src/components/toast.tsx:72 `setItems((xs) => [...xs.slice(-3), { ...opts, tone, id }])` · :71 `alarming(tone) ? 0 : 5000`",
+  "recommendation": "`slice(-2)`؛ تجميع التنبيهات المتطابقة.",
+  "effort": "S",
+  "skill": "ui-ux-design-pro component-patterns «Toast: max 3 visible»",
+  "files": [
+   "packages/ui/src/components/toast.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-057",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "both",
+  "screen": "الروابط المضمّنة (16 موضعاً)",
+  "element": "hover:underline بلا @media (hover:hover)",
+  "title": "تحويم Tailwind على الروابط المضمّنة غير مقيّد بوسيط hover — يلتصق بعد اللمس على iOS",
+  "detail": "`.ui-row` و`.ui-inline-link` في CSS مقيّدان بـ `@media (hover: hover)`، لكن 16 رابطاً في JSX تستعمل `hover:underline`/`hover:text-ink` مباشرة (Tailwind v4 يقيّدها افتراضياً بـ `@media (hover:hover)` فقط عند تفعيل الإعداد الافتراضي — تحقّق من `hover` variant في v4: مقيّد افتراضياً). الأثر محدود لكنه غير متسق مع CSS الحزمة.",
+  "evidence": "apps/client/src/app/[locale]/(app)/accounts/page.tsx:76 `hover:underline` · apps/client/src/components/rules-table.tsx:22 · packages/ui/src/components.css:391,466 (`@media (hover: hover)`)",
+  "recommendation": "تأكد أن `hover` في Tailwind v4 يبقى مقيّداً (الافتراضي) ووثّقه؛ أو استعمل `ui-inline-link` بدل الأصناف المتناثرة.",
+  "effort": "S",
+  "skill": "web-interface-guidelines §Hover & Interactive States",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/accounts/page.tsx",
+   "apps/client/src/components/rules-table.tsx"
+  ],
+  "confidence": "low"
+ },
+ {
+  "id": "VIS-058",
+  "severity": "P3",
+  "category": "تقني",
+  "app": "both",
+  "screen": "PartnerRow (الهبوط، المزيد) · /payments/[id] (الإدارة)",
+  "element": "<img> بلا أبعاد / بلا lazy",
+  "title": "شعار cTrader بلا width/height (انزياح تخطيط) وصورة الإثبات بلا loading=lazy",
+  "detail": "صورة cTrader تعتمد على CSS للارتفاع فقط فتسبب CLS حتى يصل الملف؛ صورة الإثبات (قد تكون 5MB) أسفل الطية تُحمَّل فوراً.",
+  "evidence": "packages/ui/src/components/partner-row.tsx:26 `<img src={partnerSrc} alt=\"cTrader\" className=\"fpt-partner__logo\" decoding=\"async\" />` · apps/admin/src/app/[locale]/(app)/payments/[id]/page.tsx:150 `<img src={`/api/proofs/${latest.id}`} … className=\"max-h-[70vh] w-full object-contain\" />`",
+  "recommendation": "`width/height` من نسبة الملف الرسمي؛ `loading=\"lazy\"` وإطار بنسبة ثابتة للإثبات.",
+  "effort": "S",
+  "skill": "web-interface-guidelines §Images · ui-ux-pro-max §3 image-dimension",
+  "files": [
+   "packages/ui/src/components/partner-row.tsx",
+   "apps/admin/src/app/[locale]/(app)/payments/[id]/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-059",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "/mail/[id]",
+  "element": "iframe h-[720px]",
+  "title": "معاينة البريد في إطار ثابت 720px — على الهاتف تمرير داخل تمرير وقيمة عشوائية",
+  "detail": "ارتفاع ثابت بغض النظر عن محتوى البريد أو حجم الشاشة.",
+  "evidence": "apps/admin/src/app/[locale]/(app)/mail/[id]/page.tsx:367 `className=\"block h-[720px] w-full max-w-full border-0\"`",
+  "recommendation": "`aspect-ratio` أو `min-h-[60dvh]` مع ضبط الارتفاع من `postMessage` للمحتوى.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §5 scroll-behavior · viewport-units",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/mail/[id]/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-060",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "client",
+  "screen": "/help",
+  "element": "صف التصنيفات overflow-x-auto",
+  "title": "شرائح التصنيف تتمرّر أفقياً بلا إشارة بدل الالتفاف",
+  "detail": "`-mx-gutter flex overflow-x-auto` مع `shrink-0`؛ التصنيفات الأخيرة خارج الشاشة بلا تدرّج. التوجيه: التفاف المجموعة قبل التمرير.",
+  "evidence": "apps/client/src/app/[locale]/(public)/help/help-search.tsx:164 `<div className=\"-mx-gutter flex gap-2 overflow-x-auto px-gutter pb-1\" role=\"group\" …>`",
+  "recommendation": "`flex-wrap` (FilterChips) أو تدرّج حافة.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §5 chip-collection-reflow",
+  "files": [
+   "apps/client/src/app/[locale]/(public)/help/help-search.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-061",
+  "severity": "P3",
+  "category": "تقني",
+  "app": "client",
+  "screen": "/orders/[id]/receipt · /payouts/[id]/statement · CertificateCard",
+  "element": "style={{…}} للتخطيط",
+  "title": "أنماط مضمّنة للتخطيط والخط في وثائق الورق بدل أصناف documents.css",
+  "detail": "`gridTemplateColumns`, `fontSize: var(--text-body-2)`, `marginBlockStart` مضمّنة في JSX في 9 مواضع مع وجود documents.css للوثائق.",
+  "evidence": "apps/client/src/app/[locale]/(app)/orders/[id]/receipt/page.tsx:56,61,118 · payouts/[id]/statement/page.tsx:64,68,86,134,152 · apps/client/src/components/certificate-card.tsx:42",
+  "recommendation": "أصناف `.fpt-doc .figures--one`, `.fpt-doc .note` في documents.css.",
+  "effort": "S",
+  "skill": "ui-ux-design-pro critique «Token test»",
+  "files": [
+   "apps/client/src/app/documents.css",
+   "apps/client/src/app/[locale]/(app)/orders/[id]/receipt/page.tsx",
+   "apps/client/src/app/[locale]/(app)/payouts/[id]/statement/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-062",
+  "severity": "P3",
+  "category": "هوية",
+  "app": "client",
+  "screen": "/profile (QR)",
+  "element": "ألوان هكس خام",
+  "title": "قيم هكس خام ('#FFFFFF', '#0A0A0A') في كود المكوّن لرمز QR",
+  "detail": "القاعدة: لا هكس خارج brand/tokens.css. الإدارة تحلّها بـ `currentColor`؛ العميل يكتب الهكس في forms.tsx.",
+  "evidence": "apps/client/src/app/[locale]/(app)/profile/forms.tsx:220 `color: { dark: '#FFFFFF', light: '#0A0A0A' }` · apps/admin/src/lib/qr.ts:9–11 (`fill=\"none\"` / `stroke=\"currentColor\"`)",
+  "recommendation": "أعد استعمال نهج `qrSvg` (currentColor) على أرضية الورق.",
+  "effort": "S",
+  "skill": "fpt-brand «no hex outside tokens»",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/profile/forms.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-063",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "both",
+  "screen": "الدخول/التسجيل/التحقق · /payouts/new (كل خطوة)",
+  "element": "autoFocus (12 موضعاً)",
+  "title": "autoFocus على الهاتف يفتح لوحة المفاتيح فوراً ويقفز بالشاشة في 12 نموذجاً",
+  "detail": "كل خطوة في طلب الدفعة وكل شاشة مصادقة تركّز حقلاً تلقائياً؛ على الهاتف يعني ذلك لوحة مفاتيح فورية تغطي نصف الشاشة قبل قراءة العنوان والـ lead.",
+  "evidence": "apps/client/src/app/[locale]/(auth)/auth-form.tsx:42,61,84,114,135 · apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx:191,238,243,252,261 · apps/admin/src/app/[locale]/(auth)/CodeForm.tsx:21",
+  "recommendation": "autoFocus على المكتب فقط (`(pointer: fine)`) أو احذفه من خطوات الدفعة.",
+  "effort": "S",
+  "skill": "web-interface-guidelines §Touch «autoFocus sparingly — desktop only»",
+  "files": [
+   "apps/client/src/app/[locale]/(auth)/auth-form.tsx",
+   "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-064",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "both",
+  "screen": "كل حقول كلمة المرور",
+  "element": "Input type=password",
+  "title": "لا زر إظهار/إخفاء كلمة المرور",
+  "detail": "ثمانية حقول كلمة مرور (دخول، تعيين، تغيير، إعادة المصادقة في حوارات الإدارة) بلا تبديل رؤية؛ الأيقونتان Eye/EyeOff موجودتان في icons.ts.",
+  "evidence": "apps/client/src/app/[locale]/(auth)/auth-form.tsx:84,130,134,137 · apps/admin/src/components/ActionDialog.tsx:98 · packages/ui/src/icons.ts (`Eye`, `EyeOff`)",
+  "recommendation": "`PasswordInput` في @fpt/ui بـ `IconButton` نهاية 44px.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §8 password-toggle",
+  "files": [
+   "packages/ui/src/components/input.tsx",
+   "apps/client/src/app/[locale]/(auth)/auth-form.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-065",
+  "severity": "P3",
+  "category": "تقني",
+  "app": "client",
+  "screen": "/payouts/new (4 خطوات)",
+  "element": "PayoutForm state",
+  "title": "نموذج الدفعة بأربع خطوات يحتفظ بكل شيء في الذاكرة بلا تحذير قبل المغادرة ولا حفظ مسودة",
+  "detail": "الشريط السفلي مرئي أثناء النموذج؛ لمسة على «الرئيسية» تفقد المبلغ والقناة والبيانات بصمت.",
+  "evidence": "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx:131–135 (useState فقط) · grep beforeunload → 0",
+  "recommendation": "`sessionStorage` للمسودة أو تأكيد قبل المغادرة عند وجود قيم.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §8 form-autosave · web-interface-guidelines §Forms «Warn before navigation»",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-066",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "/orders · /payments · /kyc · /mail · /settings (الأخبار) · /simulator",
+  "element": "placeholder",
+  "title": "نصوص placeholder لاتينية مكتوبة في الكود خارج الترجمة ولا تنتهي بـ «…»",
+  "detail": "`name@example.com`, `Non-farm payrolls`, `P1`, `{\"lots\": 10}` مكتوبة حرفياً داخل الصفحات؛ في الواجهة العربية تظهر إنجليزية ولا تتبع قاعدة «…».",
+  "evidence": "apps/admin/src/app/[locale]/(app)/orders/page.tsx:113 `placeholder: 'name@example.com'` · payments/page.tsx:434 · kyc/page.tsx:315 · mail/page.tsx:295 · settings/SettingsClient.tsx:410 `placeholder=\"Non-farm payrolls\"` · simulator/SimulatorClient.tsx:121 و:177",
+  "recommendation": "مفاتيح ترجمة `placeholders.*` بصيغة «name@example.com…».",
+  "effort": "S",
+  "skill": "web-interface-guidelines §Forms «Placeholders end with …»",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/orders/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/settings/SettingsClient.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-067",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "جداول الإدارة على 1024+",
+  "element": ".fpt-table-wrap max-height:70vh + thead static",
+  "title": "الجدول محصور في 70vh بتمرير داخلي ورأسه غير لاصق — تمرير متداخل بلا سياق للأعمدة",
+  "detail": "حزمة الهوية تحصر الجدول في `max-height:70vh` (vh لا dvh) مع `overflow:auto`، و@fpt/ui يلغي لصق رأس الجدول (`position:static`)؛ عند 100 صف يتمرّر المستخدم داخل صندوق ويفقد رؤوس الأعمدة.",
+  "evidence": "brand/components/components.css:192 `.fpt-table-wrap{overflow:auto;…max-height:70vh}` · packages/ui/src/components.css:226 `.fpt-table thead th { position: static; }`",
+  "recommendation": "أزل `max-height` في `.ui-data` (دع الصفحة تتمرّر) أو أعد `position:sticky` للرأس داخل الصندوق.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §5 scroll-behavior · ui-ux-design-pro component-patterns Data Tables",
+  "files": [
+   "packages/ui/src/components.css"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-068",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "ui",
+  "screen": "الصفوف والأوراق على iOS/Android",
+  "element": "-webkit-tap-highlight-color · overscroll-behavior · user-select",
+  "title": "لمسيات ناقصة: وميض iOS الرمادي الافتراضي على الصفوف، لا overscroll-behavior في الأوراق، والنص قابل للتحديد بالضغط المطوّل على الصفوف",
+  "detail": "`touch-action:manipulation` موجود (جيد) لكن لا `-webkit-tap-highlight-color` في أي مكان، لا `overscroll-behavior: contain` على `SheetContent/DialogContent` (`overflow-y-auto`)، و`select-none` على الأزرار فقط لا على `.ui-row` الزرّية ولا `.ui-meter`.",
+  "evidence": "packages/ui/src/components.css:112–114 (touch-action فقط) · grep tap-highlight/overscroll → 0 · packages/ui/src/components/sheet.tsx:40 `overflow-y-auto` · button.tsx:12 `select-none`",
+  "recommendation": "`-webkit-tap-highlight-color: transparent` على `a, button, [role=button]`؛ `overscroll-behavior: contain` على حاويات الأوراق/الحوارات؛ `user-select:none` على `.ui-row:where(a,button)`.",
+  "effort": "S",
+  "skill": "web-interface-guidelines §Touch & Interaction · ui-ux-pro-max §2 tap-delay",
+  "files": [
+   "packages/ui/src/components.css",
+   "packages/ui/src/components/sheet.tsx",
+   "packages/ui/src/components/dialog.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-069",
+  "severity": "P3",
+  "category": "وصول",
+  "app": "ui",
+  "screen": "كل صفحة ذات رأس لاصق (56px)",
+  "element": "scroll-padding-top غائب",
+  "title": "التركيز بلوحة المفاتيح قد يختفي خلف الرأس اللاصق (لا scroll-padding/scroll-margin)",
+  "detail": "الرأس `sticky top-0` 56px+safe؛ عند Tab إلى عنصر يقع تحت الرأس أو عند رابط `#main` لا يُزاح التمرير. التذييل الثابت مُعالج بـ `pb-nav`.",
+  "evidence": "packages/ui/src/components/app-shell.tsx:34 `<header className=\"ui-chrome sticky top-0 …\">` · grep scroll-padding/scroll-mt → 0",
+  "recommendation": "`html { scroll-padding-top: calc(var(--fpt-size-tabbar-h) + env(safe-area-inset-top)); scroll-padding-bottom: calc(var(--fpt-size-tabbar-h) + env(safe-area-inset-bottom)) }`.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §1 focus-not-obscured · web-interface-guidelines §Focus States",
+  "files": [
+   "packages/ui/src/components.css"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VIS-070",
+  "severity": "P3",
+  "category": "وصول",
+  "app": "admin",
+  "screen": "الشريط السفلي للإدارة («المزيد») · شرائح الفلاتر",
+  "element": "aria-current",
+  "title": "زر «المزيد» (button) يحمل aria-current=\"page\"، وشرائح الفلتر تستعمل aria-current=\"true\"",
+  "detail": "`MoreAwareLink` يرسم `<button>` للمفتاح `#more` ويمرّر `aria-current=\"page\"` من BottomNav؛ زر يفتح ورقة ليس صفحة. شرائح الفلاتر تستعمل `aria-current=\"true\"` (مقبول لكنه غير «page» كبقية الروابط).",
+  "evidence": "apps/admin/src/components/shell/AdminShell.tsx:75–80 و:166 `active: restActive` · apps/admin/src/components/Filters.tsx:60 `aria-current={… ? 'true' : undefined}` · packages/ui/src/components/filter-bar.tsx:43",
+  "recommendation": "للزر `aria-expanded`/`aria-pressed` بدل aria-current؛ وحّد الشرائح على `aria-pressed` أو `aria-current=\"true\"` موثقاً.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §1 aria-labels · §9 nav-state-active",
+  "files": [
+   "apps/admin/src/components/shell/AdminShell.tsx",
+   "apps/admin/src/components/Filters.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VIS-071",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "both",
+  "screen": "/help (الإجابات) · عناوين البطاقات والحوارات · فقرات الوثائق",
+  "element": "leading-relaxed / leading-snug للعربية",
+  "title": "تباعد أسطر العربية ينزل تحت 1.75 في المساعدة والتنبيهات والحوارات",
+  "detail": "الجسم العربي 1.75 (PROPOSED؛ الحزمة 1.9). إجابات المساعدة `leading-relaxed` (1.625)، عناوين البطاقات/الحوارات/التنبيهات `leading-snug` (1.375)، نص التنبيه يرث 1.75 لكن العنوان لا. للعربية بخط Plex يوصى بـ ≥ 1.6 للجسم و≥ 1.3 للعناوين.",
+  "evidence": "apps/client/src/app/[locale]/(public)/help/help-search.tsx:191 `leading-relaxed` · packages/ui/src/components/alert.tsx:45 `leading-snug` · dialog.tsx:51 · card.tsx:41 · packages/ui/src/components.css:271 `:lang(ar) body … { line-height: 1.75; }`",
+  "recommendation": "في العربية: `leading-relaxed → 1.75`، و`leading-snug` للعناوين فقط ≥ 1.3 (موجود)؛ عرّف `--leading-ar-body` واستعمله.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §6 line-height · fpt-brand Arabic line-height 1.9",
+  "files": [
+   "apps/client/src/app/[locale]/(public)/help/help-search.tsx",
+   "packages/ui/src/components/alert.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VIS-072",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "both",
+  "screen": "/payouts/new (زر التالي) · ActionForm الإدارة",
+  "element": "disabled next · focus-management",
+  "title": "زر «التالي» يُعطَّل بدل إظهار الخطأ، وبعد فشل الإرسال لا يُنقل التركيز إلى الخطأ",
+  "detail": "في خطوة المبلغ/البيانات يُعطَّل الزر الأساسي بلا سبب مرئي حتى يصح الإدخال (المستخدم لا يعرف لماذا). `ActionForm` يعرض Alert role=alert لكنه لا يركّز الحقل الخاطئ ولا الملخّص.",
+  "evidence": "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx:304 `disabled={!canNext}` · apps/admin/src/components/ActionForm.tsx:50–60 (لا focus بعد الخطأ)",
+  "recommendation": "زر مفعّل يظهر الخطأ المضمّن عند الضغط؛ `focus()` على أول حقل `aria-invalid` بعد الفشل.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §8 focus-management · web-interface-guidelines §Forms «Submit stays enabled»",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/payouts/new/payout-form.tsx",
+   "apps/admin/src/components/ActionForm.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-073",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "ActionDialog (الرفض، الإغلاق، التصحيح اليدوي)",
+  "element": "Radix Dialog backdrop close · بعد النجاح",
+  "title": "النقر على الخلفية يغلق حوارات الإجراءات المدمّرة، وبعد النجاح لا يوجد زر «تم» سوى X/Esc",
+  "detail": "Radix يغلق على نقر الخلفية افتراضياً حتى لحوار يحمل سبباً مكتوباً وكلمة مرور؛ بعد النجاح يبقى الحوار مفتوحاً مع CommandProgress بلا زر إغلاق في التذييل.",
+  "evidence": "packages/ui/src/components/dialog.tsx:22–44 (لا `onPointerDownOutside`) · apps/admin/src/components/ActionDialog.tsx:84–86 و ActionForm.tsx:79 `hideSubmitOnSuccess`",
+  "recommendation": "`onPointerDownOutside={e => e.preventDefault()}` للحوارات المدمّرة؛ زر «إغلاق» ثانوي بعد النجاح.",
+  "effort": "S",
+  "skill": "ui-ux-design-pro component-patterns Modals «Click backdrop to close (unless destructive)»",
+  "files": [
+   "packages/ui/src/components/dialog.tsx",
+   "apps/admin/src/components/ActionDialog.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-074",
+  "severity": "P3",
+  "category": "تقني",
+  "app": "both",
+  "screen": "/accounts (بلا هدف ربح) · /risk (جزئي) · /legal/[key] · /more (تسجيل الخروج) · 404 الجذر",
+  "element": "علامات يدوية بدل المكوّنات",
+  "title": "علامات مكتوبة يدوياً بأصناف الحزمة بدل المكوّنات: عدّاد يدوي بأنماط مضمّنة، صف ui-row يدوي، dl.fpt-card، زر خروج بأصناف خام، زر 404 بأنماط مضمّنة",
+  "detail": "خمسة مواضع تعيد بناء المكوّن بدل استعماله: عدّاد «لا هدف» في النظرة العامة (`.ui-meter` يدوي + `style={{whiteSpace…}}`)، صفوف «جزئي» في المخاطر (`li.ui-row` يدوي)، بطاقة الكيان القانوني (`dl.fpt-card grid` بدل KeyValue)، زر الخروج (`fpt-btn fpt-btn--secondary` بدل Button)، وزر 404 الجذر (gradient مضمّن).",
+  "evidence": "apps/client/src/components/account-overview.tsx:274–283 · apps/admin/src/app/[locale]/(app)/risk/page.tsx:526–534 · apps/client/src/app/[locale]/(public)/legal/[key]/page.tsx:241–248 · apps/client/src/app/[locale]/(app)/more/page.tsx:71 · apps/client/src/app/not-found.tsx:34 · apps/admin/src/app/not-found.tsx:226",
+  "recommendation": "`RuleMeter` بخاصية `notApplicable`، `ListRow` للجزئي، `KeyValue` للكيان، `<Button>` للخروج؛ 404 الجذر يبقى استثناءً موثقاً.",
+  "effort": "S",
+  "skill": "ui-ux-design-pro critique «Consistency»",
+  "files": [
+   "apps/client/src/components/account-overview.tsx",
+   "apps/admin/src/app/[locale]/(app)/risk/page.tsx",
+   "apps/client/src/app/[locale]/(public)/legal/[key]/page.tsx",
+   "apps/client/src/app/[locale]/(app)/more/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-075",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "client",
+  "screen": "/checkout/[orderId]/transfer (رفع الإثبات)",
+  "element": "ProofUploadForm pending",
+  "title": "رفع ملف حتى 5MB بلا نسبة تقدم — سبينر فقط",
+  "detail": "`fetch` بلا تتبع تقدم؛ على اتصال بطيء ينتظر المستخدم ثوانٍ بزر «جارٍ الرفع» فقط ولا يعرف إن علق.",
+  "evidence": "apps/client/src/app/[locale]/(app)/checkout/[orderId]/transfer/transfer-form.tsx:382 `await fetch(…{ method: 'POST', body: fd })` · :427 `loading={pending}`",
+  "recommendation": "`XMLHttpRequest`/`upload.onprogress` مع `Progress tone=\"brand\"` (المكوّن موجود) ومهلة مع إعادة محاولة.",
+  "effort": "M",
+  "skill": "ui-ux-pro-max §7 loading-states · §8 timeout-feedback",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/checkout/[orderId]/transfer/transfer-form.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-076",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "client",
+  "screen": "/shop · / (الهبوط)",
+  "element": "products.map بلا حالة فراغ",
+  "title": "عند غياب منتجات نشطة يُرسم المتجر والهبوط فارغين بلا رسالة",
+  "detail": "`ChallengeList` و`ul` الهبوط يرسمان قائمة فارغة؛ زر الشراء يختفي (`chosen` undefined) ولا تفسير.",
+  "evidence": "apps/client/src/app/[locale]/(app)/shop/challenge-picker.tsx:178–196 و:210 `{chosen ? … : null}` · apps/client/src/app/[locale]/(public)/page.tsx:50–67",
+  "recommendation": "`EmptyState` «لا تحديات متاحة الآن» مع رابط المساعدة.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §8 empty-states",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/shop/challenge-picker.tsx",
+   "apps/client/src/app/[locale]/(public)/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-077",
+  "severity": "P3",
+  "category": "هوية",
+  "app": "client",
+  "screen": "/payouts (سجل الطلبات)",
+  "element": "fpt-card لكل طلب",
+  "title": "سجل الدفعات صندوق لكل عنصر — بينما كل القوائم الأخرى صفوف بفواصل",
+  "detail": "قواعد التأليف § 5: الصندوق يبرّر عند تجميع معلومات مترابطة أو تحديد إجراء، لا كحاوية افتراضية. كل طلب دفعة بطاقة `fpt-card` تحوي Stepper مضغوطاً؛ بقية القوائم (الطلبات، الإشعارات، المراكز) صفوف.",
+  "evidence": "apps/client/src/app/[locale]/(app)/payouts/page.tsx:82 `<Link … className=\"fpt-card fpt-card--compact flex flex-col gap-3 …\">` · docs/design-system.md § 3 «القوائم صفوف بفواصل هيرلاين»",
+  "recommendation": "`ListRow` بعنوان المبلغ وسطر ثانٍ (الحالة + التاريخ) ونهاية الشارة؛ المتتبع داخل صفحة الطلب.",
+  "effort": "S",
+  "skill": "fpt-brand composition § 5 «cards use-serving, not banned»",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/payouts/page.tsx"
+  ],
+  "confidence": "medium"
+ },
+ {
+  "id": "VIS-078",
+  "severity": "P3",
+  "category": "تقني",
+  "app": "client",
+  "screen": "/notifications · /partners (الإحالات) · /payouts (السجل)",
+  "element": "حدود القوائم",
+  "title": "الإشعارات تقطع عند 100 بلا ترقيم؛ الإحالات والسجل بلا حد",
+  "detail": "`userNotifications(limit:100)` يعرض آخر 100 ويخفي الأقدم بصمت؛ قوائم الإحالات/العمولات/الدفعات تُرسم كلها دفعة واحدة.",
+  "evidence": "apps/client/src/app/[locale]/(app)/notifications/page.tsx:423 `{ limit: 100 }` · partners/page.tsx:306–321 · payouts/page.tsx:79–96",
+  "recommendation": "ترقيم `?page=` كما في الصفقات (DEALS_PAGE) أو زر «المزيد».",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §3 virtualize-lists",
+  "files": [
+   "apps/client/src/app/[locale]/(app)/notifications/page.tsx",
+   "apps/client/src/app/[locale]/(app)/partners/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-079",
+  "severity": "P3",
+  "category": "RTL",
+  "app": "admin",
+  "screen": "قائمة الموظف (الإدارة)",
+  "element": "LogOut icon",
+  "title": "أيقونة تسجيل الخروج تنعكس في العميل ولا تنعكس في الإدارة",
+  "detail": "`LogOut` اتجاهية (Lucide RTL guidance)؛ العميل يضيف `fpt-icon--dir`، قائمة الإدارة لا.",
+  "evidence": "apps/client/src/app/[locale]/(app)/more/page.tsx:72 `<LogOut … className=\"fpt-icon fpt-icon--dir\" />` · apps/admin/src/components/shell/AdminShell.tsx:110 `<LogOut aria-hidden=\"true\" className=\"size-4\" />`",
+  "recommendation": "`fpt-icon--dir` في الإدارة؛ وثّق قائمة الأيقونات الاتجاهية (chevrons, arrows, log-out, external-link؟) في icons.ts.",
+  "effort": "S",
+  "skill": "fpt-brand «directional icons mirror in RTL»",
+  "files": [
+   "apps/admin/src/components/shell/AdminShell.tsx",
+   "packages/ui/src/icons.ts"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-080",
+  "severity": "P3",
+  "category": "تقني",
+  "app": "both",
+  "screen": "404 الجذر · global-error",
+  "element": "روابط مثبتة على /ar ونص ثنائي اللغة",
+  "title": "صفحات 404 والخطأ الجذرية تعيد المستخدم إلى /ar دائماً وتعرض العربية والإنجليزية معاً",
+  "detail": "خارج مقطع اللغة لا قاموس، فالصفحتان تثبّتان `lang=\"ar\"` ورابط `/ar/accounts` و`/ar`؛ مستخدم إنجليزي يُنقل إلى العربية. مبرَّر تقنياً لكن يمكن قراءة الكوكي/`Accept-Language`.",
+  "evidence": "apps/client/src/app/not-found.tsx:21,34 `<html lang=\"ar\" dir=\"rtl\">` / `href=\"/ar/accounts\"` · apps/admin/src/app/not-found.tsx:222,226 `href=\"/ar\"` · apps/client/src/app/global-error.tsx:425",
+  "recommendation": "اقرأ كوكي اللغة (NEXT_LOCALE) في not-found (headers متاح) واختر النص والرابط.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §9 deep-linking · web-interface-guidelines §Locale",
+  "files": [
+   "apps/client/src/app/not-found.tsx",
+   "apps/admin/src/app/not-found.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-081",
+  "severity": "P3",
+  "category": "بصري",
+  "app": "admin",
+  "screen": "/settings · /products · /payments · ManualRoutes (ملاحظات تحت الجداول)",
+  "element": "<p className=\"text-label\"> لجمل كاملة",
+  "title": "جمل إرشادية كاملة بحجم 13px عبر صنف التسمية (تحايل على أرضية 15)",
+  "detail": "ملاحظات مثل «تُعرَّف المعرّفات في config/legal.ts…» تُرسم `<p className=\"text-label text-muted\">`؛ البوّابة تستثني `.text-label` فتمرّ جمل 13px.",
+  "evidence": "apps/admin/src/app/[locale]/(app)/settings/page.tsx:88,111,123,167,281 · products/page.tsx:315 · settings/ManualRoutes.tsx:469 · e2e/ux-audit.ts:75 (`.text-label` مستثنى)",
+  "recommendation": "`text-body-2` للجمل؛ أبقِ `text-label` للتسميات فوق القيم فقط.",
+  "effort": "S",
+  "skill": "design-system § 2",
+  "files": [
+   "apps/admin/src/app/[locale]/(app)/settings/page.tsx",
+   "apps/admin/src/app/[locale]/(app)/products/page.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-082",
+  "severity": "P3",
+  "category": "وصول",
+  "app": "client",
+  "screen": "/accounts/[id] (أيام التداول) · /partners (الدرجة)",
+  "element": "text-gain على رقم بلا كلمة",
+  "title": "عدد الأيام يتحوّل أخضر عند بلوغ الحد بلا كلمة أو أيقونة",
+  "detail": "«5 / 5» يُلوَّن gain فقط عندما يتحقق شرط الأيام؛ المعنى باللون وحده.",
+  "evidence": "apps/client/src/components/account-overview.tsx:313 `className={g.tradingDays.count >= g.tradingDays.required ? 'text-gain' : undefined}`",
+  "recommendation": "أضف `CircleCheck` + كلمة «مكتمل» بجانب الرقم.",
+  "effort": "S",
+  "skill": "ui-ux-pro-max §1 color-not-only",
+  "files": [
+   "apps/client/src/components/account-overview.tsx"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-083",
+  "severity": "P3",
+  "category": "RTL",
+  "app": "ui",
+  "screen": "JsonViewer · EventFeed details",
+  "element": ".ui-feed__details pre { text-align:left; direction:ltr }",
+  "title": "القيم الفيزيائية الوحيدة في CSS التطبيق (text-align:left) — مقصودة لكتل الشيفرة",
+  "detail": "جرد الخصائص الفيزيائية: لا `pl-/pr-/ml-/mr-/left-/right-/text-left/right` في apps/* ولا packages/ui (0 نتيجة). المتبقي مقصود: `text-align:left` لكتلة JSON، وفي حزمة الهوية `right:14px`/`padding-right:56px` للاصقة العملة و`border-left/bottom` لعلامة الصح — موثّقة «physical by design».",
+  "evidence": "packages/ui/src/components.css:459 `direction: ltr; text-align: left;` · brand/components/components.css:96–97,108",
+  "recommendation": "لا تغيير؛ أبقِ التعليق الموثّق. (معلوماتي لمصفوفة RTL.)",
+  "effort": "S",
+  "skill": "fpt-brand «RTL: logical properties only»",
+  "files": [
+   "packages/ui/src/components.css"
+  ],
+  "confidence": "high"
+ },
+ {
+  "id": "VIS-SUMMARY",
+  "generatedAt": "2026-10-30",
+  "scope": "apps/client/src · apps/admin/src · packages/ui/src · brand/components/components.css (تحليل مصدر فقط؛ لقطات الأجهزة الحقيقية 29 أكتوبر 13:29 تسبق التزام F2 فلم تُستعمل إلا لتأكيد VIS-001 وVIS-002)",
+  "counts": {
+   "total": 83,
+   "bySeverity": {
+    "P0": 1,
+    "P1": 8,
+    "P2": 26,
+    "P3": 48
+   },
+   "byCategory": {
+    "RTL": 6,
+    "تقني": 16,
+    "بصري": 40,
+    "وصول": 11,
+    "هوية": 10
+   }
+  },
+  "iconLibrary": {
+   "library": "Lucide عبر @fpt/ui/icons (مجموعة منتقاة، 70 ملف استيراد)",
+   "packageVersion": "lucide-react ^1.63.0 (الهوية تثبّت Lucide v0.468.0 — انحراف إصدار)",
+   "stray": [
+    "apps/client/src/components/print-button.tsx:2 — استيراد مباشر من lucide-react (Printer)",
+    "packages/ui/src/components/spinner.tsx — SVG يدوي بسمك 2.5 (العائلة 1.75/2)",
+    "apps/client/src/components/charts.tsx:216–218 و equity-chart.tsx:169 — مربعات/خطوط legend مرسومة يدوياً (مقبولة، ليست أيقونات)",
+    "نصوص كأيقونات: «→» trades-panel.tsx:86 / account-overview.tsx:337 / breach/page.tsx:140 · «*» ProductsClient.tsx:595 · «×» orders/[id]/page.tsx:307"
+   ],
+   "mirroring": "ChevronRight/ArrowLeft/LogOut تنعكس بـ .fpt-icon--dir (list-row، back-link، more) — ListRow وClientHeader يضيفان rtl:-scale-x-100 أيضاً (VIS-016)؛ LogOut في الإدارة لا ينعكس (VIS-079)؛ الشعار/الرسوم/الأرقام لا تنعكس (ui-tile direction:ltr، svg direction=ltr) ✓"
+  },
+  "physicalDirectionUtilities": {
+   "apps_and_ui": "0 نتيجة لـ pl-/pr-/ml-/mr-/left-/right-/text-left/text-right/rounded-l/r/border-l/r في apps/client، apps/admin، packages/ui (grep)",
+   "byDesign": [
+    "packages/ui/src/components.css:459 `.ui-feed__details pre { direction:ltr; text-align:left }` (كتلة شيفرة)",
+    "brand/components/components.css:96 `.fpt-input-wrap .fpt-affix{right:14px}` و :97 `padding-right:56px` (حقل رقمي LTR)",
+    "brand/components/components.css:108 `.fpt-check input[type=checkbox]:checked::after{border-left…border-bottom…}` (علامة الصح لا تنعكس)"
+   ],
+   "rtlVariantsFound": [
+    "list-row.tsx:43 rtl:-scale-x-100",
+    "client-header.tsx:95 rtl:-scale-x-100",
+    "switch.tsx:27 rtl:-translate-x-[3px]/[21px]",
+    "dialog.tsx:29 و sheet.tsx:33 rtl:sm:translate-x-1/2",
+    "components.css:157 [dir=rtl] .ui-slide-end",
+    "components.css:376 :where([dir=rtl]) .ui-hero__value { justify-content:flex-end }"
+   ]
+  },
+  "routeStateMatrix": {
+   "legend": "loading = loading.tsx أو Skeleton للمسار · error = error.tsx (كلاهما على مستوى [locale] فقط) · empty = حالة فراغ للقوائم · longText = التفاف/قص للنصوص الطويلة · pagination = حد/ترقيم · urlState = الفلاتر/التبويبات في العنوان",
+   "client": [
+    {
+     "route": "/accounts (الرئيسية)",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/accounts/[id]",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "yes (?page للصفقات)",
+     "urlState": "no (تقرأ ?tab ولا تكتبه)"
+    },
+    {
+     "route": "/accounts/[id]/trades",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "yes",
+     "urlState": "yes"
+    },
+    {
+     "route": "/accounts/[id]/breach",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/shop",
+     "loading": "no",
+     "error": "yes",
+     "empty": "no (قائمة منتجات فارغة بلا رسالة)",
+     "longText": "n-a",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/shop/[productCode]",
+     "loading": "no",
+     "error": "yes (notFound)",
+     "empty": "n-a",
+     "longText": "n-a",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/checkout/[orderId]",
+     "loading": "no",
+     "error": "yes",
+     "empty": "n-a",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/checkout/[orderId]/return",
+     "loading": "no",
+     "error": "yes",
+     "empty": "n-a",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "yes (أعلام العودة)"
+    },
+    {
+     "route": "/checkout/[orderId]/transfer",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes (لا إثبات)",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/payouts",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes (سجل) / فقرة (لا ممول)",
+     "longText": "yes",
+     "pagination": "no",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/payouts/new",
+     "loading": "no",
+     "error": "yes",
+     "empty": "n-a",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "yes (?account)"
+    },
+    {
+     "route": "/payouts/[id]",
+     "loading": "no",
+     "error": "yes (notFound)",
+     "empty": "n-a",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "yes (?requested)"
+    },
+    {
+     "route": "/payouts/[id]/statement",
+     "loading": "no",
+     "error": "yes",
+     "empty": "n-a",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/orders",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/orders/[id]",
+     "loading": "no",
+     "error": "yes",
+     "empty": "n-a",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/orders/[id]/receipt",
+     "loading": "no",
+     "error": "yes",
+     "empty": "n-a",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/more",
+     "loading": "no",
+     "error": "yes",
+     "empty": "n-a",
+     "longText": "no (البريد nowrap)",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/notifications",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (limit 100)",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/profile",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes (فقرة)",
+     "longText": "no (البريد nowrap)",
+     "pagination": "n-a",
+     "urlState": "yes (?saved)"
+    },
+    {
+     "route": "/certificates",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/partners",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes (الرابط) / no (البريد في الصف)",
+     "pagination": "no",
+     "urlState": "n-a"
+    },
+    {
+     "route": "(auth) /signin /signup /signup/password /verify /2fa /reset /reset/new",
+     "loading": "no",
+     "error": "yes",
+     "empty": "n-a",
+     "longText": "n-a",
+     "pagination": "n-a",
+     "urlState": "yes (?next ?mode)"
+    },
+    {
+     "route": "(public) /",
+     "loading": "no",
+     "error": "yes",
+     "empty": "no",
+     "longText": "n-a",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "(public) /help",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes (لا نتائج)",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "no (البحث/التصنيف في الحالة)"
+    },
+    {
+     "route": "(public) /legal/[key]",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes (نسخة غير موجودة)",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "(public) /c/[code] · /verify/[code]",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    }
+   ],
+   "admin": [
+    {
+     "route": "/ (نظرة عامة)",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "n-a (feed 20)",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/accounts",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (limit 200 + «المزيد» محلياً)",
+     "urlState": "yes"
+    },
+    {
+     "route": "/accounts/[id]",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (أحداث 100)",
+     "urlState": "no (تبويبات)"
+    },
+    {
+     "route": "/payouts",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (200)",
+     "urlState": "yes"
+    },
+    {
+     "route": "/payouts/[id]",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/risk",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (slice 100)",
+     "urlState": "yes"
+    },
+    {
+     "route": "/breaches",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (200)",
+     "urlState": "yes"
+    },
+    {
+     "route": "/breaches/[id]",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/orders",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (300)",
+     "urlState": "yes"
+    },
+    {
+     "route": "/orders/[id]",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes (فقرات)",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/orders/grant",
+     "loading": "no",
+     "error": "yes",
+     "empty": "n-a",
+     "longText": "n-a",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/payments",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (400)",
+     "urlState": "yes"
+    },
+    {
+     "route": "/payments/[id]",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes (ui-wrap للهاش)",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/kyc",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (300)",
+     "urlState": "yes"
+    },
+    {
+     "route": "/deletions",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (300)",
+     "urlState": "yes"
+    },
+    {
+     "route": "/coupons",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (500)",
+     "urlState": "yes"
+    },
+    {
+     "route": "/affiliates",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (300)",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/affiliates/[id]",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes (فقرات)",
+     "longText": "yes",
+     "pagination": "no (200)",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/fraud",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (200)",
+     "urlState": "yes"
+    },
+    {
+     "route": "/fraud/[id] · /fraud/links/[userId]",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes (فقرات)",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/audit",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (200)",
+     "urlState": "yes"
+    },
+    {
+     "route": "/mail",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "no (200)",
+     "urlState": "yes"
+    },
+    {
+     "route": "/mail/[id]",
+     "loading": "no",
+     "error": "yes",
+     "empty": "n-a",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "no (تبويبات)"
+    },
+    {
+     "route": "/finance",
+     "loading": "no",
+     "error": "yes",
+     "empty": "n-a",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/products",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes (فقرة)",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "no (تبويبات)"
+    },
+    {
+     "route": "/settings",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes (فقرات)",
+     "longText": "yes",
+     "pagination": "no (أخبار 200)",
+     "urlState": "no (8 تبويبات)"
+    },
+    {
+     "route": "/staff",
+     "loading": "no",
+     "error": "yes",
+     "empty": "no (DataTableRows بلا empty)",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/staff/[id] · /staff/me",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes (فقرات)",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "/health · /simulator · /integrations",
+     "loading": "no",
+     "error": "yes",
+     "empty": "yes",
+     "longText": "yes",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "(auth) /signin /2fa /enrol",
+     "loading": "no",
+     "error": "yes",
+     "empty": "n-a",
+     "longText": "n-a",
+     "pagination": "n-a",
+     "urlState": "n-a"
+    },
+    {
+     "route": "not-found داخل [locale]",
+     "loading": "n-a",
+     "error": "n-a",
+     "empty": "n-a",
+     "longText": "n-a",
+     "pagination": "n-a",
+     "urlState": "n-a (الإدارة بلا [locale]/not-found.tsx — تسقط إلى 404 الجذر العربي)"
+    }
+   ]
+  },
+  "brandChecks": {
+   "rawHex": "لا هكس في JSX/CSS التطبيقين سوى themeColor '#0A0A0A' الموثّق (layouts, manifest) وألوان QR في profile/forms.tsx:220 (VIS-062)",
+   "fonts": "كل الخطوط عبر --fpt-font-*; font-body/font-sans فقط في JSX (3+3)؛ لا font-mono/font-display خام",
+   "letterSpacing": "لا tracking-* في JSX (tracking-normal في الشعار فقط)؛ letter-spacing:0 !important على [dir=rtl]/:lang(ar) (components.css:84)",
+   "brandRed": "الأدوار الثلاثة محترمة في @fpt/ui (البلاطة، fpt-btn--primary، النشط: تبويب/شريط/صندوق الاختيار/حلقة التركيز)؛ الانحرافات: hover أحمر في جداول الحزمة (VIS-024)، أساسي لكل صف (VIS-007)، نقطة الجرس bg-brand (client-header.tsx:111 — نقطة الشريط السفلي من الحزمة نفسها)",
+   "finance": "الخسائر coral (--fpt-finance-loss) لا أحمر ✓؛ الخلل: لون+إشارة بلا كلمة ولا رمز عملة في صفوف الصفقات (VIS-009)، لون فقط في جداول الإدارة (VIS-022)",
+   "emoji_iso": "لا إيموجي ولا ISO في العرض (toISOString للقيم الآلية فقط) ✓",
+   "productName": "«Fiper Pro Traders» لاتيني داخل العربية ✓؛ «فايبر» للأم مسموح",
+   "amounts": "Money/.fpt-unit/isolate:true مستعملة بانتظام ✓؛ codePosition='none' بلا رمز قريب في قوائم العميل (VIS-009)"
+  },
+  "craft": "الحزمة @fpt/ui تمرّ اختبار الرموز بوضوح: كل لون وخط ونصف قطر يعود إلى --fpt-* ولا هكس خام في الشاشات، والارتفاع حدودي بلا ظلال إلا على الطبقات العائمة — استراتيجية عمق واحدة متسقة. اختبار الـ squint على الرئيسية ينجح: رقم مهيمن واحد، زر أحمر واحد، ثلاث عدّادات، رسم؛ لكن على شاشة الحساب العربية ينهار كل ذلك لأن Radix Tabs تقلب الشجرة إلى LTR (VIS-001) — خلل بنيوي واحد يستحق أن يُصلَح قبل أي تلميع. اختبار التوقيع يجد عناصر حقيقية للهوية (البلاطة 22 %، العدّاد «المتبقي» بشريط 8px، الدلالات المالية كلمة+إشارة+لون، الوثائق على أرضية الورق) إلا أن الدلالات المالية تُنتهك حيث يهم أكثر: صفوف الأرباح والخسائر تلوّن وتوقّع بلا كلمة ولا عملة. أرضيات الحجم (12/15/mono 15) محروسة بالبوّابة لكنها تُلتفّ عليها بثلاث طرق: text-xs/text-label على فقرات كاملة، نصوص داخل div/SVG لا يفحصها البوّاب، ومحتوى مشروط أو داخل تبويبات وحوارات لا تُفتح — فالتنبيهات ووصف الحوارات وتذييل التسجيل كلها 12–14px. غياب حالة التحميل كلياً يجعل التطبيق يبدو معلّقاً عند كل تبويب، وغياب الضغط على الصفوف يزيد ذلك. الاتساق بين العميل والإدارة جيد في الشارات والجداول والصفوف (StatusBadge/DataTableRows/ListRow مشتركة فعلاً)، ويتآكل عند الحواف: 13 بطلاً مكتوباً يدوياً، خمس راديوهات مرسومة، سبع خرائط نغمة محلية، ونسخة ثانية من الشرائح والرسم البياني. الإيقاع الفراغي يتبع 4pt في الصفحات لكن الحزمة نفسها تُدخل 6/10/14 فتنتشر إلى components.css. الخلاصة: الأساس صحيح والهوية متجذرة، والعمل المتبقي هو إغلاق الفجوات البنيوية (الاتجاه، التحميل، الأرضيات في المكوّنات المشتركة) ثم استخراج المكوّنات المكررة."
+ }
+]

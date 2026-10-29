@@ -1,0 +1,311 @@
+{
+  "generatedAt": "2026-10-29T21:32:02.916Z",
+  "formFactor": "mobile (Lighthouse default emulation, simulated 4G)",
+  "targets": [
+    {
+      "name": "client-landing",
+      "url": "https://fptraders.app/ar",
+      "finalUrl": "https://fptraders.app/ar/accounts",
+      "measuredTarget": true,
+      "scores": {
+        "performance": 73,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 4364,
+      "cls": 0.024,
+      "tbtMs": 285,
+      "fcpMs": 3014,
+      "siMs": 3014,
+      "ttiMs": 4935,
+      "inpMs": null,
+      "totalBytes": 826,
+      "scriptBytes": 213,
+      "fontBytes": 457,
+      "imageBytes": 45,
+      "requests": 40,
+      "fontDisplay": 1,
+      "unusedJsKb": 0,
+      "lcpElement": "<bdi class=\"fpt-unit\">",
+      "failing": [
+        "label-content-name-mismatch",
+        "bf-cache"
+      ]
+    },
+    {
+      "name": "client-signin",
+      "url": "https://fptraders.app/ar/signin",
+      "finalUrl": "https://fptraders.app/ar/accounts",
+      "measuredTarget": true,
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 2118,
+      "cls": 0.024,
+      "tbtMs": 179,
+      "fcpMs": 1218,
+      "siMs": 1572,
+      "ttiMs": 4706,
+      "inpMs": null,
+      "totalBytes": 826,
+      "scriptBytes": 213,
+      "fontBytes": 457,
+      "imageBytes": 45,
+      "requests": 40,
+      "fontDisplay": 1,
+      "unusedJsKb": 0,
+      "lcpElement": "<bdi class=\"fpt-unit\">",
+      "failing": [
+        "label-content-name-mismatch",
+        "bf-cache"
+      ]
+    },
+    {
+      "name": "client-home",
+      "url": "https://fptraders.app/ar/accounts",
+      "finalUrl": "https://fptraders.app/ar/accounts",
+      "measuredTarget": true,
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 2264,
+      "cls": 0.024,
+      "tbtMs": 119,
+      "fcpMs": 1364,
+      "siMs": 1799,
+      "ttiMs": 4692,
+      "inpMs": null,
+      "totalBytes": 825,
+      "scriptBytes": 213,
+      "fontBytes": 457,
+      "imageBytes": 45,
+      "requests": 39,
+      "fontDisplay": 1,
+      "unusedJsKb": 0,
+      "lcpElement": "<bdi class=\"fpt-unit\">",
+      "failing": [
+        "label-content-name-mismatch",
+        "bf-cache"
+      ]
+    },
+    {
+      "name": "client-account",
+      "url": "https://fptraders.app/ar/accounts/af237841-3b7a-4fd8-8dae-6faaa136a710",
+      "finalUrl": "https://fptraders.app/ar/accounts/af237841-3b7a-4fd8-8dae-6faaa136a710",
+      "measuredTarget": true,
+      "scores": {
+        "performance": 76,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 2414,
+      "cls": 0.001,
+      "tbtMs": 921,
+      "fcpMs": 1364,
+      "siMs": 1817,
+      "ttiMs": 5662,
+      "inpMs": null,
+      "totalBytes": 936,
+      "scriptBytes": 215,
+      "fontBytes": 567,
+      "imageBytes": 45,
+      "requests": 38,
+      "fontDisplay": 1,
+      "unusedJsKb": 0,
+      "lcpElement": "<bdi class=\"fpt-unit\">",
+      "failing": [
+        "label-content-name-mismatch",
+        "bf-cache"
+      ]
+    },
+    {
+      "name": "client-shop",
+      "url": "https://fptraders.app/ar/shop",
+      "finalUrl": "https://fptraders.app/ar/shop",
+      "measuredTarget": true,
+      "scores": {
+        "performance": 85,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 2864,
+      "cls": 0.001,
+      "tbtMs": 362,
+      "fcpMs": 2114,
+      "siMs": 2114,
+      "ttiMs": 5060,
+      "inpMs": null,
+      "totalBytes": 820,
+      "scriptBytes": 210,
+      "fontBytes": 460,
+      "imageBytes": 45,
+      "requests": 35,
+      "fontDisplay": 1,
+      "unusedJsKb": 0,
+      "lcpElement": "<span class=\"fpt-challenge__size\">",
+      "failing": [
+        "bf-cache"
+      ]
+    },
+    {
+      "name": "client-payouts",
+      "url": "https://fptraders.app/ar/payouts",
+      "finalUrl": "https://fptraders.app/ar/payouts",
+      "measuredTarget": true,
+      "scores": {
+        "performance": 72,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 2566,
+      "cls": 0.003,
+      "tbtMs": 1251,
+      "fcpMs": 1366,
+      "siMs": 2013,
+      "ttiMs": 4165,
+      "inpMs": null,
+      "totalBytes": 711,
+      "scriptBytes": 209,
+      "fontBytes": 351,
+      "imageBytes": 45,
+      "requests": 34,
+      "fontDisplay": 1,
+      "unusedJsKb": 0,
+      "lcpElement": "<span class=\"text-sm text-muted\">",
+      "failing": [
+        "bf-cache"
+      ]
+    },
+    {
+      "name": "client-more",
+      "url": "https://fptraders.app/ar/more",
+      "finalUrl": "https://fptraders.app/ar/more",
+      "measuredTarget": true,
+      "scores": {
+        "performance": 80,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 2117,
+      "cls": 0.002,
+      "tbtMs": 811,
+      "fcpMs": 1367,
+      "siMs": 1657,
+      "ttiMs": 4072,
+      "inpMs": null,
+      "totalBytes": 679,
+      "scriptBytes": 207,
+      "fontBytes": 312,
+      "imageBytes": 47,
+      "requests": 40,
+      "fontDisplay": 1,
+      "unusedJsKb": 0,
+      "lcpElement": "<bdi class=\"fpt-unit ui-fit\">",
+      "failing": [
+        "bf-cache"
+      ]
+    },
+    {
+      "name": "client-home-en",
+      "url": "https://fptraders.app/en/accounts",
+      "finalUrl": "https://fptraders.app/ar/accounts",
+      "measuredTarget": true,
+      "scores": {
+        "performance": 77,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 2393,
+      "cls": 0.024,
+      "tbtMs": 880,
+      "fcpMs": 1343,
+      "siMs": 2114,
+      "ttiMs": 4863,
+      "inpMs": null,
+      "totalBytes": 850,
+      "scriptBytes": 213,
+      "fontBytes": 457,
+      "imageBytes": 45,
+      "requests": 82,
+      "fontDisplay": 1,
+      "unusedJsKb": 0,
+      "lcpElement": "<bdi class=\"fpt-unit\">",
+      "failing": [
+        "label-content-name-mismatch",
+        "bf-cache"
+      ]
+    },
+    {
+      "name": "admin-overview",
+      "url": "https://admin.fptraders.app/ar",
+      "finalUrl": "https://admin.fptraders.app/ar/signin",
+      "measuredTarget": false,
+      "scores": {
+        "performance": 80,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 2189,
+      "cls": 0.001,
+      "tbtMs": 774,
+      "fcpMs": 1214,
+      "siMs": 2254,
+      "ttiMs": 3158,
+      "inpMs": null,
+      "totalBytes": 537,
+      "scriptBytes": 205,
+      "fontBytes": 205,
+      "imageBytes": 45,
+      "requests": 25,
+      "fontDisplay": 1,
+      "unusedJsKb": 0,
+      "lcpElement": "<p class=\"mt-0.5 text-body-2 text-muted\">",
+      "failing": [
+        "bf-cache"
+      ]
+    },
+    {
+      "name": "admin-accounts",
+      "url": "https://admin.fptraders.app/ar/accounts",
+      "finalUrl": "https://admin.fptraders.app/ar/signin",
+      "measuredTarget": false,
+      "scores": {
+        "performance": 99,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 1811,
+      "cls": 0.001,
+      "tbtMs": 86,
+      "fcpMs": 1211,
+      "siMs": 1672,
+      "ttiMs": 3428,
+      "inpMs": null,
+      "totalBytes": 536,
+      "scriptBytes": 205,
+      "fontBytes": 205,
+      "imageBytes": 45,
+      "requests": 25,
+      "fontDisplay": 1,
+      "unusedJsKb": 0,
+      "lcpElement": "<p class=\"mt-0.5 text-body-2 text-muted\">",
+      "failing": [
+        "bf-cache"
+      ]
+    }
+  ]
+}
