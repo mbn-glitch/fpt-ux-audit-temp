@@ -1,0 +1,2680 @@
+{
+  "date": "20261030-f4a1",
+  "generatedAt": "2026-10-30T06:02:32.247Z",
+  "base": {
+    "client": "https://fptraders.app",
+    "admin": "https://admin.fptraders.app"
+  },
+  "devices": [
+    {
+      "device": "iphone-15-pro-max",
+      "label": "iPhone 15 Pro Max",
+      "os": "iOS 17",
+      "browser": "Safari",
+      "apps": [
+        "client"
+      ],
+      "covered": 43,
+      "total": 43,
+      "failed": 0,
+      "minutes": 20.2,
+      "notApplicable": {
+        "client/account-trade@ar": "skipped by the walk (no such tab or record on this build)",
+        "client/credentials@ar": "skipped by the walk (no such tab or record on this build)"
+      },
+      "sessions": [
+        {
+          "segment": "client-public",
+          "locale": "ar",
+          "attempt": 1,
+          "minutes": 2.7,
+          "screens": 6,
+          "error": null,
+          "browser_url": "https://automate.browserstack.com/builds/ea572c38e7de6b5dbff57ff8eb8a1dadc1f6dd1b/sessions/35dfeb0437d8646e198099b380fcd47eb664adbf",
+          "device": "iPhone 15 Pro Max",
+          "os_version": "17.3",
+          "browser_version": null
+        },
+        {
+          "segment": "client-account",
+          "locale": "ar",
+          "attempt": 1,
+          "minutes": 2.6,
+          "screens": 11,
+          "error": null,
+          "browser_url": "https://automate.browserstack.com/builds/ea572c38e7de6b5dbff57ff8eb8a1dadc1f6dd1b/sessions/477cd7af4f44d68a41534a96ddcfed929a953e32",
+          "device": "iPhone 15 Pro Max",
+          "os_version": "17.1",
+          "browser_version": null
+        },
+        {
+          "segment": "client-money",
+          "locale": "ar",
+          "attempt": 1,
+          "minutes": 5.1,
+          "screens": 11,
+          "error": null,
+          "browser_url": "https://automate.browserstack.com/builds/ea572c38e7de6b5dbff57ff8eb8a1dadc1f6dd1b/sessions/d2ea05b0c9f219325888cab5408093270bab913b",
+          "device": "iPhone 15 Pro Max",
+          "os_version": "17.1",
+          "browser_version": null
+        },
+        {
+          "segment": "client-records",
+          "locale": "ar",
+          "attempt": 1,
+          "minutes": 7.9,
+          "screens": 10,
+          "error": null,
+          "browser_url": "https://automate.browserstack.com/builds/ea572c38e7de6b5dbff57ff8eb8a1dadc1f6dd1b/sessions/183b87964ea9abd48dd6e456c0e32bfa73ceb0da",
+          "device": "iPhone 15 Pro Max",
+          "os_version": "17.1",
+          "browser_version": null
+        },
+        {
+          "segment": "main-en",
+          "locale": "en",
+          "attempt": 1,
+          "minutes": 1.9,
+          "screens": 5,
+          "error": null,
+          "browser_url": "https://automate.browserstack.com/builds/ea572c38e7de6b5dbff57ff8eb8a1dadc1f6dd1b/sessions/5148b311a501b7372db0d51e9730b9bfb6a870e8",
+          "device": "iPhone 15 Pro Max",
+          "os_version": "17.1",
+          "browser_version": null
+        }
+      ],
+      "expected": [
+        "client/landing@ar",
+        "client/signin@ar",
+        "client/signup@ar",
+        "client/reset@ar",
+        "client/help@ar",
+        "client/not-found@ar",
+        "client/home@ar",
+        "client/account@ar",
+        "client/account-trades@ar",
+        "client/account-rules@ar",
+        "client/account-credentials@ar",
+        "client/account-trade@ar",
+        "client/trades@ar",
+        "client/account-funded@ar",
+        "client/credentials@ar",
+        "client/shop@ar",
+        "client/shop-product@ar",
+        "client/checkout@ar",
+        "client/checkout-transfer@ar",
+        "client/payouts@ar",
+        "client/payout-new@ar",
+        "client/payout-channel@ar",
+        "client/payout-details@ar",
+        "client/payout-review@ar",
+        "client/payout-detail@ar",
+        "client/payout-statement@ar",
+        "client/certificates@ar",
+        "client/notifications@ar",
+        "client/profile@ar",
+        "client/more@ar",
+        "client/orders@ar",
+        "client/order@ar",
+        "client/order-receipt@ar",
+        "client/legal-delete-account@ar",
+        "client/legal@ar",
+        "client/verify@ar",
+        "client/partners@ar",
+        "client/account-breached@ar",
+        "client/breach@ar",
+        "client/home-mixed@ar",
+        "client/home@en",
+        "client/account@en",
+        "client/shop@en",
+        "client/checkout@en",
+        "client/payouts@en"
+      ],
+      "screens": {
+        "client/landing@ar": {
+          "app": "client",
+          "screen": "landing",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-landing.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 113,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/signin@ar": {
+          "app": "client",
+          "screen": "signin",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-signin.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 399,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/signup@ar": {
+          "app": "client",
+          "screen": "signup",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-signup.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 450,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/reset@ar": {
+          "app": "client",
+          "screen": "reset",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-reset.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 271,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/help@ar": {
+          "app": "client",
+          "screen": "help",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-help.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 386,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/not-found@ar": {
+          "app": "client",
+          "screen": "not-found",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-not-found.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 213,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/home@ar": {
+          "app": "client",
+          "screen": "home",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-home.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 459,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account@ar": {
+          "app": "client",
+          "screen": "account",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-account.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 576,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account-trades@ar": {
+          "app": "client",
+          "screen": "account-trades",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-account-trades.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 576,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account-rules@ar": {
+          "app": "client",
+          "screen": "account-rules",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-account-rules.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 576,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account-credentials@ar": {
+          "app": "client",
+          "screen": "account-credentials",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-account-credentials.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 576,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/trades@ar": {
+          "app": "client",
+          "screen": "trades",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-trades.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 327,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account-funded@ar": {
+          "app": "client",
+          "screen": "account-funded",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-account-funded.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 621,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/shop@ar": {
+          "app": "client",
+          "screen": "shop",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-shop.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 297,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/shop-product@ar": {
+          "app": "client",
+          "screen": "shop-product",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-shop-product.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 452,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/checkout@ar": {
+          "app": "client",
+          "screen": "checkout",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-checkout.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 396,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/checkout-transfer@ar": {
+          "app": "client",
+          "screen": "checkout-transfer",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-checkout-transfer.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 396,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payouts@ar": {
+          "app": "client",
+          "screen": "payouts",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-payouts.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 337,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payout-new@ar": {
+          "app": "client",
+          "screen": "payout-new",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-payout-new.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 452,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payout-channel@ar": {
+          "app": "client",
+          "screen": "payout-channel",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-payout-channel.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 452,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payout-details@ar": {
+          "app": "client",
+          "screen": "payout-details",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-payout-details.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 452,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payout-review@ar": {
+          "app": "client",
+          "screen": "payout-review",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-payout-review.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 452,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payout-detail@ar": {
+          "app": "client",
+          "screen": "payout-detail",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-payout-detail.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 369,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payout-statement@ar": {
+          "app": "client",
+          "screen": "payout-statement",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-payout-statement.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 310,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/certificates@ar": {
+          "app": "client",
+          "screen": "certificates",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-certificates.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 565,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/notifications@ar": {
+          "app": "client",
+          "screen": "notifications",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-notifications.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 398,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/profile@ar": {
+          "app": "client",
+          "screen": "profile",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-profile.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 691,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/more@ar": {
+          "app": "client",
+          "screen": "more",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-more.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 516,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/orders@ar": {
+          "app": "client",
+          "screen": "orders",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-orders.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 523,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/order@ar": {
+          "app": "client",
+          "screen": "order",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-order.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 461,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/order-receipt@ar": {
+          "app": "client",
+          "screen": "order-receipt",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-order-receipt.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 470,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/legal-delete-account@ar": {
+          "app": "client",
+          "screen": "legal-delete-account",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-legal-delete-account.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 569,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/legal@ar": {
+          "app": "client",
+          "screen": "legal",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-legal.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 463,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/verify@ar": {
+          "app": "client",
+          "screen": "verify",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-verify.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 430,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/partners@ar": {
+          "app": "client",
+          "screen": "partners",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-partners.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 658,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account-breached@ar": {
+          "app": "client",
+          "screen": "account-breached",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-account-breached.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 307,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/breach@ar": {
+          "app": "client",
+          "screen": "breach",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-breach.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 316,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/home-mixed@ar": {
+          "app": "client",
+          "screen": "home-mixed",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-home-mixed.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 311,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/home@en": {
+          "app": "client",
+          "screen": "home",
+          "locale": "en",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-home-en.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 384,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account@en": {
+          "app": "client",
+          "screen": "account",
+          "locale": "en",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-account-en.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 284,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/shop@en": {
+          "app": "client",
+          "screen": "shop",
+          "locale": "en",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-shop-en.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 257,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/checkout@en": {
+          "app": "client",
+          "screen": "checkout",
+          "locale": "en",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-checkout-en.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 336,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payouts@en": {
+          "app": "client",
+          "screen": "payouts",
+          "locale": "en",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "iphone-15-pro-max/client-payouts-en.png",
+          "inner": [
+            430,
+            739
+          ],
+          "dclMs": 341,
+          "orientation": "portrait",
+          "consoleSupported": true
+        }
+      }
+    },
+    {
+      "device": "samsung-galaxy-s23",
+      "label": "Samsung Galaxy S23",
+      "os": "Android 13",
+      "browser": "Chrome",
+      "apps": [
+        "client"
+      ],
+      "covered": 43,
+      "total": 43,
+      "failed": 0,
+      "minutes": 5.9,
+      "notApplicable": {
+        "client/account-trade@ar": "skipped by the walk (no such tab or record on this build)",
+        "client/credentials@ar": "skipped by the walk (no such tab or record on this build)"
+      },
+      "sessions": [
+        {
+          "segment": "client-public",
+          "locale": "ar",
+          "attempt": 1,
+          "minutes": 0.6,
+          "screens": 6,
+          "error": null,
+          "browser_url": "https://automate.browserstack.com/builds/ea572c38e7de6b5dbff57ff8eb8a1dadc1f6dd1b/sessions/5148b311a501b7372db0d51e9730b9bfb6a870e8",
+          "device": "iPhone 15 Pro Max",
+          "os_version": "17.1",
+          "browser_version": null
+        },
+        {
+          "segment": "client-account",
+          "locale": "ar",
+          "attempt": 1,
+          "minutes": 1.3,
+          "screens": 11,
+          "error": null,
+          "browser_url": "https://automate.browserstack.com/builds/ea572c38e7de6b5dbff57ff8eb8a1dadc1f6dd1b/sessions/5148b311a501b7372db0d51e9730b9bfb6a870e8",
+          "device": "iPhone 15 Pro Max",
+          "os_version": "17.1",
+          "browser_version": null
+        },
+        {
+          "segment": "client-money",
+          "locale": "ar",
+          "attempt": 1,
+          "minutes": 1.1,
+          "screens": 11,
+          "error": null,
+          "browser_url": "https://automate.browserstack.com/builds/ea572c38e7de6b5dbff57ff8eb8a1dadc1f6dd1b/sessions/5148b311a501b7372db0d51e9730b9bfb6a870e8",
+          "device": "iPhone 15 Pro Max",
+          "os_version": "17.1",
+          "browser_version": null
+        },
+        {
+          "segment": "client-records",
+          "locale": "ar",
+          "attempt": 1,
+          "minutes": 1.6,
+          "screens": 10,
+          "error": null,
+          "browser_url": "https://automate.browserstack.com/builds/ea572c38e7de6b5dbff57ff8eb8a1dadc1f6dd1b/sessions/5148b311a501b7372db0d51e9730b9bfb6a870e8",
+          "device": "iPhone 15 Pro Max",
+          "os_version": "17.1",
+          "browser_version": null
+        },
+        {
+          "segment": "main-en",
+          "locale": "en",
+          "attempt": 1,
+          "minutes": 1.3,
+          "screens": 5,
+          "error": null,
+          "browser_url": "https://automate.browserstack.com/builds/ea572c38e7de6b5dbff57ff8eb8a1dadc1f6dd1b/sessions/5148b311a501b7372db0d51e9730b9bfb6a870e8",
+          "device": "iPhone 15 Pro Max",
+          "os_version": "17.1",
+          "browser_version": null
+        }
+      ],
+      "expected": [
+        "client/landing@ar",
+        "client/signin@ar",
+        "client/signup@ar",
+        "client/reset@ar",
+        "client/help@ar",
+        "client/not-found@ar",
+        "client/home@ar",
+        "client/account@ar",
+        "client/account-trades@ar",
+        "client/account-rules@ar",
+        "client/account-credentials@ar",
+        "client/account-trade@ar",
+        "client/trades@ar",
+        "client/account-funded@ar",
+        "client/credentials@ar",
+        "client/shop@ar",
+        "client/shop-product@ar",
+        "client/checkout@ar",
+        "client/checkout-transfer@ar",
+        "client/payouts@ar",
+        "client/payout-new@ar",
+        "client/payout-channel@ar",
+        "client/payout-details@ar",
+        "client/payout-review@ar",
+        "client/payout-detail@ar",
+        "client/payout-statement@ar",
+        "client/certificates@ar",
+        "client/notifications@ar",
+        "client/profile@ar",
+        "client/more@ar",
+        "client/orders@ar",
+        "client/order@ar",
+        "client/order-receipt@ar",
+        "client/legal-delete-account@ar",
+        "client/legal@ar",
+        "client/verify@ar",
+        "client/partners@ar",
+        "client/account-breached@ar",
+        "client/breach@ar",
+        "client/home-mixed@ar",
+        "client/home@en",
+        "client/account@en",
+        "client/shop@en",
+        "client/checkout@en",
+        "client/payouts@en"
+      ],
+      "screens": {
+        "client/landing@ar": {
+          "app": "client",
+          "screen": "landing",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-landing.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 1097,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/signin@ar": {
+          "app": "client",
+          "screen": "signin",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-signin.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 298,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/signup@ar": {
+          "app": "client",
+          "screen": "signup",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-signup.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 353,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/reset@ar": {
+          "app": "client",
+          "screen": "reset",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-reset.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 290,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/help@ar": {
+          "app": "client",
+          "screen": "help",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-help.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 473,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/not-found@ar": {
+          "app": "client",
+          "screen": "not-found",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-not-found.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 206,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/home@ar": {
+          "app": "client",
+          "screen": "home",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-home.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 379,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account@ar": {
+          "app": "client",
+          "screen": "account",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-account.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 481,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account-trades@ar": {
+          "app": "client",
+          "screen": "account-trades",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-account-trades.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 481,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account-rules@ar": {
+          "app": "client",
+          "screen": "account-rules",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-account-rules.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 481,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account-credentials@ar": {
+          "app": "client",
+          "screen": "account-credentials",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-account-credentials.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 481,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/trades@ar": {
+          "app": "client",
+          "screen": "trades",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-trades.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 313,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account-funded@ar": {
+          "app": "client",
+          "screen": "account-funded",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-account-funded.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 348,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/shop@ar": {
+          "app": "client",
+          "screen": "shop",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-shop.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 472,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/shop-product@ar": {
+          "app": "client",
+          "screen": "shop-product",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-shop-product.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 525,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/checkout@ar": {
+          "app": "client",
+          "screen": "checkout",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-checkout.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 454,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/checkout-transfer@ar": {
+          "app": "client",
+          "screen": "checkout-transfer",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-checkout-transfer.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 454,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payouts@ar": {
+          "app": "client",
+          "screen": "payouts",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-payouts.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 323,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payout-new@ar": {
+          "app": "client",
+          "screen": "payout-new",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-payout-new.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 434,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payout-channel@ar": {
+          "app": "client",
+          "screen": "payout-channel",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-payout-channel.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 434,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payout-details@ar": {
+          "app": "client",
+          "screen": "payout-details",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-payout-details.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 434,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payout-review@ar": {
+          "app": "client",
+          "screen": "payout-review",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-payout-review.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 434,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payout-detail@ar": {
+          "app": "client",
+          "screen": "payout-detail",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-payout-detail.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 366,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payout-statement@ar": {
+          "app": "client",
+          "screen": "payout-statement",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-payout-statement.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 307,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/certificates@ar": {
+          "app": "client",
+          "screen": "certificates",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-certificates.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 421,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/notifications@ar": {
+          "app": "client",
+          "screen": "notifications",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-notifications.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 334,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/profile@ar": {
+          "app": "client",
+          "screen": "profile",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-profile.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 501,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/more@ar": {
+          "app": "client",
+          "screen": "more",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-more.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 422,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/orders@ar": {
+          "app": "client",
+          "screen": "orders",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-orders.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 561,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/order@ar": {
+          "app": "client",
+          "screen": "order",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-order.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 431,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/order-receipt@ar": {
+          "app": "client",
+          "screen": "order-receipt",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-order-receipt.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 658,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/legal-delete-account@ar": {
+          "app": "client",
+          "screen": "legal-delete-account",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-legal-delete-account.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 544,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/legal@ar": {
+          "app": "client",
+          "screen": "legal",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-legal.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 436,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/verify@ar": {
+          "app": "client",
+          "screen": "verify",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-verify.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 406,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/partners@ar": {
+          "app": "client",
+          "screen": "partners",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-partners.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 306,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account-breached@ar": {
+          "app": "client",
+          "screen": "account-breached",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-account-breached.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 400,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/breach@ar": {
+          "app": "client",
+          "screen": "breach",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-breach.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 345,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/home-mixed@ar": {
+          "app": "client",
+          "screen": "home-mixed",
+          "locale": "ar",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-home-mixed.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 287,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/home@en": {
+          "app": "client",
+          "screen": "home",
+          "locale": "en",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-home-en.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 301,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/account@en": {
+          "app": "client",
+          "screen": "account",
+          "locale": "en",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-account-en.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 403,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/shop@en": {
+          "app": "client",
+          "screen": "shop",
+          "locale": "en",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-shop-en.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 354,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/checkout@en": {
+          "app": "client",
+          "screen": "checkout",
+          "locale": "en",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-checkout-en.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 346,
+          "orientation": "portrait",
+          "consoleSupported": true
+        },
+        "client/payouts@en": {
+          "app": "client",
+          "screen": "payouts",
+          "locale": "en",
+          "pass": true,
+          "counts": {
+            "tiny": 0,
+            "smallBody": 0,
+            "smallMono": 0,
+            "smallTargets": 0,
+            "overflow": 0,
+            "clipped": 0,
+            "leaks": 0,
+            "currencyOrder": 0,
+            "dirMismatch": 0,
+            "brandRedOver": 0,
+            "consoleErrors": 0,
+            "failedRequests": 0
+          },
+          "shot": "samsung-galaxy-s23/client-payouts-en.png",
+          "inner": [
+            360,
+            649
+          ],
+          "dclMs": 379,
+          "orientation": "portrait",
+          "consoleSupported": true
+        }
+      }
+    }
+  ],
+  "totals": {
+    "screens": 86,
+    "covered": 86,
+    "failed": 0,
+    "minutes": 26.1
+  }
+}
