@@ -1,0 +1,42 @@
+{
+ "certificates-ar.pdf": {
+  "pages": 1,
+  "p1": {
+   "chars": 687,
+   "luma": 245.1,
+   "darkShare": 2.11
+  }
+ },
+ "order-receipt-ar.pdf": {
+  "pages": 1,
+  "p1": {
+   "chars": 535,
+   "luma": 245.4,
+   "darkShare": 1.51
+  }
+ },
+ "order-receipt-en.pdf": {
+  "pages": 1,
+  "p1": {
+   "chars": 554,
+   "luma": 244.6,
+   "darkShare": 1.63
+  }
+ },
+ "payout-statement-ar.pdf": {
+  "pages": 1,
+  "p1": {
+   "chars": 686,
+   "luma": 243.6,
+   "darkShare": 2.59
+  }
+ },
+ "payout-statement-en.pdf": {
+  "pages": 1,
+  "p1": {
+   "chars": 731,
+   "luma": 242.2,
+   "darkShare": 2.65
+  }
+ }
+}

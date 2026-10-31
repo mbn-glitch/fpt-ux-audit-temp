@@ -1,0 +1,2530 @@
+{
+  "project": "desktop-1440",
+  "locale": "en",
+  "generatedAt": "2026-10-31T08:11:05.044Z",
+  "screens": [
+    {
+      "screen": "landing",
+      "app": "client",
+      "url": "/en",
+      "shot": "landing-desktop-1440-en.png",
+      "measure": {
+        "url": "/en",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 72,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 72,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "Start the FPT Evaluation",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg sm:min-w-56"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "signin",
+      "app": "client",
+      "url": "/en/signin",
+      "shot": "signin-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/signin",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 15,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 15,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "Sign in",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "signup",
+      "app": "client",
+      "url": "/en/signup",
+      "shot": "signup-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/signup",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 17,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 17,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "Send the code",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "help",
+      "app": "client",
+      "url": "/en/help",
+      "shot": "help-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/help",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 78,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 78,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "home",
+      "app": "client",
+      "url": "/en/accounts",
+      "shot": "home-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/accounts",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 5,
+          "textNodes": 91,
+          "pct": 0,
+          "pctAll": 5.5,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 91,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "Request a payout",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "account",
+      "app": "client",
+      "url": "/en/accounts/46975e93-c047-46c4-b167-529ea17c4b8d",
+      "shot": "account-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/accounts/46975e93-c047-46c4-b167-529ea17c4b8d",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 4,
+          "textNodes": 101,
+          "pct": 0,
+          "pctAll": 4,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 101,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "trades",
+      "app": "client",
+      "url": "/en/accounts/46975e93-c047-46c4-b167-529ea17c4b8d/trades",
+      "shot": "trades-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/accounts/46975e93-c047-46c4-b167-529ea17c4b8d/trades",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 24,
+          "pct": 0,
+          "pctAll": 4.2,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 24,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "account-funded",
+      "app": "client",
+      "url": "/en/accounts/f20a5574-7314-5e1f-b1b5-d5cb570d2fab",
+      "shot": "account-funded-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/accounts/f20a5574-7314-5e1f-b1b5-d5cb570d2fab",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 4,
+          "textNodes": 92,
+          "pct": 0,
+          "pctAll": 4.3,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 92,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "Request a payout",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "credentials",
+      "app": "client",
+      "url": "/en/accounts/f20a5574-7314-5e1f-b1b5-d5cb570d2fab",
+      "shot": "credentials-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/accounts/f20a5574-7314-5e1f-b1b5-d5cb570d2fab",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 6,
+          "textNodes": 50,
+          "pct": 0,
+          "pctAll": 12,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 50,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "shop",
+      "app": "client",
+      "url": "/en/shop",
+      "shot": "shop-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/shop",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 5,
+          "textNodes": 77,
+          "pct": 0,
+          "pctAll": 6.5,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 77,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "Continue · 280 USD",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "shop-product",
+      "app": "client",
+      "url": "/en/shop/fpt-50k",
+      "shot": "shop-product-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/shop/fpt-50k",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 54,
+          "pct": 0,
+          "pctAll": 1.9,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 54,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "Continue to checkout",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "checkout",
+      "app": "client",
+      "url": "/en/checkout/e3181469-4782-456f-a152-af39658eed02",
+      "shot": "checkout-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/checkout/e3181469-4782-456f-a152-af39658eed02",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 59,
+          "pct": 0,
+          "pctAll": 1.7,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 59,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "payouts",
+      "app": "client",
+      "url": "/en/payouts",
+      "shot": "payouts-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/payouts",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 2,
+          "textNodes": 51,
+          "pct": 0,
+          "pctAll": 3.9,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 51,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "Request a payout",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 1,
+        "minor": 0,
+        "items": [
+          {
+            "id": "heading-order",
+            "impact": "moderate",
+            "help": "Heading levels should only increase by one",
+            "nodes": 1,
+            "targets": [
+              "h3"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "screen": "payout-new",
+      "app": "client",
+      "url": "/en/payouts/new?account=f20a5574-7314-5e1f-b1b5-d5cb570d2fab",
+      "shot": "payout-new-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/payouts/new?account=f20a5574-7314-5e1f-b1b5-d5cb570d2fab",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 38,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 38,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "payout-detail",
+      "app": "client",
+      "url": "/en/payouts/a86552c7-47bb-5455-9b84-3e83c2d87930",
+      "shot": "payout-detail-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/payouts/a86552c7-47bb-5455-9b84-3e83c2d87930",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 3,
+          "textNodes": 51,
+          "pct": 0,
+          "pctAll": 5.9,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 51,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "payout-statement",
+      "app": "client",
+      "url": "/en/payouts/a86552c7-47bb-5455-9b84-3e83c2d87930/statement",
+      "shot": "payout-statement-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/payouts/a86552c7-47bb-5455-9b84-3e83c2d87930/statement",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 9,
+          "textNodes": 70,
+          "pct": 0,
+          "pctAll": 12.9,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 70,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "certificates",
+      "app": "client",
+      "url": "/en/certificates",
+      "shot": "certificates-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/certificates",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 8,
+          "textNodes": 65,
+          "pct": 0,
+          "pctAll": 12.3,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 65,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "notifications",
+      "app": "client",
+      "url": "/en/notifications",
+      "shot": "notifications-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/notifications",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 32,
+          "pct": 0,
+          "pctAll": 3.1,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 32,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "profile",
+      "app": "client",
+      "url": "/en/profile",
+      "shot": "profile-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/profile",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 54,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 54,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "Save",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "more",
+      "app": "client",
+      "url": "/en/more",
+      "shot": "more-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/more",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 49,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 49,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "legal",
+      "app": "client",
+      "url": "/en/legal/terms",
+      "shot": "legal-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/legal/terms",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 203,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 203,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "verify",
+      "app": "client",
+      "url": "/en/verify/FPT-CRWFSEA8F4",
+      "shot": "verify-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/verify/FPT-CRWFSEA8F4",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 40,
+          "pct": 0,
+          "pctAll": 2.5,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 40,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "partners",
+      "app": "client",
+      "url": "/en/partners",
+      "shot": "partners-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/partners",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 2,
+          "textNodes": 52,
+          "pct": 0,
+          "pctAll": 3.8,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 52,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "account-breached",
+      "app": "client",
+      "url": "/en/accounts/74bbcea7-88d8-5389-96db-3df0fb68caa0",
+      "shot": "account-breached-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/accounts/74bbcea7-88d8-5389-96db-3df0fb68caa0",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 5,
+          "textNodes": 106,
+          "pct": 0,
+          "pctAll": 4.7,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 106,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "Start a new evaluation",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "breach",
+      "app": "client",
+      "url": "/en/accounts/74bbcea7-88d8-5389-96db-3df0fb68caa0/breach",
+      "shot": "breach-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/accounts/74bbcea7-88d8-5389-96db-3df0fb68caa0/breach",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 53,
+          "pct": 0,
+          "pctAll": 1.9,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 53,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "Start a new evaluation",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "home-mixed",
+      "app": "client",
+      "url": "/en/accounts",
+      "shot": "home-mixed-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/accounts",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 7,
+          "textNodes": 94,
+          "pct": 0,
+          "pctAll": 7.4,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 94,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-signin",
+      "app": "admin",
+      "url": "/en/signin",
+      "shot": "admin-signin-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/signin",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 13,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 13,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "Continue",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-overview",
+      "app": "admin",
+      "url": "/en",
+      "shot": "admin-overview-desktop-1440-en.png",
+      "measure": {
+        "url": "/en",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 158,
+          "pct": 0,
+          "pctAll": 0.6,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 158,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-accounts",
+      "app": "admin",
+      "url": "/en/accounts",
+      "shot": "admin-accounts-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/accounts",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 125,
+          "textNodes": 365,
+          "pct": 0,
+          "pctAll": 34.2,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 365,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-risk",
+      "app": "admin",
+      "url": "/en/risk",
+      "shot": "admin-risk-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/risk",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 139,
+          "textNodes": 297,
+          "pct": 0,
+          "pctAll": 46.8,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 297,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-breaches",
+      "app": "admin",
+      "url": "/en/breaches",
+      "shot": "admin-breaches-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/breaches",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 8,
+          "textNodes": 89,
+          "pct": 0,
+          "pctAll": 9,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 89,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-payouts",
+      "app": "admin",
+      "url": "/en/payouts",
+      "shot": "admin-payouts-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/payouts",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 4,
+          "textNodes": 75,
+          "pct": 0,
+          "pctAll": 5.3,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 75,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-orders",
+      "app": "admin",
+      "url": "/en/orders",
+      "shot": "admin-orders-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/orders",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 25,
+          "textNodes": 344,
+          "pct": 0,
+          "pctAll": 7.3,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 344,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "Grant an account",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-products",
+      "app": "admin",
+      "url": "/en/products",
+      "shot": "admin-products-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/products",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 25,
+          "textNodes": 115,
+          "pct": 0,
+          "pctAll": 21.7,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 115,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-finance",
+      "app": "admin",
+      "url": "/en/finance",
+      "shot": "admin-finance-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/finance",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 42,
+          "textNodes": 151,
+          "pct": 0,
+          "pctAll": 27.8,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 151,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-affiliates",
+      "app": "admin",
+      "url": "/en/affiliates",
+      "shot": "admin-affiliates-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/affiliates",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 14,
+          "textNodes": 98,
+          "pct": 0,
+          "pctAll": 14.3,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 98,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-mail",
+      "app": "admin",
+      "url": "/en/mail",
+      "shot": "admin-mail-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/mail",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 6,
+          "textNodes": 139,
+          "pct": 0,
+          "pctAll": 4.3,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 139,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-fraud",
+      "app": "admin",
+      "url": "/en/fraud",
+      "shot": "admin-fraud-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/fraud",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 2,
+          "textNodes": 68,
+          "pct": 0,
+          "pctAll": 2.9,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 68,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-audit",
+      "app": "admin",
+      "url": "/en/audit",
+      "shot": "admin-audit-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/audit",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 182,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 182,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-staff",
+      "app": "admin",
+      "url": "/en/staff",
+      "shot": "admin-staff-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/staff",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 83,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 83,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "Invite staff",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-settings",
+      "app": "admin",
+      "url": "/en/settings",
+      "shot": "admin-settings-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/settings",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 96,
+          "pct": 0,
+          "pctAll": 1,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 96,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "Save support channels",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-simulator",
+      "app": "admin",
+      "url": "/en/simulator",
+      "shot": "admin-simulator-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/simulator",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 92,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 92,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-me",
+      "app": "admin",
+      "url": "/en/staff/me",
+      "shot": "admin-me-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/staff/me",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 127,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 127,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-account",
+      "app": "admin",
+      "url": "/en/accounts/46975e93-c047-46c4-b167-529ea17c4b8d",
+      "shot": "admin-account-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/accounts/46975e93-c047-46c4-b167-529ea17c4b8d",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 100,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 100,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-breach",
+      "app": "admin",
+      "url": "/en/breaches/ae985d12-84d7-5a8f-904b-79514ddef28f",
+      "shot": "admin-breach-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/breaches/ae985d12-84d7-5a8f-904b-79514ddef28f",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 5,
+          "textNodes": 111,
+          "pct": 0,
+          "pctAll": 4.5,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 111,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-payout",
+      "app": "admin",
+      "url": "/en/payouts/c4564fed-17f0-5dd0-a87b-155cd61c3338",
+      "shot": "admin-payout-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/payouts/c4564fed-17f0-5dd0-a87b-155cd61c3338",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 4,
+          "textNodes": 131,
+          "pct": 0,
+          "pctAll": 3.1,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 131,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "Second approval",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary w-full sm:w-auto"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-order",
+      "app": "admin",
+      "url": "/en/orders/e3181469-4782-456f-a152-af39658eed02",
+      "shot": "admin-order-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/orders/e3181469-4782-456f-a152-af39658eed02",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 75,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 75,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-mail-detail",
+      "app": "admin",
+      "url": "/en/mail/46ef0164-24f2-47c7-94d3-665baa5647a0",
+      "shot": "admin-mail-detail-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/mail/46ef0164-24f2-47c7-94d3-665baa5647a0",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 58,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 58,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-affiliate",
+      "app": "admin",
+      "url": "/en/affiliates/1deac3a9-6d7d-5890-834a-d495916c0b92",
+      "shot": "admin-affiliate-desktop-1440-en.png",
+      "measure": {
+        "url": "/en/affiliates/1deac3a9-6d7d-5890-834a-d495916c0b92",
+        "inner": [
+          1440,
+          900
+        ],
+        "wide": [],
+        "docW": 1425,
+        "bodyW": 1425,
+        "lang": "en",
+        "dir": "ltr",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 2,
+          "textNodes": 107,
+          "pct": 0,
+          "pctAll": 1.9,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 107,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    }
+  ]
+}

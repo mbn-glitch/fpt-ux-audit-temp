@@ -1,0 +1,2530 @@
+{
+  "project": "phone-390",
+  "locale": "ar",
+  "generatedAt": "2026-10-31T08:09:02.544Z",
+  "screens": [
+    {
+      "screen": "landing",
+      "app": "client",
+      "url": "/ar",
+      "shot": "landing-phone-390-ar.png",
+      "measure": {
+        "url": "/ar",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 72,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 72,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "ابدأ تقييم FPT",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg sm:min-w-56"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "signin",
+      "app": "client",
+      "url": "/ar/signin",
+      "shot": "signin-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/signin",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 15,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 15,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "تسجيل الدخول",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "signup",
+      "app": "client",
+      "url": "/ar/signup",
+      "shot": "signup-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/signup",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 17,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 17,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "إرسال الرمز",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "help",
+      "app": "client",
+      "url": "/ar/help",
+      "shot": "help-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/help",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 78,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 78,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "home",
+      "app": "client",
+      "url": "/ar/accounts",
+      "shot": "home-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/accounts",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 5,
+          "textNodes": 77,
+          "pct": 0,
+          "pctAll": 6.5,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 77,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "اطلب سحباً",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "account",
+      "app": "client",
+      "url": "/ar/accounts/46975e93-c047-46c4-b167-529ea17c4b8d",
+      "shot": "account-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/accounts/46975e93-c047-46c4-b167-529ea17c4b8d",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 4,
+          "textNodes": 87,
+          "pct": 0,
+          "pctAll": 4.6,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 87,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "trades",
+      "app": "client",
+      "url": "/ar/accounts/46975e93-c047-46c4-b167-529ea17c4b8d/trades",
+      "shot": "trades-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/accounts/46975e93-c047-46c4-b167-529ea17c4b8d/trades",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 10,
+          "pct": 0,
+          "pctAll": 10,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 10,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "account-funded",
+      "app": "client",
+      "url": "/ar/accounts/f20a5574-7314-5e1f-b1b5-d5cb570d2fab",
+      "shot": "account-funded-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/accounts/f20a5574-7314-5e1f-b1b5-d5cb570d2fab",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 4,
+          "textNodes": 78,
+          "pct": 0,
+          "pctAll": 5.1,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 78,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "اطلب سحباً",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "credentials",
+      "app": "client",
+      "url": "/ar/accounts/f20a5574-7314-5e1f-b1b5-d5cb570d2fab",
+      "shot": "credentials-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/accounts/f20a5574-7314-5e1f-b1b5-d5cb570d2fab",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 6,
+          "textNodes": 36,
+          "pct": 0,
+          "pctAll": 16.7,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 36,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "shop",
+      "app": "client",
+      "url": "/ar/shop",
+      "shot": "shop-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/shop",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 5,
+          "textNodes": 53,
+          "pct": 0,
+          "pctAll": 9.4,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 53,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "المتابعة · 280 USD",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "shop-product",
+      "app": "client",
+      "url": "/ar/shop/fpt-50k",
+      "shot": "shop-product-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/shop/fpt-50k",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 40,
+          "pct": 0,
+          "pctAll": 2.5,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 40,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "المتابعة إلى الدفع",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "checkout",
+      "app": "client",
+      "url": "/ar/checkout/e8641391-c6bc-42a4-b7b6-cb8951a3913e",
+      "shot": "checkout-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/checkout/e8641391-c6bc-42a4-b7b6-cb8951a3913e",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 37,
+          "pct": 0,
+          "pctAll": 2.7,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 37,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "payouts",
+      "app": "client",
+      "url": "/ar/payouts",
+      "shot": "payouts-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/payouts",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 2,
+          "textNodes": 37,
+          "pct": 0,
+          "pctAll": 5.4,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 37,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "اطلب سحباً",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 1,
+        "minor": 0,
+        "items": [
+          {
+            "id": "heading-order",
+            "impact": "moderate",
+            "help": "Heading levels should only increase by one",
+            "nodes": 1,
+            "targets": [
+              "h3"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "screen": "payout-new",
+      "app": "client",
+      "url": "/ar/payouts/new?account=f20a5574-7314-5e1f-b1b5-d5cb570d2fab",
+      "shot": "payout-new-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/payouts/new?account=f20a5574-7314-5e1f-b1b5-d5cb570d2fab",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 20,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 20,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "payout-detail",
+      "app": "client",
+      "url": "/ar/payouts/a86552c7-47bb-5455-9b84-3e83c2d87930",
+      "shot": "payout-detail-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/payouts/a86552c7-47bb-5455-9b84-3e83c2d87930",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 3,
+          "textNodes": 37,
+          "pct": 0,
+          "pctAll": 8.1,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 37,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "payout-statement",
+      "app": "client",
+      "url": "/ar/payouts/a86552c7-47bb-5455-9b84-3e83c2d87930/statement",
+      "shot": "payout-statement-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/payouts/a86552c7-47bb-5455-9b84-3e83c2d87930/statement",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 9,
+          "textNodes": 52,
+          "pct": 0,
+          "pctAll": 17.3,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 52,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "certificates",
+      "app": "client",
+      "url": "/ar/certificates",
+      "shot": "certificates-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/certificates",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 8,
+          "textNodes": 47,
+          "pct": 0,
+          "pctAll": 17,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 47,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "notifications",
+      "app": "client",
+      "url": "/ar/notifications",
+      "shot": "notifications-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/notifications",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 18,
+          "pct": 0,
+          "pctAll": 5.6,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 18,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "profile",
+      "app": "client",
+      "url": "/ar/profile",
+      "shot": "profile-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/profile",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 40,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 40,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "حفظ",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "more",
+      "app": "client",
+      "url": "/ar/more",
+      "shot": "more-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/more",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 35,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 35,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "legal",
+      "app": "client",
+      "url": "/ar/legal/terms",
+      "shot": "legal-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/legal/terms",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 185,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 185,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "verify",
+      "app": "client",
+      "url": "/ar/verify/FPT-CRWFSEA8F4",
+      "shot": "verify-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/verify/FPT-CRWFSEA8F4",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 22,
+          "pct": 0,
+          "pctAll": 4.5,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 22,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "partners",
+      "app": "client",
+      "url": "/ar/partners",
+      "shot": "partners-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/partners",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 2,
+          "textNodes": 38,
+          "pct": 0,
+          "pctAll": 5.3,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 38,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "account-breached",
+      "app": "client",
+      "url": "/ar/accounts/74bbcea7-88d8-5389-96db-3df0fb68caa0",
+      "shot": "account-breached-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/accounts/74bbcea7-88d8-5389-96db-3df0fb68caa0",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 5,
+          "textNodes": 93,
+          "pct": 0,
+          "pctAll": 5.4,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 93,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "ابدأ تقييماً جديداً",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "breach",
+      "app": "client",
+      "url": "/ar/accounts/74bbcea7-88d8-5389-96db-3df0fb68caa0/breach",
+      "shot": "breach-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/accounts/74bbcea7-88d8-5389-96db-3df0fb68caa0/breach",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 41,
+          "pct": 0,
+          "pctAll": 2.4,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 41,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "بدء تقييم جديد",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--lg fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "home-mixed",
+      "app": "client",
+      "url": "/ar/accounts",
+      "shot": "home-mixed-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/accounts",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 7,
+          "textNodes": 82,
+          "pct": 0,
+          "pctAll": 8.5,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 82,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-signin",
+      "app": "admin",
+      "url": "/ar/signin",
+      "shot": "admin-signin-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/signin",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 13,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 13,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "متابعة",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary fpt-btn--block"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-overview",
+      "app": "admin",
+      "url": "/ar",
+      "shot": "admin-overview-phone-390-ar.png",
+      "measure": {
+        "url": "/ar",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 136,
+          "pct": 0,
+          "pctAll": 0.7,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 136,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-accounts",
+      "app": "admin",
+      "url": "/ar/accounts",
+      "shot": "admin-accounts-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/accounts",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 25,
+          "textNodes": 159,
+          "pct": 0,
+          "pctAll": 15.7,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 159,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-risk",
+      "app": "admin",
+      "url": "/ar/risk",
+      "shot": "admin-risk-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/risk",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 30,
+          "textNodes": 151,
+          "pct": 0,
+          "pctAll": 19.9,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 151,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-breaches",
+      "app": "admin",
+      "url": "/ar/breaches",
+      "shot": "admin-breaches-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/breaches",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 4,
+          "textNodes": 55,
+          "pct": 0,
+          "pctAll": 7.3,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 55,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-payouts",
+      "app": "admin",
+      "url": "/ar/payouts",
+      "shot": "admin-payouts-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/payouts",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 33,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 33,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-orders",
+      "app": "admin",
+      "url": "/ar/orders",
+      "shot": "admin-orders-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/orders",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 165,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 165,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "a",
+            "size": 16,
+            "text": "منح حساب",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-products",
+      "app": "admin",
+      "url": "/ar/products",
+      "shot": "admin-products-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/products",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 5,
+          "textNodes": 68,
+          "pct": 0,
+          "pctAll": 7.4,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 68,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-finance",
+      "app": "admin",
+      "url": "/ar/finance",
+      "shot": "admin-finance-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/finance",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 102,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 102,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-affiliates",
+      "app": "admin",
+      "url": "/ar/affiliates",
+      "shot": "admin-affiliates-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/affiliates",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 2,
+          "textNodes": 56,
+          "pct": 0,
+          "pctAll": 3.6,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 56,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-mail",
+      "app": "admin",
+      "url": "/ar/mail",
+      "shot": "admin-mail-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/mail",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 6,
+          "textNodes": 57,
+          "pct": 0,
+          "pctAll": 10.5,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 57,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-fraud",
+      "app": "admin",
+      "url": "/ar/fraud",
+      "shot": "admin-fraud-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/fraud",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 30,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 30,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-audit",
+      "app": "admin",
+      "url": "/ar/audit",
+      "shot": "admin-audit-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/audit",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 106,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 106,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-staff",
+      "app": "admin",
+      "url": "/ar/staff",
+      "shot": "admin-staff-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/staff",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 30,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 30,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "دعوة موظف",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-settings",
+      "app": "admin",
+      "url": "/ar/settings",
+      "shot": "admin-settings-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/settings",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 1,
+          "textNodes": 74,
+          "pct": 0,
+          "pctAll": 1.4,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 74,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "حفظ قنوات الدعم",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-simulator",
+      "app": "admin",
+      "url": "/ar/simulator",
+      "shot": "admin-simulator-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/simulator",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 70,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 70,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-me",
+      "app": "admin",
+      "url": "/ar/staff/me",
+      "shot": "admin-me-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/staff/me",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 101,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 101,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-account",
+      "app": "admin",
+      "url": "/ar/accounts/46975e93-c047-46c4-b167-529ea17c4b8d",
+      "shot": "admin-account-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/accounts/46975e93-c047-46c4-b167-529ea17c4b8d",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 78,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 78,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-breach",
+      "app": "admin",
+      "url": "/ar/breaches/ae985d12-84d7-5a8f-904b-79514ddef28f",
+      "shot": "admin-breach-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/breaches/ae985d12-84d7-5a8f-904b-79514ddef28f",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 5,
+          "textNodes": 89,
+          "pct": 0,
+          "pctAll": 5.6,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 89,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-payout",
+      "app": "admin",
+      "url": "/ar/payouts/c4564fed-17f0-5dd0-a87b-155cd61c3338",
+      "shot": "admin-payout-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/payouts/c4564fed-17f0-5dd0-a87b-155cd61c3338",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 4,
+          "textNodes": 106,
+          "pct": 0,
+          "pctAll": 3.8,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 106,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [
+          {
+            "tag": "button",
+            "size": 16,
+            "text": "الاعتماد الثاني",
+            "cls": "bg-image · fpt-btn select-none fpt-btn--primary w-full sm:w-auto"
+          }
+        ],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-order",
+      "app": "admin",
+      "url": "/ar/orders/e8641391-c6bc-42a4-b7b6-cb8951a3913e",
+      "shot": "admin-order-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/orders/e8641391-c6bc-42a4-b7b6-cb8951a3913e",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 53,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 53,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-mail-detail",
+      "app": "admin",
+      "url": "/ar/mail/46ef0164-24f2-47c7-94d3-665baa5647a0",
+      "shot": "admin-mail-detail-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/mail/46ef0164-24f2-47c7-94d3-665baa5647a0",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 0,
+          "textNodes": 36,
+          "pct": 0,
+          "pctAll": 0,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 36,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    },
+    {
+      "screen": "admin-affiliate",
+      "app": "admin",
+      "url": "/ar/affiliates/1deac3a9-6d7d-5890-834a-d495916c0b92",
+      "shot": "admin-affiliate-phone-390-ar.png",
+      "measure": {
+        "url": "/ar/affiliates/1deac3a9-6d7d-5890-834a-d495916c0b92",
+        "inner": [
+          390,
+          844
+        ],
+        "wide": [],
+        "docW": 390,
+        "bodyW": 390,
+        "lang": "ar",
+        "dir": "rtl",
+        "tiny": [],
+        "smallBody": [],
+        "smallTargets": [],
+        "monoOnText": [],
+        "monoShare": {
+          "monoNodes": 0,
+          "monoNodesAll": 2,
+          "textNodes": 85,
+          "pct": 0,
+          "pctAll": 2.4,
+          "arabicMonoNodes": []
+        },
+        "riskLine": true,
+        "clippedUnits": [],
+        "textNodes": 85,
+        "leaks": [],
+        "currencyOrder": [],
+        "arabicDigits": [],
+        "shortMonths": [],
+        "danglingDots": [],
+        "dirMismatch": [],
+        "brandRed": [],
+        "rejectedTokens": []
+      },
+      "overflow": false,
+      "axe": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "items": []
+      }
+    }
+  ]
+}
